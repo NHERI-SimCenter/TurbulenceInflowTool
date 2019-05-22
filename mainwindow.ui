@@ -162,7 +162,7 @@ Changes</string>
             <number>0</number>
            </property>
            <item>
-            <widget class="InflowParameterWidget" name="frame_2">
+            <widget class="InflowParameterWidget" name="inflowWidget">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>

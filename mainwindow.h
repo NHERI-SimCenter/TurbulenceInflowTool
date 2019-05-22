@@ -17,16 +17,12 @@ public:
 
 private slots:
     void on_action_Quit_triggered();
-
     void on_action_About_triggered();
-
     void on_action_New_triggered();
-
     void on_action_Open_triggered();
-
     void on_action_Save_triggered();
-
     void on_actionSave_As_triggered();
+    void on_btn_selectSource_clicked();
 
 private:
     Ui::MainWindow *ui;

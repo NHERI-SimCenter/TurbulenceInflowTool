@@ -58,3 +58,8 @@ void MainWindow::on_actionSave_As_triggered()
 {
 
 }
+
+void MainWindow::on_btn_selectSource_clicked()
+{
+    ui->inflowWidget->selectSourceLocation();
+}
