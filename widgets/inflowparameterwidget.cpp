@@ -3,6 +3,7 @@
 
 #include "math.h"
 
+#include <QFileDialog>
 #include <QDebug>
 
 InflowParameterWidget::InflowParameterWidget(QWidget *parent) :
@@ -16,6 +17,21 @@ InflowParameterWidget::InflowParameterWidget(QWidget *parent) :
 InflowParameterWidget::~InflowParameterWidget()
 {
     delete ui;
+}
+
+void InflowParameterWidget::selectSourceLocation(void)
+{
+    QFileDialog *dlg = new QFileDialog();
+    dlg->setFileMode(QFileDialog::Directory);
+    if (dlg->exec())
+    {
+        QDir sourceFolder = dlg->directory();
+        ui->sourceLocationDisplay->setText(sourceFolder.canonicalPath());
+
+        qDebug() << sourceFolder;
+    }
+    delete dlg;
+
 }
 
 void InflowParameterWidget::setDefaultParameters()
@@ -86,68 +102,6 @@ void InflowParameterWidget::on_PHI32_valueChanged(double arg1)
     ui->PHI23->setValue(arg1);
 }
 
-void InflowParameterWidget::on_selectUniform_clicked(bool checked)
-{
-    // adjust UI for uniform distribution
-    if ( checked ) {
-
-        // deactivate alpha parameters
-
-        ui->alpha1->setEnabled(false);
-        ui->alpha2->setEnabled(false);
-        ui->alpha3->setEnabled(false);
-
-        // deactivate reference point
-
-        //ui->zVectorGroup->setEnabled(false);
-
-        //ui->z01->setEnabled(false);
-        //ui->z02->setEnabled(false);
-        //ui->z03->setEnabled(false);
-
-        // deactivate reference direction (n-vector)
-
-        ui->referencePointGroup->setEnabled(false);
-
-        //ui->zVector1->setEnabled(false);
-        //ui->zVector2->setEnabled(false);
-        //ui->zVector3->setEnabled(false);
-
-        //ui->alphaParameterGroup->hide();
-    }
-}
-
-void InflowParameterWidget::on_selectExponential_clicked(bool checked)
-{
-    // adjust UI for exponential distribution
-    if ( checked ) {
-
-        // activate alpha parameters
-
-        ui->alpha1->setEnabled(true);
-        ui->alpha2->setEnabled(true);
-        ui->alpha3->setEnabled(true);
-
-        // activate reference point
-
-        //ui->zVectorGroup->setEnabled(true);
-
-        //ui->z01->setEnabled(true);
-        //ui->z02->setEnabled(true);
-        //ui->z03->setEnabled(true);
-
-        // activate reference direction (n-vector)
-
-        ui->referencePointGroup->setEnabled(true);
-
-        //ui->zVector1->setEnabled(true);
-        //ui->zVector2->setEnabled(true);
-        //ui->zVector3->setEnabled(true);
-
-        //ui->alphaParameterGroup->show();
-    }
-}
-
 void InflowParameterWidget::on_resetButton_clicked()
 {
     // set UI to default parameter values
@@ -157,4 +111,92 @@ void InflowParameterWidget::on_resetButton_clicked()
 void InflowParameterWidget::on_comboBox_currentIndexChanged(int index)
 {
     // this is where we get a mode
+
+    switch (index) {
+    case 0:
+        this->setLinearLaminar();
+        break;
+    case 1:
+        this->setExponentialLaminar();
+        break;
+    case 2:
+        this->setLinearTurbulent();
+        break;
+    case 3:
+        this->setExponentialTurbulent();
+        break;
+    default:
+        qWarning() << "Unknown boundary condition type selected" ;
+    }
+}
+
+void InflowParameterWidget::setLinearLaminar(void)
+{
+
+}
+
+void InflowParameterWidget::setExponentialLaminar(void)
+{
+
+}
+
+void InflowParameterWidget::setLinearTurbulent(void)
+{
+    // deactivate alpha parameters
+
+    ui->alpha1->setEnabled(false);
+    ui->alpha2->setEnabled(false);
+    ui->alpha3->setEnabled(false);
+
+    // deactivate reference point
+
+    //ui->zVectorGroup->setEnabled(false);
+
+    //ui->z01->setEnabled(false);
+    //ui->z02->setEnabled(false);
+    //ui->z03->setEnabled(false);
+
+    // deactivate reference direction (n-vector)
+
+    ui->referencePointGroup->setEnabled(false);
+
+    //ui->zVector1->setEnabled(false);
+    //ui->zVector2->setEnabled(false);
+    //ui->zVector3->setEnabled(false);
+
+    //ui->alphaParameterGroup->hide();
+}
+
+void InflowParameterWidget::setExponentialTurbulent(void)
+{
+    // exponential
+
+    // activate alpha parameters
+
+    ui->alpha1->setEnabled(true);
+    ui->alpha2->setEnabled(true);
+    ui->alpha3->setEnabled(true);
+
+    // activate reference point
+
+    //ui->zVectorGroup->setEnabled(true);
+
+    //ui->z01->setEnabled(true);
+    //ui->z02->setEnabled(true);
+    //ui->z03->setEnabled(true);
+
+    // activate reference direction (n-vector)
+
+    ui->referencePointGroup->setEnabled(true);
+
+    //ui->zVector1->setEnabled(true);
+    //ui->zVector2->setEnabled(true);
+    //ui->zVector3->setEnabled(true);
+
+    //ui->alphaParameterGroup->show();
+}
+
+void InflowParameterWidget::on_sourceLocateBtn_clicked()
+{
+    this->selectSourceLocation();
 }
