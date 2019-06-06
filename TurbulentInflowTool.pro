@@ -34,12 +34,14 @@ NEEDED_PRI=$$PWD/../$$NEEDED_REPO//$$NEEDED_PACKAGE/$$"$$NEEDED_PACKAGE".pri
 include($$NEEDED_PRI)
 
 SOURCES += \
+        customizeditemmodel.cpp \
         main.cpp \
         mainwindow.cpp \
         utilWindows/dialogabout.cpp \
         widgets/inflowparameterwidget.cpp
 
 HEADERS += \
+        customizeditemmodel.h \
         mainwindow.h \
         utilWindows/dialogabout.h \
         widgets/inflowparameterwidget.h

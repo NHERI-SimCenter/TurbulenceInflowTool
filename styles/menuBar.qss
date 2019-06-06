@@ -1,0 +1,29 @@
+/* ---   Styles for EE-UQ    --- */
+/* --- Written: charles.wang --- */
+
+
+
+/* --- The menu buttons on the left --- */
+
+QTreeView#treeViewOnTheLeft{
+    background: rgb(79, 83, 89);
+
+    /* set the font properties*/
+    font-size:17px;
+    color: white;
+}
+
+QTreeView#treeViewOnTheLeft::item:hover {
+    background: rgb(69, 187, 217);
+}
+
+QTreeView#treeViewOnTheLeft::item:selected:active{
+    background: rgb(63, 147, 168);
+}
+
+QTreeView#treeViewOnTheLeft::item:selected:!active {
+    background: rgb(63, 147, 168);
+}
+
+
+

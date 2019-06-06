@@ -5,12 +5,58 @@
 #include <QScreen>
 #include <QRect>
 
+#include <QStandardItemModel>
+#include <QDebug>
+
+#include "customizeditemmodel.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->header->setHeadingText("Turbulent Inflow Adjustment Tool for OpenFOAM");
+
+    standardModel = new CustomizedItemModel(); //QStandardItemModel ;
+    QStandardItem *rootNode = standardModel->invisibleRootItem();
+
+    //defining bunch of items for inclusion in model
+    QStandardItem *sourceItem    = new QStandardItem("Source");
+    QStandardItem *parameterItem = new QStandardItem("Parameters");
+    QStandardItem *exportItem    = new QStandardItem("Export");
+
+    //building up the hierarchy of the model
+    rootNode->appendRow(sourceItem);
+    rootNode->appendRow(parameterItem);
+    rootNode->appendRow(exportItem);
+
+    infoItemIdx = rootNode->index();
+
+    //register the model
+    ui->treeView->setModel(standardModel);
+    ui->treeView->expandAll();
+    ui->treeView->setHeaderHidden(true);
+    ui->treeView->setMinimumWidth(110);
+    ui->treeView->setMaximumWidth(110);
+    ui->treeView->setMinimumWidth(110);
+
+    //Disable Edit for the TreeView
+    ui->treeView->setEditTriggers(QTreeView::EditTrigger::NoEditTriggers);
+
+    //
+    // customize the apperance of the menu on the left
+    //
+
+    ui->treeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff ); // hide the horizontal scroll bar
+    ui->treeView->setObjectName("treeViewOnTheLeft");
+    ui->treeView->setIndentation(0);
+    QFile file(":/styles/menuBar.qss");
+    if (file.open(QFile::ReadOnly)) {
+        ui->treeView->setStyleSheet(file.readAll());
+        file.close();
+    }
+    else
+        qDebug() << "Open Style File Failed!";
 }
 
 MainWindow::~MainWindow()
@@ -63,3 +109,4 @@ void MainWindow::on_btn_selectSource_clicked()
 {
     ui->inflowWidget->selectSourceLocation();
 }
+

@@ -24,7 +24,6 @@ private slots:
     void setDefaultParameters();
     void on_resetButton_clicked();
     void on_comboBox_currentIndexChanged(int index);
-    void on_sourceLocateBtn_clicked();
 
 private:
     void setLinearLaminar(void);

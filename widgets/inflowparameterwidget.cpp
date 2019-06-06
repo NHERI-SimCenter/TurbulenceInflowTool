@@ -195,8 +195,3 @@ void InflowParameterWidget::setExponentialTurbulent(void)
 
     //ui->alphaParameterGroup->show();
 }
-
-void InflowParameterWidget::on_sourceLocateBtn_clicked()
-{
-    this->selectSourceLocation();
-}

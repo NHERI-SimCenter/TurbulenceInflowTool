@@ -6,5 +6,6 @@
         <file>docs/help/About/Jiawei-Wan.png</file>
         <file>icons/NHERI-TInF-icon.icns</file>
         <file>icons/NHERI-TInF-icon.png</file>
+        <file>styles/menuBar.qss</file>
     </qresource>
 </RCC>
