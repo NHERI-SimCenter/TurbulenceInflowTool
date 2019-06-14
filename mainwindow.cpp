@@ -56,7 +56,25 @@ MainWindow::MainWindow(QWidget *parent) :
         file.close();
     }
     else
+    {
         qDebug() << "Open Style File Failed!";
+    }
+
+    //
+    // set up so that a slection change triggers the selectionChanged slot
+    //
+
+    QItemSelectionModel *selectionModel= ui->treeView->selectionModel();
+    connect(selectionModel,
+            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            this,
+            SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
+
+    //
+    // set active index
+    //
+
+    ui->treeView->setCurrentIndex(infoItemIdx);
 }
 
 MainWindow::~MainWindow()
@@ -110,3 +128,18 @@ void MainWindow::on_btn_selectSource_clicked()
     ui->inflowWidget->selectSourceLocation();
 }
 
+void
+MainWindow::selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSelection &/*oldSelection*/) {
+
+    //get the text of the selected item
+    const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
+    QString selectedText = index.data(Qt::DisplayRole).toString();
+
+    if (selectedText == "Source")          { ui->theStackedWidget->setCurrentIndex(0); }
+    else if (selectedText == "Parameters") { ui->theStackedWidget->setCurrentIndex(1); }
+    else if (selectedText == "Export")     { ui->theStackedWidget->setCurrentIndex(2); }
+    else {
+        qWarning() << "Unknown page selected: " << selectedText;
+        ui->theStackedWidget->setCurrentIndex(0);
+    }
+}

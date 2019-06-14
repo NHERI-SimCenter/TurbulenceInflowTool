@@ -38,17 +38,23 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         utilWindows/dialogabout.cpp \
+        widgets/exportwidget.cpp \
+        widgets/filewidget.cpp \
         widgets/inflowparameterwidget.cpp
 
 HEADERS += \
         customizeditemmodel.h \
         mainwindow.h \
         utilWindows/dialogabout.h \
+        widgets/exportwidget.h \
+        widgets/filewidget.h \
         widgets/inflowparameterwidget.h
 
 FORMS += \
         mainwindow.ui \
         utilWindows/dialogabout.ui \
+        widgets/exportwidget.ui \
+        widgets/filewidget.ui \
         widgets/inflowparameterwidget.ui
 
 # Default rules for deployment.
