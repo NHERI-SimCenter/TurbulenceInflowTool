@@ -11,6 +11,7 @@ InflowParameterWidget::InflowParameterWidget(QWidget *parent) :
     ui(new Ui::InflowParameterWidget)
 {
     ui->setupUi(this);
+    ui->sourceGroup->hide();
     setDefaultParameters();
 }
 
@@ -194,9 +195,4 @@ void InflowParameterWidget::setExponentialTurbulent(void)
     //ui->zVector3->setEnabled(true);
 
     //ui->alphaParameterGroup->show();
-}
-
-void InflowParameterWidget::on_sourceLocateBtn_clicked()
-{
-    this->selectSourceLocation();
 }

@@ -34,19 +34,27 @@ NEEDED_PRI=$$PWD/../$$NEEDED_REPO//$$NEEDED_PACKAGE/$$"$$NEEDED_PACKAGE".pri
 include($$NEEDED_PRI)
 
 SOURCES += \
+        customizeditemmodel.cpp \
         main.cpp \
         mainwindow.cpp \
         utilWindows/dialogabout.cpp \
+        widgets/exportwidget.cpp \
+        widgets/filewidget.cpp \
         widgets/inflowparameterwidget.cpp
 
 HEADERS += \
+        customizeditemmodel.h \
         mainwindow.h \
         utilWindows/dialogabout.h \
+        widgets/exportwidget.h \
+        widgets/filewidget.h \
         widgets/inflowparameterwidget.h
 
 FORMS += \
         mainwindow.ui \
         utilWindows/dialogabout.ui \
+        widgets/exportwidget.ui \
+        widgets/filewidget.ui \
         widgets/inflowparameterwidget.ui
 
 # Default rules for deployment.
