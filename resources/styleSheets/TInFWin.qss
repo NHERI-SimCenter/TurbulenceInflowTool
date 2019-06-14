@@ -1,0 +1,324 @@
+QFrame {
+    font: 11pt;
+    padding: 5px;
+}
+
+QSpinBox {
+    font: 11pt;
+    padding: 5px;
+}
+
+QDoubleSpinBox {
+    font: 11pt;
+    padding: 5px;
+}
+
+QComboBox {
+    font: 11pt;
+    padding: 5px;
+}
+
+QLabel {
+    font: 11pt;
+    padding: 5px;
+}
+
+QCheckBox {
+    font: 11pt;
+    padding: 5px;
+}
+
+QPushButton {
+    color: white;
+    border-style: outset;
+    background-color: #64B5F6;
+    border-style: outset;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: #607D8B;
+    font: bold 10 pt;
+    padding: 3px;
+}
+
+QPushButton:pressed {
+    background-color: #B0BEC5;
+    border-style: inset;
+    border-color: black;
+}
+
+QComboBox {
+    border: 1px solid gray;
+    border-radius: 3px;
+    background-color: #E0E0E0;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox:editable {
+    background: #E0E0E0;
+}
+
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::down-arrow {
+    image: url(/Users/TylerDurden/Projects/sim/mdof_july/MDOF/down.png);
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    top: 1px;
+    left: 1px;
+}
+
+QComboBox QAbstractItemView {
+    border: 2px solid darkgray;
+    selection-background-color: blue;
+}
+
+
+QLineEdit {
+    background-color: #E0E0E0;
+    border-radius: 5px;
+}
+
+QSpinBox {
+    background-color: #E0E0E0;
+    border-radius: 5px;
+}
+
+QDoubleSpinBox {
+    background-color: #E0E0E0;
+    border-radius: 5px;
+}
+
+/*
+* ======= <HEADER AND FOOTER> =======
+*/
+QGroupBox {
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+
+QGroupBox#headerWidget {
+    background-color: #B0BEC5;
+    height: 30px;
+    border-radius: 5px;
+}
+
+
+QGroupBox#footerWidget {
+    background-color: #B0BEC5;
+    height: 30px;
+    border-radius: 5px;
+}
+
+
+
+QLabel#titleText {
+    font: bold 10pt;
+    font-weight: bold;
+}
+
+
+
+footerLayout {
+    background-color: #B0BEC5;
+    height: 30px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+QLabel#nsfText {
+    color: #E0E0E0;
+    font: bold 10pt;
+}
+
+
+/*
+* ======= <HEADER AND FOOTER> =======
+*/
+
+/*
+* ======= <SECTION LABEL STYLES> =======
+*/
+
+QLabel#sectionTitle {
+    font-size: 8pt;
+    font-weight: bold;
+}
+
+QLabel#propertiesTitle {
+    font: bold 10pt;
+    font-weight: bold;
+}
+
+QLabel#vizTitle {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+QLabel#outTitle {
+    font: bold 10pt;
+    font-weight: bold;
+}
+
+QLabel#inTitle {
+    font: bold 10pt;
+    font-weight: bold;
+}
+
+QLabel#labelChangingLayer {
+    font-size: 8pt;
+    font-weight: bold;
+}
+
+QLabel#labelLayerProperties {
+    font-size: 8pt;
+    font-weight: bold;
+}
+
+/*
+* ======= <SECTION LABEL STYLES> =======
+*/
+
+QFrame#line {
+    background-color: #B0BEC5;
+    border:none;
+}
+
+QFrame#line2 {
+    background-color: #B0BEC5;
+    border:none;
+}
+
+QFrame#inputMotion {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+
+QFrame#firstOutput {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#outputDataFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#mainProperties {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#floorMassFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#storyPropertiesFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#outputDataFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#pushButtons {
+    border:none;
+}
+
+QFrame#layerSelection {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#propertiesFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#pileProperties {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#soilProperties {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#forceFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#loadProperties {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#pushOverFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#soilMotionFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QFrame#loadSelectionFrame {
+    background-color: #FFFFFF;
+    border:none;
+}
+
+QLabel#pilePropertyLabel {
+    font-weight: bold;
+}
+
+QLabel#label_GWT {
+    font-weight: bold;
+}
+
+QLabel#label_Layers {
+    font-weight: bold;
+}
+
+QLabel#label_LoadControl {
+    font-weight: bold;
+}
+
+QLabel#label_DisplayGraphics {
+    font-weight: bold;
+}
+
+QLabel#label_FEAparameters {
+    font-weight: bold;
+}
+
+QTextBrowser#licenseBrowser {
+    font: 9pt;
+}
+
+QPlainTextEdit#licenseBrowser {
+    font: 9pt;
+}

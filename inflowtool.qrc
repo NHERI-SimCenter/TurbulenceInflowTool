@@ -9,5 +9,10 @@
         <file>styles/menuBar.qss</file>
         <file>resources/sourceFileInfo.html</file>
         <file>resources/exportInfo.html</file>
+        <file>resources/NHERI-TInF-icon.icns</file>
+        <file>resources/styleSheets/TInFLinux.qss</file>
+        <file>resources/styleSheets/TInFMac.qss</file>
+        <file>resources/styleSheets/TInFStyles.qss</file>
+        <file>resources/styleSheets/TInFWin.qss</file>
     </qresource>
 </RCC>
