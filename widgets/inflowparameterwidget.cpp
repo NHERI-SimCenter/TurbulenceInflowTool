@@ -11,6 +11,7 @@ InflowParameterWidget::InflowParameterWidget(QWidget *parent) :
     ui(new Ui::InflowParameterWidget)
 {
     ui->setupUi(this);
+    ui->sourceGroup->hide();
     setDefaultParameters();
 }
 

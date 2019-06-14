@@ -7,5 +7,7 @@
         <file>icons/NHERI-TInF-icon.icns</file>
         <file>icons/NHERI-TInF-icon.png</file>
         <file>styles/menuBar.qss</file>
+        <file>resources/sourceFileInfo.html</file>
+        <file>resources/exportInfo.html</file>
     </qresource>
 </RCC>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>exportWidget</class>
- <widget class="QFrame" name="exportWidget">
+ <class>ExportWidget</class>
+ <widget class="QFrame" name="ExportWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,10 +14,26 @@
    <string>Frame</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="2" column="0">
+    <widget class="QPushButton" name="btn_export">
      <property name="text">
-      <string>EXPORT</string>
+      <string>Export</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTextBrowser" name="exportDisplay">
+     <property name="source">
+      <url>
+       <string>qrc:/resources/exportInfo.html</string>
+      </url>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="duplicateTreeCheck">
+     <property name="text">
+      <string>duplicate entire file tree on export</string>
      </property>
     </widget>
    </item>

@@ -6,6 +6,7 @@ FileWidget::FileWidget(QWidget *parent) :
     ui(new Ui::FileWidget)
 {
     ui->setupUi(this);
+    ui->sourceSelectionBrowser->setStyleSheet("background: #eeeeee;");
 }
 
 FileWidget::~FileWidget()
