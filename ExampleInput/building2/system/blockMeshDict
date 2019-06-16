@@ -1,0 +1,235 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1;
+
+X1 3;
+X2 4;
+X3 13;
+
+Y1 5;
+Y2 6;
+Y3 11;
+
+Z1  1;
+Z2  4;
+
+nMeshX1 30;
+nMeshX2 10;
+nMeshX3 90;
+
+nMeshY1 50;
+nMeshY2 10;
+nMeshY3 50;
+
+gradingX1 1;
+gradingX2 1;
+gradingX3 1;
+
+
+nMeshZ1 10;
+nMeshZ2 30;
+
+vertices
+(
+    (0 0 0)
+    ($X1 0 0)
+    ($X2 0 0)
+    ($X3 0 0)
+
+    (0 $Y1 0)
+    ($X1 $Y1 0)
+    ($X2 $Y1 0)
+    ($X3 $Y1 0)
+
+    (0 $Y2 0)
+    ($X1 $Y2 0)
+    ($X2 $Y2 0)
+    ($X3 $Y2 0)
+
+    (0 $Y3 0)
+    ($X1 $Y3 0)
+    ($X2 $Y3 0)
+    ($X3 $Y3 0)
+
+    (0 0 $Z1)
+    ($X1 0 $Z1)
+    ($X2 0 $Z1)
+    ($X3 0 $Z1)
+
+    (0 $Y1 $Z1)
+    ($X1 $Y1 $Z1)
+    ($X2 $Y1 $Z1)
+    ($X3 $Y1 $Z1)
+
+    (0 $Y2 $Z1)
+    ($X1 $Y2 $Z1)
+    ($X2 $Y2 $Z1)
+    ($X3 $Y2 $Z1)
+
+    (0 $Y3 $Z1)
+    ($X1 $Y3 $Z1)
+    ($X2 $Y3 $Z1)
+    ($X3 $Y3 $Z1)
+
+    (0 0 $Z2)
+    ($X1 0 $Z2)
+    ($X2 0 $Z2)
+    ($X3 0 $Z2)
+
+    (0 $Y1 $Z2)
+    ($X1 $Y1 $Z2)
+    ($X2 $Y1 $Z2)
+    ($X3 $Y1 $Z2)
+
+    (0 $Y2 $Z2)
+    ($X1 $Y2 $Z2)
+    ($X2 $Y2 $Z2)
+    ($X3 $Y2 $Z2)
+
+    (0 $Y3 $Z2)
+    ($X1 $Y3 $Z2)
+    ($X2 $Y3 $Z2)
+    ($X3 $Y3 $Z2)
+);
+
+blocks
+(
+    hex (0 1 5 4 16 17 21 20) ($nMeshX1 $nMeshY1 $nMeshZ1) simpleGrading ($gradingX1 1 1)
+    hex (1 2 6 5 17 18 22 21) ($nMeshX2 $nMeshY1 $nMeshZ1) simpleGrading ($gradingX2 1 1)
+    hex (2 3 7 6 18 19 23 22) ($nMeshX3 $nMeshY1 $nMeshZ1) simpleGrading ($gradingX3 1 1)
+
+    hex (4 5 9 8 20 21 25 24) ($nMeshX1 $nMeshY2 $nMeshZ1) simpleGrading ($gradingX1 1 1)
+    hex (6 7 11 10 22 23 27 26) ($nMeshX3 $nMeshY2 $nMeshZ1) simpleGrading ($gradingX3 1 1)
+
+    hex (8 9 13 12 24 25 29 28) ($nMeshX1 $nMeshY3 $nMeshZ1) simpleGrading ($gradingX1 1 1)
+    hex (9 10 14 13 25 26 30 29) ($nMeshX2 $nMeshY3 $nMeshZ1) simpleGrading ($gradingX2 1 1)
+    hex (10 11 15 14 26 27 31 30) ($nMeshX3 $nMeshY3 $nMeshZ1) simpleGrading ($gradingX3 1 1)
+
+    hex (16 17 21 20 32 33 37 36) ($nMeshX1 $nMeshY1 $nMeshZ2) simpleGrading ($gradingX1 1 1)
+    hex (17 18 22 21 33 34 38 37) ($nMeshX2 $nMeshY1 $nMeshZ2) simpleGrading ($gradingX2 1 1)
+    hex (18 19 23 22 34 35 39 38) ($nMeshX3 $nMeshY1 $nMeshZ2) simpleGrading ($gradingX3 1 1)
+
+    hex (20 21 25 24 36 37 41 40) ($nMeshX1 $nMeshY2 $nMeshZ2) simpleGrading ($gradingX1 1 1)
+    hex (21 22 26 25 37 38 42 41) ($nMeshX2 $nMeshY2 $nMeshZ2) simpleGrading ($gradingX1 1 1)
+    hex (22 23 27 26 38 39 43 42) ($nMeshX3 $nMeshY2 $nMeshZ2) simpleGrading ($gradingX3 1 1)
+
+    hex (24 25 29 28 40 41 45 44) ($nMeshX1 $nMeshY3 $nMeshZ2) simpleGrading ($gradingX1 1 1)
+    hex (25 26 30 29 41 42 46 45) ($nMeshX2 $nMeshY3 $nMeshZ2) simpleGrading ($gradingX2 1 1)
+    hex (26 27 31 30 42 43 47 46) ($nMeshX3 $nMeshY3 $nMeshZ2) simpleGrading ($gradingX3 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 20 16)
+            (4 8 24 20)
+            (8 12 28 24)
+            (16 20 36 32)
+            (20 24 40 36)
+            (24 28 44 40)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (3 7 23 19)
+            (7 11 27 23)
+            (11 15 31 27)
+            (19 23 39 35)
+            (23 27 43 39)
+            (27 31 47 43)
+        );
+    }
+    cylinder
+    {
+        type wall;
+        faces
+        (
+            (5 9 25 21)
+            (6 10 26 22)
+            (5 6 22 21)
+            (9 10 26 25)
+            (21 22 26 25)
+        );
+    }
+    bottom
+    {
+        type wall;
+        faces
+        (
+            (0 1 5 4)
+            (1 2 6 5)
+            (2 3 7 6)
+            (4 5 9 8)
+            (6 7 11 10)
+            (8 9 13 12)
+            (9 10 14 13)
+            (10 11 15 14)
+        );
+    }
+    top
+    {
+        type wall;
+        faces
+        (
+            (32 33 37 36)
+            (33 34 38 37)
+            (34 35 39 38)
+            (36 37 41 40)
+            (37 38 42 41)
+            (38 39 43 42)
+            (40 41 45 44)
+            (41 42 46 45)
+            (42 43 47 46)
+        );
+    }
+    side
+    {
+        type wall;
+        faces
+        (
+            (0 1 17 16)
+            (1 2 18 17)
+            (2 3 19 18)
+            (12 13 29 28)
+            (13 14 30 29)
+            (14 15 31 30)
+            (16 17 33 32)
+            (17 18 34 33)
+            (18 19 35 34)
+            (28 29 45 44)
+            (29 30 46 45)
+            (30 31 47 46)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //

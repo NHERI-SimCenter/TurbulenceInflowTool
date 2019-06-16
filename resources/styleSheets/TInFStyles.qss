@@ -79,10 +79,18 @@ QDoubleSpinBox {
 * ======= <HEADER AND FOOTER> =======
 */
 QGroupBox {
+    padding-top: 3ex;
     background-color: #ffffff;
     border-radius: 5px;
 }
 
+QGroupBox:title {
+    font: bold 15 px;
+}
+
+/*
+ * cannot figure out how to set title font to bold face
+ */
 
 QGroupBox#headerWidget {
     background-color: #B0BEC5;
@@ -90,6 +98,9 @@ QGroupBox#headerWidget {
     border-radius: 5px;
 }
 
+/*
+ * ======= <HEADER AND FOOTER> =======
+ */
 
 QGroupBox#footerWidget {
     background-color: #B0BEC5;
@@ -97,14 +108,10 @@ QGroupBox#footerWidget {
     border-radius: 5px;
 }
 
-
-
 QLabel#titleText {
     font: bold 15 px;
     font-weight: bold;
 }
-
-
 
 footerLayout {
     background-color: #B0BEC5;
@@ -118,14 +125,9 @@ QLabel#nsfText {
     font: bold 15 px;
 }
 
-
 /*
-* ======= <HEADER AND FOOTER> =======
-*/
-
-/*
-* ======= <SECTION LABEL STYLES> =======
-*/
+ * ======= <SECTION LABEL STYLES> =======
+ */
 
 QLabel#sectionTitle {
     font-size: 12px;
@@ -173,8 +175,8 @@ QLabel#label_quickTips {
 }
 
 /*
-* ======= <SECTION LABEL STYLES> =======
-*/
+ * ======= <SECTION LABEL STYLES> =======
+ */
 
 QFrame#line {
     background-color: #B0BEC5;
@@ -184,94 +186,5 @@ QFrame#line {
 QFrame#line2 {
     background-color: #B0BEC5;
     border:none;
-}
-
-QFrame#inputMotion {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-
-QFrame#firstOutput {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#outputDataFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#mainProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#floorMassFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#storyPropertiesFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#outputDataFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#pushButtons {
-    border:none;
-}
-
-QFrame#layerSelection {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#propertiesFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#pileProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#soilProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#forceFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#loadProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#pushOverFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#soilMotionFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#loadSelectionFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QTextBrowser {
-    background-color: #eeeeee;
 }
 

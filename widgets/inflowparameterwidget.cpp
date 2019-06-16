@@ -133,66 +133,32 @@ void InflowParameterWidget::on_comboBox_currentIndexChanged(int index)
 
 void InflowParameterWidget::setLinearLaminar(void)
 {
-
+    ui->phiTensorGroup->show();
+    ui->alphaParameterGroup->hide();
+    ui->lengthScaleGroup->hide();
+    ui->referencePointGroup->hide();
 }
 
 void InflowParameterWidget::setExponentialLaminar(void)
 {
-
+    ui->phiTensorGroup->show();
+    ui->alphaParameterGroup->show();
+    ui->lengthScaleGroup->hide();
+    ui->referencePointGroup->show();
 }
 
 void InflowParameterWidget::setLinearTurbulent(void)
 {
-    // deactivate alpha parameters
-
-    ui->alpha1->setEnabled(false);
-    ui->alpha2->setEnabled(false);
-    ui->alpha3->setEnabled(false);
-
-    // deactivate reference point
-
-    //ui->zVectorGroup->setEnabled(false);
-
-    //ui->z01->setEnabled(false);
-    //ui->z02->setEnabled(false);
-    //ui->z03->setEnabled(false);
-
-    // deactivate reference direction (n-vector)
-
-    ui->referencePointGroup->setEnabled(false);
-
-    //ui->zVector1->setEnabled(false);
-    //ui->zVector2->setEnabled(false);
-    //ui->zVector3->setEnabled(false);
-
-    //ui->alphaParameterGroup->hide();
+    ui->phiTensorGroup->show();
+    ui->alphaParameterGroup->hide();
+    ui->lengthScaleGroup->hide();
+    ui->referencePointGroup->hide();
 }
 
 void InflowParameterWidget::setExponentialTurbulent(void)
 {
-    // exponential
-
-    // activate alpha parameters
-
-    ui->alpha1->setEnabled(true);
-    ui->alpha2->setEnabled(true);
-    ui->alpha3->setEnabled(true);
-
-    // activate reference point
-
-    //ui->zVectorGroup->setEnabled(true);
-
-    //ui->z01->setEnabled(true);
-    //ui->z02->setEnabled(true);
-    //ui->z03->setEnabled(true);
-
-    // activate reference direction (n-vector)
-
-    ui->referencePointGroup->setEnabled(true);
-
-    //ui->zVector1->setEnabled(true);
-    //ui->zVector2->setEnabled(true);
-    //ui->zVector3->setEnabled(true);
-
-    //ui->alphaParameterGroup->show();
+    ui->phiTensorGroup->show();
+    ui->alphaParameterGroup->show();
+    ui->lengthScaleGroup->show();
+    ui->referencePointGroup->show();
 }
