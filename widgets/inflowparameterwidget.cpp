@@ -37,6 +37,8 @@ void InflowParameterWidget::selectSourceLocation(void)
 
 void InflowParameterWidget::setDefaultParameters()
 {
+    this->on_comboBox_currentIndexChanged(0);
+
     /*
     ui->selectUniform->setChecked(true);
 
@@ -161,4 +163,14 @@ void InflowParameterWidget::setExponentialTurbulent(void)
     ui->alphaParameterGroup->show();
     ui->lengthScaleGroup->show();
     ui->referencePointGroup->show();
+}
+
+void InflowParameterWidget::sendParameterMap(void)
+{
+    // collect data
+    QMap<QString, double> data;
+    data.clear();
+
+    // send the parameter map
+    emit parametersReady(data);
 }

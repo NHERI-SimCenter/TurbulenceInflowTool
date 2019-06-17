@@ -43,4 +43,16 @@ void FileWidget::on_sourceLocateBtn_clicked()
     }
 
     delete dlg;
+
+    if (validSourcePresent) {
+        // parse files for available boundaries
+
+        // let main application know that source is available
+        emit hasValidSource(true, fileTreeLocation);
+    }
+    else {
+        // user not ready to proceed
+        QDir thisDir(".");
+        emit hasValidSource(false, thisDir);
+    }
 }
