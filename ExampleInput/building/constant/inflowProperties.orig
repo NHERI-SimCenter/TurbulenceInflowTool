@@ -18,12 +18,12 @@ FoamFile
         // mean velocity
         U_Profile
         {
-                        referenceValue    (0  0  0);
+                        referenceValue    (000);
                         profile           linear;
-                        direction         (1  0  0);
-                        origin            (0  0  0);
-                        referencePoint    (0  0  0);
-                        alpha             (0.1  0.1  0.1);
+                        direction         (100);
+                        origin            (000);
+                        referencePoint    (000);
+                        alpha             (0.10.10.1);
         }
 
 
@@ -31,44 +31,44 @@ FoamFile
         I_Profile
         {
                         profile           linear;
-                        referenceValue    (0.1  0  0  0.1  0  0.1);
-                        direction         (1  0  0);
-                        origin            (0  0  0);
-                        referencePoint    (0  0  0);
-                        alpha             (0.1  0.1  0.1);
+                        referenceValue    (0.1000.100.1);
+                        direction         (100);
+                        origin            (000);
+                        referencePoint    (000);
+                        alpha             (0.10.10.1);
         }
 
         // turbulence length scale profile for u component
         Lu_Profile
         {
                         profile           linear;
-                        referenceValue    (0  0  0);
-                        direction         (1  0  0);
-                        origin            (0  0  0);
-                        referencePoint    (0  0  0);
-                        alpha             (0.1  0.1  0.1);
+                        referenceValue    (000);
+                        direction         (100);
+                        origin            (000);
+                        referencePoint    (000);
+                        alpha             (0.10.10.1);
         }
 
         // turbulence length scale profile for v component
         Lv_Profile
         {
                         profile           linear;
-                        referenceValue    (0  0  0);
-                        direction         (1  0  0);
-                        origin            (0  0  0);
-                        referencePoint    (0  0  0);
-                        alpha             (0.1  0.1  0.1);
+                        referenceValue    (000);
+                        direction         (100);
+                        origin            (000);
+                        referencePoint    (000);
+                        alpha             (0.10.10.1);
         }
 
         // turbulence length scale profile for w component
         Lw_Profile
         {
                         profile           linear;
-                        referenceValue    (0  0  0);
-                        direction         (1  0  0);
-                        origin            (0  0  0);
-                        referencePoint    (0  0  0);
-                        alpha             (0.1  0.1  0.1);
+                        referenceValue    (000);
+                        direction         (100);
+                        origin            (000);
+                        referencePoint    (000);
+                        alpha             (0.10.10.1);
         }
 
 
