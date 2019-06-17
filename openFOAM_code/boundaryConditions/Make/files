@@ -1,0 +1,12 @@
+eddy/eddy.C
+eddy/eddyIO.C
+
+turbulentSEMInlet/turbulentSEMInletFvPatchVectorField.C
+turbulentDFInlet/turbulentDFInletFvPatchVectorField.C
+
+digitalFilter/digitalFilterFvPatchVectorField.C
+syntheticEddy/syntheticEddyFvPatchVectorField.C
+
+turbulentKineticEnergyInlet/turbulentKineticEnergyInletFvPatchScalarField.C
+
+LIB = $(FOAM_USER_LIBBIN)/libturbulentInflow

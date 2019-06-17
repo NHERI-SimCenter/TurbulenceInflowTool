@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (10 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type            digitalFilter;
+
+        value           $internalField;
+
+        // filter function shape
+        // valid options are exponential and gaussian
+        // default to exponential
+        filterShape     exponential;
+
+        // virtual grid spacing to mesh size ratio
+        // should be no smaller than 1
+        // default to one
+        gridFactor      1;
+
+        // filter width to length scale ratio 
+        // should be a positive even bumber no smaller than 8
+        // default to 8
+        filterFactor    8;
+    }
+
+    outlet
+    {
+        type            zeroGradient;
+    }
+
+    cylinder
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
+
+    top
+    {
+        type            slip;
+    }
+
+    bottom
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
+
+    side
+    {
+        type            slip;
+    }
+}
+
+// ************************************************************************* //

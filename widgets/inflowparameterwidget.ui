@@ -71,6 +71,12 @@
        </property>
        <item>
         <widget class="QGroupBox" name="sourceGroup">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Source location</string>
          </property>
@@ -113,13 +119,22 @@
        <item>
         <widget class="QGroupBox" name="typeSelectionGroup">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="title">
           <string>Profile type</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="leftMargin">
@@ -185,7 +200,7 @@
          <property name="title">
           <string>Coefficient tensor PHI</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
+         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0" rowminimumheight="0,0,0,0,0,0,0">
           <property name="topMargin">
            <number>6</number>
           </property>
@@ -367,7 +382,7 @@
           <item row="0" column="1">
            <widget class="QLabel" name="label_flowdir">
             <property name="text">
-             <string>flow dir</string>
+             <string>flow dir (u)</string>
             </property>
            </widget>
           </item>
@@ -380,7 +395,7 @@
           <item row="0" column="2">
            <widget class="QLabel" name="label_perpendicular">
             <property name="text">
-             <string>perpendicular</string>
+             <string>perpendicular (v)</string>
             </property>
            </widget>
           </item>
@@ -405,7 +420,7 @@
           <item row="0" column="3">
            <widget class="QLabel" name="label_up_dir">
             <property name="text">
-             <string>vertical</string>
+             <string>vertical (w)</string>
             </property>
            </widget>
           </item>

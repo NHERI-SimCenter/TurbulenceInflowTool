@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      inflowProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+        // mean velocity
+        U_Profile
+        {
+                        referenceValue    (10 0 0);
+                        profile           parabolic;
+                        direction         (0 1 0);
+                        origin            (0 0 0);                 
+                        referencePoint    (0 1 0);
+                        constant          (0 0 0);
+        }
+
+        // turbulence length scale profile for u component
+        Lu_Profile
+        {
+                        profile           parabolic;
+                        referenceValue    (0.1 0.1 0.1);
+                        referencePoint    (0 1 0);
+                        direction         (0 1 0);
+                        origin            (0 0 0);                 
+                        constant          (0 0 0);
+        }
+
+        // turbulence length scale profile for v component
+        Lv_Profile
+        {
+                        referenceValue    (0.1 0.1 0.1);
+                        profile           parabolic;
+                        direction         (0 1 0);
+                        origin            (0 0 0);                 
+                        referencePoint    (0 1 0);
+                        constant          (0 0 0);
+        }
+
+        // turbulence length scale profile for w component
+        Lw_Profile
+        {
+                        referenceValue    (0.1 0.1 0.1);
+                        profile           parabolic;
+                        direction         (0 1 0);
+                        origin            (0 0 0);                 
+                        referencePoint    (0 1 0);
+                        constant          (0 0 0);
+        }
+
+        // turbulent intensity (symmTensorField)
+        I_Profile
+        {
+                        referenceValue    (0.1 0 0 0.1 0 0.1);
+                        profile           parabolic;
+                        direction         (0 1 0);
+                        origin            (0 0 0);                 
+                        referencePoint    (0 1 0);
+                        constant          (0 0 0 0 0 0);
+        }
+
+
+// ************************************************************************* //

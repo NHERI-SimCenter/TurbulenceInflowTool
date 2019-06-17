@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rootNode->appendRow(parameterItem);
     rootNode->appendRow(exportItem);
 
-    infoItemIdx = rootNode->index();
+    infoItemIdx = sourceItem->index();
 
     //register the model
     ui->treeView->setModel(standardModel);
