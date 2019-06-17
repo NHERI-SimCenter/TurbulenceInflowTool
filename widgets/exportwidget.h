@@ -18,11 +18,14 @@ public:
     ~ExportWidget();
 
 signals:
-    void sendParametersMap(void);
+    void sendParameterMap(void);
 
 public slots:
     void setLocationAvailable(bool, QDir &);
     void setParameterMap(QMap<QString, double> &);
+
+private slots:
+    void on_btn_export_clicked();
 
 private:
     Ui::ExportWidget *ui;

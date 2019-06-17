@@ -2,8 +2,10 @@
 #include "ui_exportwidget.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QTextStream>
 #include <QMap>
+#include <QDir>
 
 #include <QDebug>
 
@@ -26,14 +28,14 @@ void ExportWidget::setLocationAvailable(bool status, QDir &loc)
     qDebug() << "exportWidget: signal received";
 
     if (status) {
-        hasLocation = false;
-        oldLocation = QDir(".");
-        newLocation = QDir(".");
-    }
-    else {
         hasLocation = true;
         oldLocation = loc;
-        newLocation = QDir(".");
+        newLocation = loc;
+    }
+    else {
+        hasLocation = false;
+        oldLocation = QDir::homePath();
+        newLocation = QDir::homePath();
     }
 }
 
@@ -49,7 +51,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
     hasParameters = false;
 
     // requests parameters to be sent
-    emit sendParametersMap();
+    emit sendParameterMap();
 
     // wait for parameters to arrive
     int i = 0;
@@ -292,4 +294,66 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
     }
 
     theFile.close();
+}
+
+void ExportWidget::on_btn_export_clicked()
+{
+    // time to export :)
+
+    /*
+     * the duplicate tree is not yet available
+     * -- the code is made safe by diasabling the checkbox in this widget
+     */
+
+    // check backup style
+    if (ui->duplicateTreeCheck->checkState()) {
+
+        //
+        // we need to duplicate the entire tree, then overwrite the inflow definition file
+        //
+
+        // duplicate tree:
+        QString dirName = oldLocation.dirName() + ".orig";
+
+        if (QDir(dirName).exists())
+        {
+            // that folder already exists! delete it!
+            oldLocation.rename(dirName, dirName + ".bak");
+        }
+        newLocation = oldLocation;
+        oldLocation.setPath(dirName);
+
+
+        // write the new file
+        //QDir theFile = ...;
+        //this->exportInflowParameterFile(theFile);
+    }
+    else {
+
+        //
+        // we place new file into the existing file structure
+        // but we do save one version of the existing file as
+        // filename.orig before writing the new one
+        //
+
+        // save any existing file to .orig
+        newLocation = oldLocation;
+        newLocation.cd("constant");
+
+        QString newFile = newLocation.absoluteFilePath("inflowProperties");
+        QString origFile = newFile + ".orig";
+
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
+
+        qDebug() << "move" << newFile << origFile;
+
+        // write the new file
+        this->exportInflowParameterFile(newFile);
+    }
+
+
 }
