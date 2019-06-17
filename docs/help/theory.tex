@@ -1,0 +1,68 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+%SetFonts
+
+%SetFonts
+
+%\newcommand{\vectr}[1]{\mathbf{#1}}
+\newcommand{\vectr}[1]{\hbox{\boldmath$#1$}}
+\newcommand{\tensor}[1]{\hbox{\boldmath$#1$}}
+
+
+\title{Turbulent Inflow Tool}
+\author{Jay and Peter}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+\section{Abstract}
+
+This tool helps you to create all necessary input to utilize the turbulent inflow boundary condition in OpenFOAM.
+
+\section{Theory}
+
+Wait for Jay's write-up.
+
+\subsection{Uniform model}
+
+\begin{equation}
+   u = \bar\phi
+   \label{Eq1}
+\end{equation}
+
+\begin{equation}
+   \vectr{u} = u\,\vectr{N}
+   \label{Eq2}
+\end{equation}
+
+\subsection{Exponential model}
+
+\begin{equation}
+   \phi = \bar\phi \left( \frac{\vectr{n} \cdot \vectr{x} }{d_0} \right)^\alpha
+   \label{Eq11}
+\end{equation}
+
+\begin{equation}
+   \ell_{u,y} = R_{uy:ux} \, \ell_{u,x}   \qquad   \ell_{u,z} = R_{uz:ux} \, \ell_{u,x}
+   \label{Eq12}
+\end{equation}
+\begin{equation}
+   \ell_{v,y} = R_{vy:vx} \, \ell_{v,x}   \qquad   \ell_{v,z} = R_{vz:vx} \, \ell_{v,x}
+   \label{Eq13}
+\end{equation}
+\begin{equation}
+   \ell_{w,y} = R_{wy:wx} \, \ell_{w,x}   \qquad   \ell_{w,z} = R_{wz:wx} \, \ell_{w,x}
+   \label{Eq14}
+\end{equation}
+
+
+
+\end{document}  
