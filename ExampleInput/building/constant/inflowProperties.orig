@@ -15,61 +15,47 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-        // mean velocity
-        U_Profile
-        {
-                        referenceValue    (000);
-                        profile           linear;
-                        direction         (100);
-                        origin            (000);
-                        referencePoint    (000);
-                        alpha             (0.10.10.1);
-        }
+// mean velocity
+UDict
+{
+    referenceValue          0;
+    profile                 uniform;
+}
 
+// turbulent intensity (symmTensorField)
+IDict
+{
+    referenceValue         (0.1  0  0  0.1  0  0.1);
+    profile                 uniform;
+}
 
-        // turbulent intensity (symmTensorField)
-        I_Profile
-        {
-                        profile           linear;
-                        referenceValue    (0.1000.100.1);
-                        direction         (100);
-                        origin            (000);
-                        referencePoint    (000);
-                        alpha             (0.10.10.1);
-        }
+// turbulence length scale profile for u component
+LuxDict
+{
+    referenceValue          0;
+    profile                 uniform;
+}
 
-        // turbulence length scale profile for u component
-        Lu_Profile
-        {
-                        profile           linear;
-                        referenceValue    (000);
-                        direction         (100);
-                        origin            (000);
-                        referencePoint    (000);
-                        alpha             (0.10.10.1);
-        }
+// turbulence length scale profile for v component
+LvxDict
+{
+    referenceValue          0;
+    profile                 uniform;
+}
 
-        // turbulence length scale profile for v component
-        Lv_Profile
-        {
-                        profile           linear;
-                        referenceValue    (000);
-                        direction         (100);
-                        origin            (000);
-                        referencePoint    (000);
-                        alpha             (0.10.10.1);
-        }
+// turbulence length scale profile for w component
+LwxDict
+{
+    referenceValue          0;
+    profile                 uniform;
+}
 
-        // turbulence length scale profile for w component
-        Lw_Profile
-        {
-                        profile           linear;
-                        referenceValue    (000);
-                        direction         (100);
-                        origin            (000);
-                        referencePoint    (000);
-                        alpha             (0.10.10.1);
-        }
+LuyToLuxRatio              0;
+LuzToLuxRatio              0;
+LvyToLvxRatio              0;
+LvzToLvxRatio              0;
+LwyToLwxRatio              0;
+LwzToLwxRatio              0;
 
 
 // ************************************************************************* //
