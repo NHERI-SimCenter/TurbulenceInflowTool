@@ -3,6 +3,7 @@
 
 #include <QFrame>
 #include <QDir>
+#include <QMap>
 
 namespace Ui {
 class ExportWidget;
@@ -21,6 +22,7 @@ signals:
 
 public slots:
     void setLocationAvailable(bool, QDir &);
+    void setParameterMap(QMap<QString, double> &);
 
 private:
     Ui::ExportWidget *ui;
@@ -28,9 +30,10 @@ private:
     void exportInflowParameterFile(QString);
 
     bool hasLocation = false;
+    bool hasParameters = false;
     QDir oldLocation = QDir(".");
     QDir newLocation = QDir(".");
-    QMap<QString, double> *theParameters;
+    QMap<QString, double> theParameters;
 };
 
 #endif // EXPORTWIDGET_H

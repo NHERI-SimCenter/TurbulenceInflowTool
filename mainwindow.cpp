@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->header->setHeadingText("Turbulent Inflow Adjustment Tool for OpenFOAM");
+    ui->headerWidget->setHeadingText("Turbulent Inflow Adjustment Tool for OpenFOAM");
 
     standardModel = new CustomizedItemModel(); //QStandardItemModel ;
     QStandardItem *rootNode = standardModel->invisibleRootItem();
@@ -73,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->exportWidget, SLOT(setLocationAvailable(bool, QDir &)));
     connect(ui->exportWidget, SIGNAL(sendParameterMap()),
             ui->inflowWidget, SLOT(sendParameterMap()));
+    connect(ui->inflowWidget, SIGNAL(parametersReady(QMap<QString, double> &)),
+            ui->exportWidget, SLOT(setParameterMap(QMap<QString, double> &)));
     //
     // set active index
     //
