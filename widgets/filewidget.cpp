@@ -1,6 +1,12 @@
 #include "filewidget.h"
 #include "ui_filewidget.h"
 
+#include <QString>
+#include <QDir>
+#include <QFileDialog>
+
+#include <QDebug>
+
 FileWidget::FileWidget(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::FileWidget)
@@ -11,4 +17,30 @@ FileWidget::FileWidget(QWidget *parent) :
 FileWidget::~FileWidget()
 {
     delete ui;
+}
+
+void FileWidget::on_sourceLocateBtn_clicked()
+{
+    // select the openFOAM input source tree
+    QFileDialog *dlg = new QFileDialog();
+    dlg->setReadOnly(true);
+    dlg->setFileMode(QFileDialog::DirectoryOnly);
+    dlg->exec();
+    QDir fileTreeLocation = dlg->directory();
+
+    ui->sourceLocationDisplay->setText(fileTreeLocation.path());
+
+    QStringList folders = fileTreeLocation.entryList(QStringList(),QDir::Dirs);
+    int stack = folders.length();
+
+    if (folders.contains("0") && folders.contains("constant") && folders.contains("system") ) {
+        ui->sourceLocationDisplay->setStyleSheet("color: #000000;");
+        validSourcePresent = true;
+    }
+    else {
+        ui->sourceLocationDisplay->setStyleSheet("color: #ff0000;");
+        validSourcePresent = false;
+    }
+
+    delete dlg;
 }

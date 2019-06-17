@@ -15,8 +15,13 @@ public:
     explicit FileWidget(QWidget *parent = nullptr);
     ~FileWidget();
 
+private slots:
+    void on_sourceLocateBtn_clicked();
+
 private:
     Ui::FileWidget *ui;
+
+    bool validSourcePresent = false;
 };
 
 #endif // FILEWIDGET_H
