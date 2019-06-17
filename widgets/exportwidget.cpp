@@ -63,11 +63,9 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
 
     switch (int(theParameters.value("profile")))
     {
-    case 0: { profile="linear"; break; }
+    case 0: { profile="uniform"; break; }
     case 1: { profile="exponential"; break; }
-    case 2: { profile="linear"; break; }
-    case 3: { profile="exponential"; break; }
-    default: { profile="linear"; break; }
+    default: { profile="uniform"; break; }
     }
 
     QFile theFile(fileName);
@@ -91,52 +89,29 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
         out << "}" << endl;
         out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << endl;
         out << "" << endl;
-        out << "        // mean velocity" << endl;
-        out << "        U_Profile" << endl;
-        out << "        {" << endl;
 
-        out << "                        referenceValue    ("
-            << theParameters.value("vel0") << "  "
-            << theParameters.value("vel1") << "  "
-            << theParameters.value("vel2")
-            << ");" << endl;
 
-        out << "                        profile           " << profile << ";" << endl;
+        out << "// mean velocity" << endl;
+        out << "UDict" << endl;
+        out << "{" << endl;
+        out << "    referenceValue          " << theParameters.value("vel0") << ";" << endl;
 
-        out << "                        direction         ("
-            << theParameters.value("dir0") << "  "
-            << theParameters.value("dir1") << "  "
-            << theParameters.value("dir2")
-            << ");" << endl;
+        out << "    profile                 " << profile << ";" << endl;
 
-        out << "                        origin            ("
-            << theParameters.value("x0") << "  "
-            << theParameters.value("x1") << "  "
-            << theParameters.value("x2")
-            << ");" << endl;
+        if ( int(theParameters.value("profile")) > 0 ) {
+            out << "    referenceAngl           " << theParameters.value("refAngleU") << ";" << endl;
+            out << "    referenceDist           " << theParameters.value("refDistU") << ";" << endl;
+            out << "    alpha                   " << theParameters.value("alphaU") << ";" << endl;
+        }
+        out << "}" << endl;
 
-        out << "                        referencePoint    ("
-            << theParameters.value("referencePoint0") << "  "
-            << theParameters.value("referencePoint1") << "  "
-            << theParameters.value("referencePoint2")
-            << ");" << endl;
-
-        out << "                        alpha             ("
-            << theParameters.value("alpha0") << "  "
-            << theParameters.value("alpha1") << "  "
-            << theParameters.value("alpha2")
-            << ");" << endl;
-
-        out << "        }" << endl;
         out << endl;
-        out << endl;
-        out << "        // turbulent intensity (symmTensorField)" << endl;
-        out << "        I_Profile" << endl;
-        out << "        {" << endl;
 
-        out << "                        profile           " << profile << ";" << endl;
 
-        out << "                        referenceValue    ("
+        out << "// turbulent intensity (symmTensorField)" << endl;
+        out << "IDict" << endl;
+        out << "{" << endl;
+        out << "    referenceValue         ("
             << theParameters.value("phi00") << "  "
             << theParameters.value("phi10") << "  "
             << theParameters.value("phi20") << "  "
@@ -145,145 +120,79 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
             << theParameters.value("phi22")
             << ");" << endl;
 
-        out << "                        direction         ("
-            << theParameters.value("dir0") << "  "
-            << theParameters.value("dir1") << "  "
-            << theParameters.value("dir2")
-            << ");" << endl;
+        out << "    profile                 " << profile << ";" << endl;
 
-        out << "                        origin            ("
-            << theParameters.value("x0") << "  "
-            << theParameters.value("x1") << "  "
-            << theParameters.value("x2")
-            << ");" << endl;
+        if ( int(theParameters.value("profile")) > 0 ) {
+            out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << endl;
+            out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << endl;
+            out << "    alpha                     ("
+                << theParameters.value("alpha0") << "  "
+                << theParameters.value("alpha1") << "  "
+                << theParameters.value("alpha2")
+                << ");" << endl;
+        }
 
-        out << "                        referencePoint    ("
-            << theParameters.value("referencePoint0") << "  "
-            << theParameters.value("referencePoint1") << "  "
-            << theParameters.value("referencePoint2")
-            << ");" << endl;
+        out << "}" << endl;
 
-        out << "                        alpha             ("
-            << theParameters.value("alpha0") << "  "
-            << theParameters.value("alpha1") << "  "
-            << theParameters.value("alpha2")
-            << ");" << endl;
-
-        out << "        }" << endl;
         out << endl;
-        out << "        // turbulence length scale profile for u component" << endl;
-        out << "        Lu_Profile" << endl;
-        out << "        {" << endl;
 
-        out << "                        profile           " << profile << ";" << endl;
 
-        out << "                        referenceValue    ("
-            << theParameters.value("Lu0") << "  "
-            << theParameters.value("Lu1") << "  "
-            << theParameters.value("Lu2")
-            << ");" << endl;
+        out << "// turbulence length scale profile for u component" << endl;
+        out << "LuxDict" << endl;
+        out << "{" << endl;
+        out << "    referenceValue          " << theParameters.value("Lux") << ";" << endl;
 
-        out << "                        direction         ("
-            << theParameters.value("dir0") << "  "
-            << theParameters.value("dir1") << "  "
-            << theParameters.value("dir2")
-            << ");" << endl;
+        out << "    profile                 " << profile << ";" << endl;
 
-        out << "                        origin            ("
-            << theParameters.value("x0") << "  "
-            << theParameters.value("x1") << "  "
-            << theParameters.value("x2")
-            << ");" << endl;
+        if ( int(theParameters.value("profile")) > 0 ) {
+            out << "    referenceAngl           " << theParameters.value("LuRefAngle") << ";" << endl;
+            out << "    referenceDist           " << theParameters.value("LuRefDist") << ";" << endl;
+            out << "    alpha                   " << theParameters.value("LuAlpha") << ";" << endl;
+        }
+        out << "}" << endl;
 
-        out << "                        referencePoint    ("
-            << theParameters.value("referencePoint0") << "  "
-            << theParameters.value("referencePoint1") << "  "
-            << theParameters.value("referencePoint2")
-            << ");" << endl;
-
-        out << "                        alpha             ("
-            << theParameters.value("alpha0") << "  "
-            << theParameters.value("alpha1") << "  "
-            << theParameters.value("alpha2")
-            << ");" << endl;
-
-        out << "        }" << endl;
         out << endl;
-        out << "        // turbulence length scale profile for v component" << endl;
-        out << "        Lv_Profile" << endl;
-        out << "        {" << endl;
 
-        out << "                        profile           " << profile << ";" << endl;
+        out << "// turbulence length scale profile for v component" << endl;
+        out << "LvxDict" << endl;
+        out << "{" << endl;
+        out << "    referenceValue          " << theParameters.value("Luv") << ";" << endl;
 
-        out << "                        referenceValue    ("
-            << theParameters.value("Lv0") << "  "
-            << theParameters.value("Lv1") << "  "
-            << theParameters.value("Lv2")
-            << ");" << endl;
+        out << "    profile                 " << profile << ";" << endl;
 
-        out << "                        direction         ("
-            << theParameters.value("dir0") << "  "
-            << theParameters.value("dir1") << "  "
-            << theParameters.value("dir2")
-            << ");" << endl;
+        if ( int(theParameters.value("profile")) > 0 ) {
+            out << "    referenceAngl           " << theParameters.value("LvRefAngle") << ";" << endl;
+            out << "    referenceDist           " << theParameters.value("LvRefDist") << ";" << endl;
+            out << "    alpha                   " << theParameters.value("LvAlpha") << ";" << endl;
+        }
+        out << "}" << endl;
 
-        out << "                        origin            ("
-            << theParameters.value("x0") << "  "
-            << theParameters.value("x1") << "  "
-            << theParameters.value("x2")
-            << ");" << endl;
-
-        out << "                        referencePoint    ("
-            << theParameters.value("referencePoint0") << "  "
-            << theParameters.value("referencePoint1") << "  "
-            << theParameters.value("referencePoint2")
-            << ");" << endl;
-
-        out << "                        alpha             ("
-            << theParameters.value("alpha0") << "  "
-            << theParameters.value("alpha1") << "  "
-            << theParameters.value("alpha2")
-            << ");" << endl;
-
-        out << "        }" << endl;
         out << endl;
-        out << "        // turbulence length scale profile for w component" << endl;
-        out << "        Lw_Profile" << endl;
-        out << "        {" << endl;
 
-        out << "                        profile           " << profile << ";" << endl;
 
-        out << "                        referenceValue    ("
-            << theParameters.value("Lw0") << "  "
-            << theParameters.value("Lw1") << "  "
-            << theParameters.value("Lw2")
-            << ");" << endl;
+        out << "// turbulence length scale profile for w component" << endl;
+        out << "LwxDict" << endl;
+        out << "{" << endl;
+        out << "    referenceValue          " << theParameters.value("Luw") << ";" << endl;
 
-        out << "                        direction         ("
-            << theParameters.value("dir0") << "  "
-            << theParameters.value("dir1") << "  "
-            << theParameters.value("dir2")
-            << ");" << endl;
+        out << "    profile                 " << profile << ";" << endl;
 
-        out << "                        origin            ("
-            << theParameters.value("x0") << "  "
-            << theParameters.value("x1") << "  "
-            << theParameters.value("x2")
-            << ");" << endl;
+        if ( int(theParameters.value("profile")) > 0 ) {
+            out << "    referenceAngl           " << theParameters.value("LwRefAngle") << ";" << endl;
+            out << "    referenceDist           " << theParameters.value("LwRefDist") << ";" << endl;
+            out << "    alpha                   " << theParameters.value("LwAlpha") << ";" << endl;
+        }
+        out << "}" << endl;
 
-        out << "                        referencePoint    ("
-            << theParameters.value("referencePoint0") << "  "
-            << theParameters.value("referencePoint1") << "  "
-            << theParameters.value("referencePoint2")
-            << ");" << endl;
+        out << endl;
 
-        out << "                        alpha             ("
-            << theParameters.value("alpha0") << "  "
-            << theParameters.value("alpha1") << "  "
-            << theParameters.value("alpha2")
-            << ");" << endl;
+        out << "LuyToLuxRatio              " << theParameters.value("Lu10") << ";" << endl;
+        out << "LuzToLuxRatio              " << theParameters.value("Lu20") << ";" << endl;
+        out << "LvyToLvxRatio              " << theParameters.value("Lv10") << ";" << endl;
+        out << "LvzToLvxRatio              " << theParameters.value("Lv20") << ";" << endl;
+        out << "LwyToLwxRatio              " << theParameters.value("Lw10") << ";" << endl;
+        out << "LwzToLwxRatio              " << theParameters.value("Lw20") << ";" << endl;
 
-        out << "        }" << endl;
         out << endl;
         out << endl;
         out << "// ************************************************************************* //" << endl;

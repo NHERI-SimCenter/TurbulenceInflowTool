@@ -61,33 +61,11 @@ void InflowParameterWidget::setDefaultParameters()
     ui->PHI32->setValue(0.0);
     ui->PHI33->setValue(0.1);
 
-    ui->z01->setValue(0.0);
-    ui->z02->setValue(0.0);
-    ui->z03->setValue(0.0);
-
-    ui->zVector1->setValue(0.0);
-    ui->zVector1->setValue(0.0);
-    ui->zVector1->setValue(1.0);
-
     ui->alpha1->setValue(0.1);
     ui->alpha2->setValue(0.1);
     ui->alpha3->setValue(0.1);
-}
 
-void InflowParameterWidget::on_btnNormalize_clicked()
-{
-    double z1 = ui->zVector1->value();
-    double z2 = ui->zVector2->value();
-    double z3 = ui->zVector3->value();
-
-    double norm = sqrt(z1*z1 + z2*z2 + z3+z3);
-
-    if (norm > 1.0e-3)
-    {
-        ui->zVector1->setValue(z1/norm);
-        ui->zVector2->setValue(z2/norm);
-        ui->zVector3->setValue(z3/norm);
-    }
+    // NEED MORE ...
 }
 
 void InflowParameterWidget::on_PHI21_valueChanged(double arg1)
@@ -117,15 +95,9 @@ void InflowParameterWidget::on_modelSelectionCBX_currentIndexChanged(int index)
 
     switch (index) {
     case 0:
-        this->setLinearLaminar();
+        this->setUniformTurbulent();
         break;
     case 1:
-        this->setExponentialLaminar();
-        break;
-    case 2:
-        this->setLinearTurbulent();
-        break;
-    case 3:
         this->setExponentialTurbulent();
         break;
     default:
@@ -133,40 +105,90 @@ void InflowParameterWidget::on_modelSelectionCBX_currentIndexChanged(int index)
     }
 }
 
-void InflowParameterWidget::setLinearLaminar(void)
+void InflowParameterWidget::setUniformTurbulent(void)
 {
-    ui->phiTensorGroup->hide();
-    ui->alphaParameterGroup->hide();
-    ui->lengthScaleGroup->hide();
-    ui->referencePointGroup->hide();
     ui->velocityGroup->show();
-}
-
-void InflowParameterWidget::setExponentialLaminar(void)
-{
     ui->phiTensorGroup->show();
-    ui->alphaParameterGroup->show();
-    ui->lengthScaleGroup->hide();
-    ui->referencePointGroup->show();
-    ui->velocityGroup->hide();
-}
-
-void InflowParameterWidget::setLinearTurbulent(void)
-{
-    ui->phiTensorGroup->hide();
-    ui->alphaParameterGroup->hide();
     ui->lengthScaleGroup->show();
-    ui->referencePointGroup->show();
-    ui->velocityGroup->show();
+
+    // hide extension parameters
+    ui->label_refDistU->hide();
+    ui->label_refAngleU->hide();
+    ui->label_alphaU->hide();
+
+    ui->refDistU->hide();
+    ui->refAngleU->hide();
+    ui->alphaU->hide();
+
+    ui->label_refDistPHI->hide();
+    ui->label_refAnglePHI->hide();
+    ui->label_alphaPHI->hide();
+
+    ui->refDistPHI->hide();
+    ui->refAnglePHI->hide();
+    ui->alpha1->hide();
+    ui->alpha2->hide();
+    ui->alpha3->hide();
+
+    ui->label_referenceDist->hide();
+    ui->label_referenceAngle->hide();
+    ui->label_alphas->hide();
+
+    ui->refDistLu->hide();
+    ui->refAngleLu->hide();
+    ui->LuAlpha->hide();
+    ui->refDistLv->hide();
+    ui->refAngleLv->hide();
+    ui->LvAlpha->hide();
+    ui->refDistLw->hide();
+    ui->refAngleLw->hide();
+    ui->LwAlpha->hide();
+
+    ui->line3->hide();
+    ui->line4->hide();
 }
 
 void InflowParameterWidget::setExponentialTurbulent(void)
 {
+    ui->velocityGroup->show();
     ui->phiTensorGroup->show();
-    ui->alphaParameterGroup->show();
     ui->lengthScaleGroup->show();
-    ui->referencePointGroup->show();
-    ui->velocityGroup->hide();
+
+    // show extension parameters
+    ui->label_refDistU->show();
+    ui->label_refAngleU->show();
+    ui->label_alphaU->show();
+
+    ui->refDistU->show();
+    ui->refAngleU->show();
+    ui->alphaU->show();
+
+    ui->label_refDistPHI->show();
+    ui->label_refAnglePHI->show();
+    ui->label_alphaPHI->show();
+
+    ui->refDistPHI->show();
+    ui->refAnglePHI->show();
+    ui->alpha1->show();
+    ui->alpha2->show();
+    ui->alpha3->show();
+
+    ui->label_referenceDist->show();
+    ui->label_referenceAngle->show();
+    ui->label_alphas->show();
+
+    ui->refDistLu->show();
+    ui->refAngleLu->show();
+    ui->LuAlpha->show();
+    ui->refDistLv->show();
+    ui->refAngleLv->show();
+    ui->LvAlpha->show();
+    ui->refDistLw->show();
+    ui->refAngleLw->show();
+    ui->LwAlpha->show();
+
+    ui->line3->show();
+    ui->line4->show();
 }
 
 void InflowParameterWidget::sendParameterMap(void)
@@ -179,17 +201,10 @@ void InflowParameterWidget::sendParameterMap(void)
     double val= double(ui->modelSelectionCBX->currentIndex());
     data.insert("profile",val);
 
-    data.insert("x0",ui->z01->value());
-    data.insert("x1",ui->z02->value());
-    data.insert("x2",ui->z03->value());
-
-    data.insert("dir0",ui->zVector1->value());
-    data.insert("dir1",ui->zVector2->value());
-    data.insert("dir2",ui->zVector3->value());
-
-    data.insert("vel0",ui->vel1->value());
-    data.insert("vel1",ui->vel2->value());
-    data.insert("vel2",ui->vel3->value());
+    data.insert("vel0",ui->vel->value());
+    data.insert("refAngleU",ui->refAngleU->value());
+    data.insert("refDistU",ui->refDistU->value());
+    data.insert("alphaU",ui->alphaU->value());
 
     data.insert("alpha0",ui->alpha1->value());
     data.insert("alpha1",ui->alpha2->value());
@@ -202,21 +217,29 @@ void InflowParameterWidget::sendParameterMap(void)
     data.insert("phi21",ui->PHI23->value());
     data.insert("phi22",ui->PHI33->value());
 
-    data.insert("referencePoint0",ui->tVector1->value());
-    data.insert("referencePoint1",ui->tVector2->value());
-    data.insert("referencePoint2",ui->tVector3->value());
-
     data.insert("Lu0",ui->Lux->value());
-    data.insert("Lu1",ui->Luy->value());
-    data.insert("Lu2",ui->Luz->value());
+    data.insert("Lu10",ui->LuyLux->value());
+    data.insert("Lu20",ui->LuzLux->value());
 
     data.insert("Lv0",ui->Lvx->value());
-    data.insert("Lv1",ui->Lvy->value());
-    data.insert("Lv2",ui->Lvz->value());
+    data.insert("Lv10",ui->LvyLvx->value());
+    data.insert("Lv20",ui->LvzLvx->value());
 
     data.insert("Lw0",ui->Lwx->value());
-    data.insert("Lw1",ui->Lwy->value());
-    data.insert("Lw2",ui->Lwz->value());
+    data.insert("Lw10",ui->LwyLwx->value());
+    data.insert("Lw20",ui->LwzLwx->value());
+
+    data.insert("LuAlpha",ui->LuAlpha->value());
+    data.insert("LvAlpha",ui->LvAlpha->value());
+    data.insert("LwAlpha",ui->LwAlpha->value());
+
+    data.insert("LuRefAngle",ui->refAngleLu->value());
+    data.insert("LvRefAngle",ui->refAngleLv->value());
+    data.insert("LwRefAngle",ui->refAngleLw->value());
+
+    data.insert("LuRefDist",ui->refDistLu->value());
+    data.insert("LvRefDist",ui->refDistLv->value());
+    data.insert("LwRefDist",ui->refDistLw->value());
 
     // send the parameter map
     emit parametersReady(data);
