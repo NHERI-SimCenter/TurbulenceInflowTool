@@ -37,7 +37,7 @@ void InflowParameterWidget::selectSourceLocation(void)
 
 void InflowParameterWidget::setDefaultParameters()
 {
-    this->on_comboBox_currentIndexChanged(0);
+    this->on_modelSelectionCBX_currentIndexChanged(0);
 
     /*
     ui->selectUniform->setChecked(true);
@@ -111,7 +111,7 @@ void InflowParameterWidget::on_resetButton_clicked()
     setDefaultParameters();
 }
 
-void InflowParameterWidget::on_comboBox_currentIndexChanged(int index)
+void InflowParameterWidget::on_modelSelectionCBX_currentIndexChanged(int index)
 {
     // this is where we get a mode
 
@@ -135,10 +135,11 @@ void InflowParameterWidget::on_comboBox_currentIndexChanged(int index)
 
 void InflowParameterWidget::setLinearLaminar(void)
 {
-    ui->phiTensorGroup->show();
+    ui->phiTensorGroup->hide();
     ui->alphaParameterGroup->hide();
     ui->lengthScaleGroup->hide();
     ui->referencePointGroup->hide();
+    ui->velocityGroup->show();
 }
 
 void InflowParameterWidget::setExponentialLaminar(void)
@@ -147,14 +148,16 @@ void InflowParameterWidget::setExponentialLaminar(void)
     ui->alphaParameterGroup->show();
     ui->lengthScaleGroup->hide();
     ui->referencePointGroup->show();
+    ui->velocityGroup->hide();
 }
 
 void InflowParameterWidget::setLinearTurbulent(void)
 {
-    ui->phiTensorGroup->show();
+    ui->phiTensorGroup->hide();
     ui->alphaParameterGroup->hide();
-    ui->lengthScaleGroup->hide();
-    ui->referencePointGroup->hide();
+    ui->lengthScaleGroup->show();
+    ui->referencePointGroup->show();
+    ui->velocityGroup->show();
 }
 
 void InflowParameterWidget::setExponentialTurbulent(void)
@@ -163,6 +166,7 @@ void InflowParameterWidget::setExponentialTurbulent(void)
     ui->alphaParameterGroup->show();
     ui->lengthScaleGroup->show();
     ui->referencePointGroup->show();
+    ui->velocityGroup->hide();
 }
 
 void InflowParameterWidget::sendParameterMap(void)
@@ -171,6 +175,50 @@ void InflowParameterWidget::sendParameterMap(void)
     QMap<QString, double> data;
     data.clear();
 
+    // populate data map
+    double val= double(ui->modelSelectionCBX->currentIndex());
+    data.insert("profile",val);
+
+    data.insert("x0",ui->z01->value());
+    data.insert("x1",ui->z02->value());
+    data.insert("x2",ui->z03->value());
+
+    data.insert("dir0",ui->zVector1->value());
+    data.insert("dir1",ui->zVector2->value());
+    data.insert("dir2",ui->zVector3->value());
+
+    data.insert("vel0",ui->vel1->value());
+    data.insert("vel1",ui->vel2->value());
+    data.insert("vel2",ui->vel3->value());
+
+    data.insert("alpha0",ui->alpha1->value());
+    data.insert("alpha1",ui->alpha2->value());
+    data.insert("alpha2",ui->alpha3->value());
+
+    data.insert("phi00",ui->PHI11->value());
+    data.insert("phi10",ui->PHI21->value());
+    data.insert("phi20",ui->PHI31->value());
+    data.insert("phi11",ui->PHI22->value());
+    data.insert("phi21",ui->PHI23->value());
+    data.insert("phi22",ui->PHI33->value());
+
+    data.insert("referencePoint0",ui->tVector1->value());
+    data.insert("referencePoint1",ui->tVector2->value());
+    data.insert("referencePoint2",ui->tVector3->value());
+
+    data.insert("Lu0",ui->Lux->value());
+    data.insert("Lu1",ui->Luy->value());
+    data.insert("Lu2",ui->Luz->value());
+
+    data.insert("Lv0",ui->Lvx->value());
+    data.insert("Lv1",ui->Lvy->value());
+    data.insert("Lv2",ui->Lvz->value());
+
+    data.insert("Lw0",ui->Lwx->value());
+    data.insert("Lw1",ui->Lwy->value());
+    data.insert("Lw2",ui->Lwz->value());
+
     // send the parameter map
     emit parametersReady(data);
 }
+
