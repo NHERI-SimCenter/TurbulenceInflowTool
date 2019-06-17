@@ -3,7 +3,6 @@
         <file>docs/help/About/CWEabout.html</file>
         <file>docs/help/About/Mackenzie-Helnwein-Peter.png</file>
         <file>docs/help/About/McKenna-Frank.png</file>
-        <file>docs/help/About/Jiawei-Wan.png</file>
         <file>icons/NHERI-TInF-icon.icns</file>
         <file>icons/NHERI-TInF-icon.png</file>
         <file>styles/menuBar.qss</file>
@@ -23,5 +22,7 @@
         <file>docs/help/theory3x.png</file>
         <file>docs/help/theory4x.png</file>
         <file>docs/help/theory5x.png</file>
+        <file>resources/nheri_tinf_icon.ico</file>
+        <file>docs/help/About/jiaweiwan.png</file>
     </qresource>
 </RCC>

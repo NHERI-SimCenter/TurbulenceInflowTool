@@ -1,2 +1,24 @@
 
 \.DS_Store
+
+*.user
+
+docs/help/theory\.4ct
+
+docs/help/theory\.4tc
+
+*.dvi
+
+docs/help/theory\.idv
+
+docs/help/theory\.aux
+
+*.log
+
+docs/help/theory\.pdf
+
+docs/help/theory\.lg
+
+docs/help/theory\.tmp
+
+docs/help/theory\.xref
