@@ -35,6 +35,9 @@
      <property name="text">
       <string>duplicate entire file tree on export</string>
      </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
   </layout>
