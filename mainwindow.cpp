@@ -103,7 +103,7 @@ void MainWindow::on_action_Quit_triggered()
 
 void MainWindow::on_action_About_triggered()
 {
-    DialogAbout *dlg = new DialogAbout("0.1");
+    DialogAbout *dlg = new DialogAbout("0.9");
 
     //
     // adjust size of application window to the available display
