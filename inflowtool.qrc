@@ -15,5 +15,13 @@
         <file>resources/styleSheets/TInFStyles.qss</file>
         <file>resources/styleSheets/TInFWin.qss</file>
         <file>resources/templates/inflowProperties.tpl</file>
+        <file>docs/help/theory.css</file>
+        <file>docs/help/theory.html</file>
+        <file>docs/help/theory0x.png</file>
+        <file>docs/help/theory1x.png</file>
+        <file>docs/help/theory2x.png</file>
+        <file>docs/help/theory3x.png</file>
+        <file>docs/help/theory4x.png</file>
+        <file>docs/help/theory5x.png</file>
     </qresource>
 </RCC>

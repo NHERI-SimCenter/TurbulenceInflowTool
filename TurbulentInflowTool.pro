@@ -38,6 +38,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         utilWindows/dialogabout.cpp \
+        utilWindows/helpwindow.cpp \
         widgets/exportwidget.cpp \
         widgets/filewidget.cpp \
         widgets/inflowparameterwidget.cpp
@@ -46,6 +47,7 @@ HEADERS += \
         customizeditemmodel.h \
         mainwindow.h \
         utilWindows/dialogabout.h \
+        utilWindows/helpwindow.h \
         widgets/exportwidget.h \
         widgets/filewidget.h \
         widgets/inflowparameterwidget.h
@@ -53,6 +55,7 @@ HEADERS += \
 FORMS += \
         mainwindow.ui \
         utilWindows/dialogabout.ui \
+        utilWindows/helpwindow.ui \
         widgets/exportwidget.ui \
         widgets/filewidget.ui \
         widgets/inflowparameterwidget.ui

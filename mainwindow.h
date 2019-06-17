@@ -31,6 +31,8 @@ private slots:
 
     void selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSelection &/*oldSelection*/);
 
+    void on_action_Documentation_triggered();
+
 private:
     Ui::MainWindow *ui;
 

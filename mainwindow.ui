@@ -215,6 +215,7 @@
      <string>Help</string>
     </property>
     <addaction name="action_About"/>
+    <addaction name="action_Documentation"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -256,6 +257,14 @@
   <action name="action_Quit">
    <property name="text">
     <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="action_Documentation">
+   <property name="text">
+    <string>&amp;Documentation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
    </property>
   </action>
  </widget>

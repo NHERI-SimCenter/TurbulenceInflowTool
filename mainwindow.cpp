@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "utilWindows/dialogabout.h"
+#include "utilWindows/helpwindow.h"
 #include <QGuiApplication>
 #include <QScreen>
 #include <QRect>
@@ -155,4 +156,10 @@ MainWindow::selectionChangedSlot(const QItemSelection & /*newSelection*/, const 
         qWarning() << "Unknown page selected: " << selectedText;
         ui->theStackedWidget->setCurrentIndex(0);
     }
+}
+
+void MainWindow::on_action_Documentation_triggered()
+{
+    HelpWindow *help = new HelpWindow();
+    help->show();
 }
