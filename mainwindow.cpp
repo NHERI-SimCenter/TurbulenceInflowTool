@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->header->setHeadingText("Turbulent Inflow Adjustment Tool for OpenFOAM");
+    ui->headerWidget->setHeadingText("Turbulent Inflow Adjustment Tool for OpenFOAM");
 
     standardModel = new CustomizedItemModel(); //QStandardItemModel ;
     QStandardItem *rootNode = standardModel->invisibleRootItem();
@@ -69,12 +69,25 @@ MainWindow::MainWindow(QWidget *parent) :
             SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             this,
             SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
-
+    connect(ui->fileWidget, SIGNAL(hasValidSource(bool, QDir &)),
+            ui->exportWidget, SLOT(setLocationAvailable(bool, QDir &)));
+    connect(ui->exportWidget, SIGNAL(sendParameterMap()),
+            ui->inflowWidget, SLOT(sendParameterMap()));
+    connect(ui->inflowWidget, SIGNAL(parametersReady(QMap<QString, double> &)),
+            ui->exportWidget, SLOT(setParameterMap(QMap<QString, double> &)));
     //
     // set active index
     //
 
     ui->treeView->setCurrentIndex(infoItemIdx);
+
+    //
+    // adjust size of application window to the available display
+    //
+    QRect rec = QGuiApplication::primaryScreen()->geometry();
+    int height = this->height()<0.65*rec.height()?int(0.65*rec.height()):this->height();
+    int width  = this->width()<0.65*rec.width()?int(0.65*rec.width()):this->width();
+    this->resize(width, height);
 }
 
 MainWindow::~MainWindow()

@@ -76,33 +76,31 @@ QDoubleSpinBox {
 }
 
 /*
-* ======= <HEADER AND FOOTER> =======
-*/
+ * ======= <HEADER AND FOOTER> =======
+ */
 QGroupBox {
     padding-top: 3ex;
     background-color: #ffffff;
     border-radius: 5px;
 }
 
-QGroupBox:title {
-    font: bold 15 px;
-}
-
 /*
  * cannot figure out how to set title font to bold face
  */
-
-QGroupBox#headerWidget {
-    background-color: #B0BEC5;
-    height: 30px;
-    border-radius: 5px;
-}
 
 /*
  * ======= <HEADER AND FOOTER> =======
  */
 
+QGroupBox#headerWidget {
+    padding-top: 0pt;
+    background-color: #B0BEC5;
+    height: 30px;
+    border-radius: 5px;
+}
+
 QGroupBox#footerWidget {
+    padding-top: 0pt;
     background-color: #B0BEC5;
     height: 30px;
     border-radius: 5px;

@@ -14,5 +14,6 @@
         <file>resources/styleSheets/TInFMac.qss</file>
         <file>resources/styleSheets/TInFStyles.qss</file>
         <file>resources/styleSheets/TInFWin.qss</file>
+        <file>resources/templates/inflowProperties.tpl</file>
     </qresource>
 </RCC>

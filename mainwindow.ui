@@ -31,7 +31,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="HeaderWidget" name="header">
+     <widget class="HeaderWidget" name="headerWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
         <horstretch>0</horstretch>
@@ -184,7 +184,7 @@
      </widget>
     </item>
     <item>
-     <widget class="FooterWidget" name="footer">
+     <widget class="FooterWidget" name="footerWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
         <horstretch>0</horstretch>
@@ -208,11 +208,6 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="action_New"/>
-    <addaction name="action_Open"/>
-    <addaction name="action_Save"/>
-    <addaction name="actionSave_As"/>
-    <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">

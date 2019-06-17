@@ -2,6 +2,7 @@
 #define FILEWIDGET_H
 
 #include <QFrame>
+#include <QDir>
 
 namespace Ui {
 class FileWidget;
@@ -14,6 +15,9 @@ class FileWidget : public QFrame
 public:
     explicit FileWidget(QWidget *parent = nullptr);
     ~FileWidget();
+
+signals:
+    void hasValidSource(bool, QDir &);
 
 private slots:
     void on_sourceLocateBtn_clicked();
