@@ -19,35 +19,50 @@ FoamFile
 UDict
 {
     referenceValue          0;
-    profile                 uniform;
+    profile                 exponential;
+    referenceAngl           0;
+    referenceDist           0;
+    alpha                   0;
 }
 
 // turbulent intensity (symmTensorField)
 IDict
 {
     referenceValue         (0.1  0  0  0.1  0  0.1);
-    profile                 uniform;
+    profile                 exponential;
+    referenceAngl           0;
+    referenceDist           0;
+    alpha                     (0.1  0.1  0.1);
 }
 
 // turbulence length scale profile for u component
 LuxDict
 {
     referenceValue          0;
-    profile                 uniform;
+    profile                 exponential;
+    referenceAngl           0;
+    referenceDist           0;
+    alpha                   0;
 }
 
 // turbulence length scale profile for v component
 LvxDict
 {
     referenceValue          0;
-    profile                 uniform;
+    profile                 exponential;
+    referenceAngl           0;
+    referenceDist           0;
+    alpha                   0;
 }
 
 // turbulence length scale profile for w component
 LwxDict
 {
     referenceValue          0;
-    profile                 uniform;
+    profile                 exponential;
+    referenceAngl           0;
+    referenceDist           0;
+    alpha                   0;
 }
 
 LuyToLuxRatio              0;
