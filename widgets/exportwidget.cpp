@@ -18,6 +18,12 @@ ExportWidget::ExportWidget(QWidget *parent) :
     ui->setupUi(this);
     theParameters.clear();
     hasParameters = false;
+
+    UFileHead = "";
+    UFileTail = "";
+    clearBoundaryMap();
+
+    ui->duplicateTreeCheck->hide();
 }
 
 ExportWidget::~ExportWidget()
@@ -25,10 +31,20 @@ ExportWidget::~ExportWidget()
     delete ui;
 }
 
+void ExportWidget::clearBoundaryMap(void)
+{
+    foreach (QString s, boundaries.keys())
+    {
+        if (boundaries.value(s) != nullptr) {
+            delete boundaries.value(s);
+        }
+        boundaries.remove(s);
+    }
+    //qDebug() << boundaries;
+}
+
 void ExportWidget::setLocationAvailable(bool status, QDir &loc)
 {
-    qDebug() << "exportWidget: signal received";
-
     if (status) {
         hasLocation = true;
         oldLocation = loc;
@@ -40,7 +56,6 @@ void ExportWidget::setLocationAvailable(bool status, QDir &loc)
         newLocation = QDir::homePath();
     }
 }
-
 
 void ExportWidget::setParameterMap(QMap<QString, double> &map)
 {
@@ -205,9 +220,30 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
     theFile.close();
 }
 
-void ExportWidget::exportUFile(QString)
+void ExportWidget::exportUFile(QString fileName)
 {
+    QFile UFile(fileName);
+    UFile.open(QFile::WriteOnly);
+    QTextStream out(&UFile);
 
+    out << UFileHead;
+
+    foreach (QString key, boundaries.keys())
+    {
+        out << "    " << key << endl;
+        out << "    {" << endl;
+
+        foreach (QString s, (boundaries.value(key))->keys() )
+        {
+            out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << endl;
+        }
+        out << "    }" << endl;
+        out << endl;
+    }
+
+    out << UFileTail;
+
+    UFile.close();
 }
 
 void ExportWidget::on_btn_export_clicked()
@@ -237,17 +273,18 @@ void ExportWidget::on_btn_export_clicked()
         newLocation = oldLocation;
         oldLocation.setPath(dirName);
 
-
         // write the new file
         //QDir theFile = ...;
         //this->exportInflowParameterFile(theFile);
     }
     else {
 
-        //
         // we place new file into the existing file structure
         // but we do save one version of the existing file as
         // filename.orig before writing the new one
+
+        //
+        // ... inflowProperties file
         //
 
         // save any existing file to .orig
@@ -268,7 +305,25 @@ void ExportWidget::on_btn_export_clicked()
         // write the new file
         this->exportInflowParameterFile(newFile);
 
-        /* ----------- */
+        //
+        // ... U file
+        //
+
+        newLocation = oldLocation;
+        newLocation.cd("0");
+
+        newFile  = newLocation.absoluteFilePath("U");
+        origFile = newFile + ".orig";
+
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
+
+        qDebug() << "move" << newFile << origFile;
+
+        // update U file
         this->exportUFile(newFile);
     }
 }
@@ -293,4 +348,5 @@ void ExportWidget::on_boundarySelection_currentIndexChanged(int index)
 void ExportWidget::setModel(QStandardItemModel *theModel)
 {
     ui->boundarySelection->setModel(theModel);
+    validSourcePresent = true;
 }

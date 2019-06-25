@@ -39,6 +39,7 @@ private:
 
     void exportInflowParameterFile(QString);
     void exportUFile(QString);
+    void clearBoundaryMap(void);
 
     bool hasLocation = false;
     bool hasParameters = false;

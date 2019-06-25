@@ -42,6 +42,7 @@ private:
     bool validSourcePresent = false;
     QString UFilePath;
     QByteArray UFileContents = "";
+    QByteArray UFileHead = "";
     QByteArray UFileTail = "";
 
     QFile UFile;

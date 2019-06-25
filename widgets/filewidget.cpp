@@ -24,6 +24,9 @@ FileWidget::~FileWidget()
 
 void FileWidget::on_sourceLocateBtn_clicked()
 {
+    UFileHead = "";
+    UFileTail = "";
+
     // select the openFOAM input source tree
     QFileDialog *dlg = new QFileDialog();
     dlg->setReadOnly(true);
@@ -74,14 +77,14 @@ void FileWidget::on_sourceLocateBtn_clicked()
         // read till boundaryField keyword
         while (UIter->hasNext())
         {
-            QByteArray line = UIter->next().simplified();
-            UFileContents.append(line);
-            UFileContents.append('\n');
+            QByteArray line = UIter->next();
+            UFileHead.append(line);
+            UFileHead.append('\n');
             if (line.contains("boundaryField")) {
                 while ( (!line.contains('{')) && UIter->hasNext()) {
-                    line = UIter->next().simplified();
-                    UFileContents.append(line);
-                    UFileContents.append('\n');
+                    line = UIter->next();
+                    UFileHead.append(line);
+                    UFileHead.append('\n');
                 }
                 break;
             }
@@ -97,7 +100,7 @@ void FileWidget::on_sourceLocateBtn_clicked()
 
             // terminate if done with boundaryFields section
             if (list[0] == '}') {
-                UFileTail.append("}\n'");
+                UFileTail.append("}\n");
                 break;
             }
 
@@ -109,7 +112,7 @@ void FileWidget::on_sourceLocateBtn_clicked()
         // collect the remainder of the file
         while (UIter->hasNext())
         {
-            QByteArray line = UIter->next().simplified();
+            QByteArray line = UIter->next();
             UFileTail.append(line);
             UFileTail.append('\n');
         }
@@ -214,9 +217,11 @@ QMap<QString, QString> *FileWidget::readParameters(void)
 
 bool FileWidget::fetchUFileData(QByteArray &head, QByteArray &tail, QMap<QString, QMap<QString, QString> * > &data)
 {
-    head = UFileContents;
+    head = UFileHead;
     tail = UFileTail;
     data = boundaries;
+
+    return (UFileContents.length()>0);
 }
 
 void FileWidget::setBoundarySelection(int index)
