@@ -222,6 +222,10 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
 
 void ExportWidget::exportUFile(QString fileName)
 {
+    // get the boundary condition to generate
+    QString BCselected = ui->boundarySelection->currentText();
+
+    // file handle for the U file
     QFile UFile(fileName);
     UFile.open(QFile::WriteOnly);
     QTextStream out(&UFile);
@@ -233,9 +237,76 @@ void ExportWidget::exportUFile(QString fileName)
         out << "    " << key << endl;
         out << "    {" << endl;
 
-        foreach (QString s, (boundaries.value(key))->keys() )
+        if (key == BCselected)
         {
-            out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << endl;
+            QMap<QString, QString> theMap = *boundaries.value(key);
+
+            switch (int(theParameters.value("FilterMethod"))) {
+            case 0:
+                out << "        type               digitalFilter;" << endl;
+                switch (int(theParameters.value("shapeFunction"))) {
+                case 0:
+                    out << "        filterShape        gaussian;" << endl;
+                    break;
+                case 1:
+                    out << "        filterShape        exponential;" << endl;
+                    break;
+                default:
+                    out << "        filterShape        exponential;" << endl;
+                }
+                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << endl;
+                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << endl;
+
+                break;
+            case 1:
+                out << "        type        syntheticEddie;" << endl;
+                switch (int(theParameters.value("shapeFunction"))) {
+                case 0:
+                    out << "        filterShape        gaussian;" << endl;
+                    break;
+                case 1:
+                    out << "        filterShape        tent;" << endl;
+                    break;
+                case 2:
+                    out << "        filterShape        step;" << endl;
+                    break;
+                default:
+                    out << "        filterShape        gaussian;" << endl;
+                }
+                out << "        eddieDensity       " << theParameters.value("eddieDensity") << ";" << endl;
+
+                break;
+            default:
+                qWarning() << "unknown turbulence model";
+            }
+
+            out << "        intersection       ( "
+                << theParameters.value("intersection0") << " "
+                << theParameters.value("intersection1") << " "
+                << theParameters.value("intersection2") << " );" << endl;
+            out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
+            out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
+
+            if (theMap.contains("type"))         theMap.remove("type");
+            if (theMap.contains("filterShape"))  theMap.remove("filterShape");
+            if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
+            if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
+            if (theMap.contains("eddieDensity")) theMap.remove("eddieDensity");
+
+            if (theMap.contains("intersection"))    theMap.remove("intersection");
+            if (theMap.contains("yOffset"))         theMap.remove("yOffset");
+            if (theMap.contains("zOffset"))         theMap.remove("zOffset");
+
+            foreach (QString s, theMap.keys() )
+            {
+                out << "        " << s << "    " << theMap.value(s) << ";" << endl;
+            }
+        }
+        else {
+            foreach (QString s, (boundaries.value(key))->keys() )
+            {
+                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << endl;
+            }
         }
         out << "    }" << endl;
         out << endl;
