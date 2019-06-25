@@ -4,6 +4,11 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QItemSelection>
+#include <QMap>
+#include <QString>
+#include <QByteArray>
+
+class QDir;
 
 class QStandardItemModel;
 
@@ -33,11 +38,18 @@ private slots:
 
     void on_action_Documentation_triggered();
 
+public slots:
+    void fetchUFileData(bool, QDir &);
+
 private:
     Ui::MainWindow *ui;
 
     QModelIndex infoItemIdx;
     QStandardItemModel *standardModel;
+
+    QByteArray head;
+    QByteArray tail;
+    QMap<QString, QMap<QString, QString> * > data;
 };
 
 #endif // MAINWINDOW_H

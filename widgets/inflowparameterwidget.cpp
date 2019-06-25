@@ -273,20 +273,10 @@ void InflowParameterWidget::sendParameterMap(void)
 
 void InflowParameterWidget::on_RB_digitalFilter_clicked()
 {
-    if (ui->RB_digitalFilter->isChecked()) {
-        ui->stackedMethods->setCurrentIndex(0);
-    }
-    else {
-        ui->stackedMethods->setCurrentIndex(1);
-    }
+    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
 }
 
 void InflowParameterWidget::on_RB_syntheticEddie_clicked()
 {
-    if (ui->RB_digitalFilter->isChecked()) {
-        ui->stackedMethods->setCurrentIndex(0);
-    }
-    else {
-        ui->stackedMethods->setCurrentIndex(1);
-    }
+    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
 }

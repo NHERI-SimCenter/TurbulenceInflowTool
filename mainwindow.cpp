@@ -66,16 +66,22 @@ MainWindow::MainWindow(QWidget *parent) :
     //
 
     QItemSelectionModel *selectionModel= ui->treeView->selectionModel();
-    connect(selectionModel,
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this,
-            SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
-    connect(ui->fileWidget, SIGNAL(hasValidSource(bool, QDir &)),
+    connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            this, SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
+    connect(ui->fileWidget,   SIGNAL(hasValidSource(bool, QDir &)),
             ui->exportWidget, SLOT(setLocationAvailable(bool, QDir &)));
     connect(ui->exportWidget, SIGNAL(sendParameterMap()),
             ui->inflowWidget, SLOT(sendParameterMap()));
     connect(ui->inflowWidget, SIGNAL(parametersReady(QMap<QString, double> &)),
             ui->exportWidget, SLOT(setParameterMap(QMap<QString, double> &)));
+    connect(ui->fileWidget,   SIGNAL(hasValidSource(bool, QDir &)),
+            this, SLOT(fetchUFileData(bool, QDir &)));
+    connect(ui->fileWidget,   SIGNAL(boundarySelection(int)),
+            ui->exportWidget, SLOT(setBoundarySelection(int)));
+    connect(ui->exportWidget, SIGNAL(boundarySelection(int)),
+            ui->fileWidget,   SLOT(setBoundarySelection(int)));
+    connect(ui->fileWidget,   SIGNAL(sendModel(QStandardItemModel *)),
+            ui->exportWidget, SLOT(setModel(QStandardItemModel *)));
     //
     // set active index
     //
@@ -162,4 +168,13 @@ void MainWindow::on_action_Documentation_triggered()
 {
     HelpWindow *help = new HelpWindow();
     help->show();
+}
+
+
+void MainWindow::fetchUFileData(bool, QDir &)
+{
+    if (ui->fileWidget->fetchUFileData(head, tail, data))
+    {
+        ui->exportWidget->setUFileData(head, tail, data);
+    }
 }

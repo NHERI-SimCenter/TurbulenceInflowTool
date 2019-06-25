@@ -6,6 +6,8 @@
 #include <QTextStream>
 #include <QMap>
 #include <QDir>
+#include <QStandardItem>
+#include <QStandardItemModel>
 
 #include <QDebug>
 
@@ -203,6 +205,11 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
     theFile.close();
 }
 
+void ExportWidget::exportUFile(QString)
+{
+
+}
+
 void ExportWidget::on_btn_export_clicked()
 {
     // time to export :)
@@ -260,7 +267,30 @@ void ExportWidget::on_btn_export_clicked()
 
         // write the new file
         this->exportInflowParameterFile(newFile);
+
+        /* ----------- */
+        this->exportUFile(newFile);
     }
+}
 
+void ExportWidget::setUFileData(QByteArray &head, QByteArray &tail, QMap<QString, QMap<QString, QString> * > &data)
+{
+    UFileHead = head;
+    UFileTail = tail;
+    boundaries = data;
+}
 
+void ExportWidget::setBoundarySelection(int index)
+{
+    ui->boundarySelection->setCurrentIndex(index);
+}
+
+void ExportWidget::on_boundarySelection_currentIndexChanged(int index)
+{
+    emit boundarySelection(index);
+}
+
+void ExportWidget::setModel(QStandardItemModel *theModel)
+{
+    ui->boundarySelection->setModel(theModel);
 }
