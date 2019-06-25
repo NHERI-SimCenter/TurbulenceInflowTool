@@ -14,7 +14,24 @@
    <string>Frame</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="duplicateTreeCheck">
+     <property name="text">
+      <string>duplicate entire file tree on export</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>select what boundary to modify</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QPushButton" name="btn_export">
      <property name="text">
       <string>Export</string>
@@ -30,15 +47,8 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="duplicateTreeCheck">
-     <property name="text">
-      <string>duplicate entire file tree on export</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-    </widget>
+   <item row="2" column="0">
+    <widget class="QComboBox" name="boundarySelection"/>
    </item>
   </layout>
  </widget>

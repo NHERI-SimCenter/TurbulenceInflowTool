@@ -22,3 +22,7 @@ docs/help/theory\.lg
 docs/help/theory\.tmp
 
 docs/help/theory\.xref
+
+*.orig
+
+ExampleInput/building/0/U_

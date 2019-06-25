@@ -6,6 +6,8 @@
 #include <QTextStream>
 #include <QMap>
 #include <QDir>
+#include <QStandardItem>
+#include <QStandardItemModel>
 
 #include <QDebug>
 
@@ -16,6 +18,12 @@ ExportWidget::ExportWidget(QWidget *parent) :
     ui->setupUi(this);
     theParameters.clear();
     hasParameters = false;
+
+    UFileHead = "";
+    UFileTail = "";
+    clearBoundaryMap();
+
+    ui->duplicateTreeCheck->hide();
 }
 
 ExportWidget::~ExportWidget()
@@ -23,10 +31,20 @@ ExportWidget::~ExportWidget()
     delete ui;
 }
 
+void ExportWidget::clearBoundaryMap(void)
+{
+    foreach (QString s, boundaries.keys())
+    {
+        if (boundaries.value(s) != nullptr) {
+            delete boundaries.value(s);
+        }
+        boundaries.remove(s);
+    }
+    //qDebug() << boundaries;
+}
+
 void ExportWidget::setLocationAvailable(bool status, QDir &loc)
 {
-    qDebug() << "exportWidget: signal received";
-
     if (status) {
         hasLocation = true;
         oldLocation = loc;
@@ -38,7 +56,6 @@ void ExportWidget::setLocationAvailable(bool status, QDir &loc)
         newLocation = QDir::homePath();
     }
 }
-
 
 void ExportWidget::setParameterMap(QMap<QString, double> &map)
 {
@@ -203,6 +220,103 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
     theFile.close();
 }
 
+void ExportWidget::exportUFile(QString fileName)
+{
+    // get the boundary condition to generate
+    QString BCselected = ui->boundarySelection->currentText();
+
+    // file handle for the U file
+    QFile UFile(fileName);
+    UFile.open(QFile::WriteOnly);
+    QTextStream out(&UFile);
+
+    out << UFileHead;
+
+    foreach (QString key, boundaries.keys())
+    {
+        out << "    " << key << endl;
+        out << "    {" << endl;
+
+        if (key == BCselected)
+        {
+            QMap<QString, QString> theMap = *boundaries.value(key);
+
+            switch (int(theParameters.value("FilterMethod"))) {
+            case 0:
+                out << "        type               digitalFilter;" << endl;
+                switch (int(theParameters.value("shapeFunction"))) {
+                case 0:
+                    out << "        filterShape        gaussian;" << endl;
+                    break;
+                case 1:
+                    out << "        filterShape        exponential;" << endl;
+                    break;
+                default:
+                    out << "        filterShape        exponential;" << endl;
+                }
+                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << endl;
+                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << endl;
+
+                break;
+            case 1:
+                out << "        type        syntheticEddie;" << endl;
+                switch (int(theParameters.value("shapeFunction"))) {
+                case 0:
+                    out << "        filterShape        gaussian;" << endl;
+                    break;
+                case 1:
+                    out << "        filterShape        tent;" << endl;
+                    break;
+                case 2:
+                    out << "        filterShape        step;" << endl;
+                    break;
+                default:
+                    out << "        filterShape        gaussian;" << endl;
+                }
+                out << "        eddieDensity       " << theParameters.value("eddieDensity") << ";" << endl;
+
+                break;
+            default:
+                qWarning() << "unknown turbulence model";
+            }
+
+            out << "        intersection       ( "
+                << theParameters.value("intersection0") << " "
+                << theParameters.value("intersection1") << " "
+                << theParameters.value("intersection2") << " );" << endl;
+            out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
+            out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
+
+            if (theMap.contains("type"))         theMap.remove("type");
+            if (theMap.contains("filterShape"))  theMap.remove("filterShape");
+            if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
+            if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
+            if (theMap.contains("eddieDensity")) theMap.remove("eddieDensity");
+
+            if (theMap.contains("intersection"))    theMap.remove("intersection");
+            if (theMap.contains("yOffset"))         theMap.remove("yOffset");
+            if (theMap.contains("zOffset"))         theMap.remove("zOffset");
+
+            foreach (QString s, theMap.keys() )
+            {
+                out << "        " << s << "    " << theMap.value(s) << ";" << endl;
+            }
+        }
+        else {
+            foreach (QString s, (boundaries.value(key))->keys() )
+            {
+                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << endl;
+            }
+        }
+        out << "    }" << endl;
+        out << endl;
+    }
+
+    out << UFileTail;
+
+    UFile.close();
+}
+
 void ExportWidget::on_btn_export_clicked()
 {
     // time to export :)
@@ -230,17 +344,18 @@ void ExportWidget::on_btn_export_clicked()
         newLocation = oldLocation;
         oldLocation.setPath(dirName);
 
-
         // write the new file
         //QDir theFile = ...;
         //this->exportInflowParameterFile(theFile);
     }
     else {
 
-        //
         // we place new file into the existing file structure
         // but we do save one version of the existing file as
         // filename.orig before writing the new one
+
+        //
+        // ... inflowProperties file
         //
 
         // save any existing file to .orig
@@ -260,7 +375,49 @@ void ExportWidget::on_btn_export_clicked()
 
         // write the new file
         this->exportInflowParameterFile(newFile);
+
+        //
+        // ... U file
+        //
+
+        newLocation = oldLocation;
+        newLocation.cd("0");
+
+        newFile  = newLocation.absoluteFilePath("U");
+        origFile = newFile + ".orig";
+
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
+
+        qDebug() << "move" << newFile << origFile;
+
+        // update U file
+        this->exportUFile(newFile);
     }
+}
 
+void ExportWidget::setUFileData(QByteArray &head, QByteArray &tail, QMap<QString, QMap<QString, QString> * > &data)
+{
+    UFileHead = head;
+    UFileTail = tail;
+    boundaries = data;
+}
 
+void ExportWidget::setBoundarySelection(int index)
+{
+    ui->boundarySelection->setCurrentIndex(index);
+}
+
+void ExportWidget::on_boundarySelection_currentIndexChanged(int index)
+{
+    emit boundarySelection(index);
+}
+
+void ExportWidget::setModel(QStandardItemModel *theModel)
+{
+    ui->boundarySelection->setModel(theModel);
+    validSourcePresent = true;
 }

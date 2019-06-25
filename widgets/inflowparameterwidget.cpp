@@ -197,7 +197,12 @@ void InflowParameterWidget::sendParameterMap(void)
     QMap<QString, double> data;
     data.clear();
 
+    //
     // populate data map
+    //
+
+    /* for use in inflowProperties file */
+
     double val= double(ui->modelSelectionCBX->currentIndex());
     data.insert("profile",val);
 
@@ -241,7 +246,37 @@ void InflowParameterWidget::sendParameterMap(void)
     data.insert("LvRefDist",ui->refDistLv->value());
     data.insert("LwRefDist",ui->refDistLw->value());
 
+    /* for use in U file */
+
+    if (ui->RB_digitalFilter->isChecked())
+        { data.insert("FilterMethod",0); }
+    else
+        { data.insert("FilterMethod",1); }
+
+    data.insert("shapeFunction",ui->shapeFunction->currentIndex());
+    data.insert("gridFactor",ui->gridFactor->value());
+    data.insert("filterFactor",ui->filterFactor->value());
+
+    data.insert("velocityShape",ui->velocityShape->currentIndex());
+    data.insert("eddieDensity",ui->eddieDensity->value());
+
+    data.insert("intersection0",ui->dir1->value());
+    data.insert("intersection1",ui->dir2->value());
+    data.insert("intersection2",ui->dir3->value());
+    data.insert("yOffset",ui->yOffset->value());
+    data.insert("zOffset",ui->zOffset->value());
+
     // send the parameter map
     emit parametersReady(data);
 }
 
+
+void InflowParameterWidget::on_RB_digitalFilter_clicked()
+{
+    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
+}
+
+void InflowParameterWidget::on_RB_syntheticEddie_clicked()
+{
+    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
+}
