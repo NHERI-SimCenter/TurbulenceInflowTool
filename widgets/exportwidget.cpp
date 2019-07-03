@@ -259,7 +259,7 @@ void ExportWidget::exportUFile(QString fileName)
 
                 break;
             case 1:
-                out << "        type        syntheticEddie;" << endl;
+                out << "        type        syntheticEddy;" << endl;
                 switch (int(theParameters.value("shapeFunction"))) {
                 case 0:
                     out << "        filterShape        gaussian;" << endl;
@@ -273,7 +273,7 @@ void ExportWidget::exportUFile(QString fileName)
                 default:
                     out << "        filterShape        gaussian;" << endl;
                 }
-                out << "        eddieDensity       " << theParameters.value("eddieDensity") << ";" << endl;
+                out << "        eddyDensity       " << theParameters.value("eddyDensity") << ";" << endl;
 
                 break;
             default:
@@ -291,7 +291,7 @@ void ExportWidget::exportUFile(QString fileName)
             if (theMap.contains("filterShape"))  theMap.remove("filterShape");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
             if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
-            if (theMap.contains("eddieDensity")) theMap.remove("eddieDensity");
+            if (theMap.contains("eddyDensity")) theMap.remove("eddyDensity");
 
             if (theMap.contains("intersection"))    theMap.remove("intersection");
             if (theMap.contains("yOffset"))         theMap.remove("yOffset");

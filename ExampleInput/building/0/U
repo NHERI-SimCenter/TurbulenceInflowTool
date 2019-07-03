@@ -20,54 +20,52 @@ internalField   uniform (10 0 0);
 
 boundaryField
 {
-    inlet
+    bottom
     {
-        type            digitalFilter;
-
-        value           $internalField;
-
-        // filter function shape
-        // valid options are exponential and gaussian
-        // default to exponential
-        filterShape     exponential;
-
-        // virtual grid spacing to mesh size ratio
-        // should be no smaller than 1
-        // default to one
-        gridFactor      1;
-
-        // filter width to length scale ratio 
-        // should be a positive even bumber no smaller than 8
-        // default to 8
-        filterFactor    8;
-    }
-
-    outlet
-    {
-        type            zeroGradient;
+        type        syntheticEddie;
+        filterShape        gaussian;
+        eddieDensity       1;
+        intersection       ( 1 0 0 );
+        yOffset            0;
+        zOffset            0;
+        value    uniform (0 0 0);
     }
 
     cylinder
     {
-        type            fixedValue;
-        value           uniform (0 0 0);
+        type    fixedValue;
+        value    uniform (0 0 0);
     }
 
-    top
+    inlet
     {
-        type            slip;
+        filterFactor    4;
+        filterShape    gaussian;
+        gridFactor    1;
+        intersection    ( 1 0 0 );
+        type    digitalFilter;
+        value    $internalField;
+        yOffset    0;
+        zOffset    0;
     }
 
-    bottom
+    outlet
     {
-        type            fixedValue;
-        value           uniform (0 0 0);
+        type    zeroGradient;
     }
 
     side
     {
-        type            slip;
+        type    slip;
     }
+
+    top
+    {
+        type    slip;
+    }
+
 }
 
 // ************************************************************************* //
+
+
