@@ -258,7 +258,7 @@ void InflowParameterWidget::sendParameterMap(void)
     data.insert("filterFactor",ui->filterFactor->value());
 
     data.insert("velocityShape",ui->velocityShape->currentIndex());
-    data.insert("eddieDensity",ui->eddieDensity->value());
+    data.insert("eddyDensity",ui->eddyDensity->value());
 
     data.insert("intersection0",ui->dir1->value());
     data.insert("intersection1",ui->dir2->value());
