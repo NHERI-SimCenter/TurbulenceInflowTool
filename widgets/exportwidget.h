@@ -39,6 +39,7 @@ private:
 
     void exportInflowParameterFile(QString);
     void exportUFile(QString);
+    void exportControlDictFile(QString);
     void clearBoundaryMap(void);
 
     bool hasLocation = false;
@@ -57,6 +58,9 @@ private:
     QByteArray UFileHead = "";
     QByteArray UFileTail = "";
     QMap<QString, QMap<QString, QString> * > boundaries;
+
+    QString ControlDictPath;
+    QByteArray CDictContents = "";
 };
 
 #endif // EXPORTWIDGET_H

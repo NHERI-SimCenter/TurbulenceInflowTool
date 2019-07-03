@@ -39,7 +39,7 @@ void FileWidget::on_sourceLocateBtn_clicked()
     QStringList folders = fileTreeLocation.entryList(QStringList(),QDir::Dirs);
     int stack = folders.length();
 
-    if (folders.contains("0") && folders.contains("constant") ) {
+    if (folders.contains("0") && folders.contains("constant")  && folders.contains("system")) {
         //
         // look for U file
         //
@@ -48,7 +48,15 @@ void FileWidget::on_sourceLocateBtn_clicked()
         UDir.cd("0");
         UFilePath = UDir.filePath("U");
 
-        validSourcePresent = readUfile(UFilePath);
+        //
+        // look for controlDict file
+        //
+
+        QDir CDictDir = fileTreeLocation;
+        CDictDir.cd("system");
+        ControlDictPath = CDictDir.filePath("controlDict");
+
+        validSourcePresent = readUfile(UFilePath) && readControlDict(ControlDictPath);
 
         if (validSourcePresent)
         { ui->sourceLocationDisplay->setStyleSheet("color: #000000;"); }
@@ -144,7 +152,7 @@ void FileWidget::on_sourceLocateBtn_clicked()
 
 bool FileWidget::readUfile(QString filename)
 {
-    QFile UFile(UFilePath);
+    QFile UFile(filename);
 
     if (UFile.exists()) {
         //
@@ -161,6 +169,30 @@ bool FileWidget::readUfile(QString filename)
         // U file missing
         //
         UFileContents = "";
+
+        return false;
+    }
+}
+
+bool FileWidget::readControlDict(QString filename)
+{
+    QFile CDictFile(filename);
+
+    if (CDictFile.exists()) {
+        //
+        // controlDict file exists
+        //
+        CDictFile.open(QFile::ReadOnly);
+        CDictContents = CDictFile.readAll();
+        CDictFile.close();
+
+        return true;
+    }
+    else {
+        //
+        // controlDict file missing
+        //
+        CDictContents = "";
 
         return false;
     }
