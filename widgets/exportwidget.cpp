@@ -317,6 +317,34 @@ void ExportWidget::exportUFile(QString fileName)
     UFile.close();
 }
 
+void ExportWidget::exportControlDictFile(QString fileName)
+{
+    // file handle for the controlDict file
+    QFile CDict(fileName);
+    CDict.open(QFile::ReadOnly);
+    CDictContents = CDict.readAll();
+    CDict.close();
+
+    CDict.open(QFile::WriteOnly);
+    QTextStream out(&CDict);
+
+    QList<QByteArray> CDictList = CDictContents.split('\n');
+    foreach (QByteArray line, CDictList)
+    {
+        if (line.contains("")) {
+            out << "libs" << endl;
+            out << "(" << endl;
+            out << "    \"libturbulentInflow.so\"" << endl;
+            out << ");" << endl;
+            out << endl;
+        }
+
+        out << line << endl;
+    }
+
+    CDict.close();
+}
+
 void ExportWidget::on_btn_export_clicked()
 {
     // time to export :)
@@ -396,6 +424,27 @@ void ExportWidget::on_btn_export_clicked()
 
         // update U file
         this->exportUFile(newFile);
+
+        //
+        // ... controlDict file
+        //
+
+        newLocation = oldLocation;
+        newLocation.cd("systen");
+
+        newFile  = newLocation.absoluteFilePath("controlDict");
+        origFile = newFile + ".orig";
+
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
+
+        qDebug() << "move" << newFile << origFile;
+
+        // update controlDict file
+        this->exportControlDictFile(newFile);
     }
 }
 
