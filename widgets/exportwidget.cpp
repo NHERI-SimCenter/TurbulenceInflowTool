@@ -157,7 +157,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
         out << "// turbulence length scale profile for u component" << endl;
         out << "LuxDict" << endl;
         out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Lux") << ";" << endl;
+        out << "    referenceValue          " << theParameters.value("Lu0") << ";" << endl;
 
         out << "    profile                 " << profile << ";" << endl;
 
@@ -173,7 +173,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
         out << "// turbulence length scale profile for v component" << endl;
         out << "LvxDict" << endl;
         out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Luv") << ";" << endl;
+        out << "    referenceValue          " << theParameters.value("Lv0") << ";" << endl;
 
         out << "    profile                 " << profile << ";" << endl;
 
@@ -190,7 +190,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
         out << "// turbulence length scale profile for w component" << endl;
         out << "LwxDict" << endl;
         out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Luw") << ";" << endl;
+        out << "    referenceValue          " << theParameters.value("Lw0") << ";" << endl;
 
         out << "    profile                 " << profile << ";" << endl;
 
