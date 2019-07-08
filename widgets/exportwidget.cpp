@@ -317,14 +317,15 @@ void ExportWidget::exportUFile(QString fileName)
     UFile.close();
 }
 
-void ExportWidget::exportControlDictFile(QString fileName)
+void ExportWidget::exportControlDictFile(QString origFileName, QString fileName)
 {
     // file handle for the controlDict file
-    QFile CDict(fileName);
-    CDict.open(QFile::ReadOnly);
-    CDictContents = CDict.readAll();
-    CDict.close();
+    QFile CDictIn(origFileName);
+    CDictIn.open(QFile::ReadOnly);
+    CDictContents = CDictIn.readAll();
+    CDictIn.close();
 
+    QFile CDict(fileName);
     CDict.open(QFile::WriteOnly);
     QTextStream out(&CDict);
 
@@ -430,7 +431,7 @@ void ExportWidget::on_btn_export_clicked()
         //
 
         newLocation = oldLocation;
-        newLocation.cd("systen");
+        newLocation.cd("system");
 
         newFile  = newLocation.absoluteFilePath("controlDict");
         origFile = newFile + ".orig";
@@ -444,7 +445,7 @@ void ExportWidget::on_btn_export_clicked()
         qDebug() << "move" << newFile << origFile;
 
         // update controlDict file
-        this->exportControlDictFile(newFile);
+        this->exportControlDictFile(origFile, newFile);
     }
 }
 
