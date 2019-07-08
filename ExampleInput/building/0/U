@@ -22,13 +22,13 @@ boundaryField
 {
     bottom
     {
-        type        syntheticEddie;
-        filterShape        gaussian;
-        eddieDensity       1;
-        intersection       ( 1 0 0 );
-        yOffset            0;
-        zOffset            0;
+        eddieDensity    1;
+        filterShape    gaussian;
+        intersection    ( 1 0 0 );
+        type    syntheticEddie;
         value    uniform (0 0 0);
+        yOffset    0;
+        zOffset    0;
     }
 
     cylinder
@@ -39,14 +39,14 @@ boundaryField
 
     inlet
     {
-        filterFactor    4;
-        filterShape    gaussian;
-        gridFactor    1;
-        intersection    ( 1 0 0 );
-        type    digitalFilter;
+        type               digitalFilter;
+        filterShape        gaussian;
+        filterFactor       4;
+        gridFactor         1;
+        intersection       ( 1 0 0 );
+        yOffset            0;
+        zOffset            0;
         value    $internalField;
-        yOffset    0;
-        zOffset    0;
     }
 
     outlet
@@ -67,5 +67,9 @@ boundaryField
 }
 
 // ************************************************************************* //
+
+
+
+
 
 

@@ -39,7 +39,7 @@ private:
 
     void exportInflowParameterFile(QString);
     void exportUFile(QString);
-    void exportControlDictFile(QString);
+    void exportControlDictFile(QString, QString);
     void clearBoundaryMap(void);
 
     bool hasLocation = false;
