@@ -39,33 +39,212 @@ void InflowParameterWidget::setDefaultParameters()
 {
     this->on_modelSelectionCBX_currentIndexChanged(0);
 
-    /*
-    ui->selectUniform->setChecked(true);
+    theParameters.clear();
 
-    if ( ui->selectUniform->isChecked() ) {
+    /* for use in inflowProperties file */
 
-    }
-    else if ( ui->selectExponential->isChecked() ) {
+    theParameters["profile"] = 0;
 
-    }
-    else {
-        // we should not get here unless there is an issue with the UI
-        qWarning() << "no model type selected.  Please report issue to SimCenter developers";
-    }
-    */
+    theParameters["vel0"] = 1.0;
+    theParameters["refAngleU"] = 0.0;
+    theParameters["refDistU"] = 0.0;
+    theParameters["alphaU"] = 0.0;
 
-    ui->PHI11->setValue(0.1);
-    ui->PHI21->setValue(0.0);
-    ui->PHI31->setValue(0.0);
-    ui->PHI22->setValue(0.1);
-    ui->PHI32->setValue(0.0);
-    ui->PHI33->setValue(0.1);
+    theParameters["alpha0"] = 0.0;
+    theParameters["alpha1"] = 0.0;
+    theParameters["alpha2"] = 0.0;
 
-    ui->alpha1->setValue(0.1);
-    ui->alpha2->setValue(0.1);
-    ui->alpha3->setValue(0.1);
+    theParameters["phi00"] = 0.1;
+    theParameters["phi10"] = 0.0;
+    theParameters["phi20"] = 0.0;
+    theParameters["phi11"] = 0.1;
+    theParameters["phi21"] = 0.0;
+    theParameters["phi22"] = 0.1;
 
-    // NEED MORE ...
+    theParameters["Lu0"] = 1.0;
+    theParameters["Lu10"] = 0.0;
+    theParameters["Lu20"] = 0.0;
+
+    theParameters["Lv0"] = 1.0;
+    theParameters["Lv10"] = 0.0;
+    theParameters["Lv20"] = 0.0;
+
+    theParameters["Lw0"] = 1.0;
+    theParameters["Lw10"] = 0.0;
+    theParameters["Lw20"] = 0.0;
+
+    theParameters["LuAlpha"] = 0.0;
+    theParameters["LvAlpha"] = 0.0;
+    theParameters["LwAlpha"] = 0.0;
+
+    theParameters["LuRefAngle"] = 0.0;
+    theParameters["LvRefAngle"] = 0.0;
+    theParameters["LwRefAngle"] = 0.0;
+
+    theParameters["LuRefDist"] = 0.0;
+    theParameters["LvRefDist"] = 0.0;
+    theParameters["LwRefDist"] = 0.0;
+
+    /* for use in U file */
+
+    theParameters["FilterMethod"] = 0;
+
+    theParameters["shapeFunction"] = 0;
+    theParameters["gridFactor"] = 1.0;
+    theParameters["filterFactor"] = 4;
+
+    theParameters["velocityShape"] = 0;
+    theParameters["eddyDensity"] = 0.0;
+
+    theParameters["intersection0"] = 0.0;
+    theParameters["intersection1"] = 1.0;
+    theParameters["intersection2"] = 0.0;
+    theParameters["yOffset"] = 0.0;
+    theParameters["zOffset"] = 0.0;
+
+    hasParameters = true;
+
+    refreshDisplay();
+}
+
+void InflowParameterWidget::refreshParameterMap(void)
+{
+    // collect data
+    theParameters.clear();
+
+    //
+    // populate theParameters map
+    //
+
+    /* for use in inflowProperties file */
+
+    theParameters.insert("profile",double(ui->modelSelectionCBX->currentIndex()));
+
+    theParameters.insert("vel0",ui->vel->value());
+    theParameters.insert("refAngleU",ui->refAngleU->value());
+    theParameters.insert("refDistU",ui->refDistU->value());
+    theParameters.insert("alphaU",ui->alphaU->value());
+
+    theParameters.insert("alpha0",ui->alpha1->value());
+    theParameters.insert("alpha1",ui->alpha2->value());
+    theParameters.insert("alpha2",ui->alpha3->value());
+
+    theParameters.insert("phi00",ui->PHI11->value());
+    theParameters.insert("phi10",ui->PHI21->value());
+    theParameters.insert("phi20",ui->PHI31->value());
+    theParameters.insert("phi11",ui->PHI22->value());
+    theParameters.insert("phi21",ui->PHI23->value());
+    theParameters.insert("phi22",ui->PHI33->value());
+
+    theParameters.insert("Lu0",ui->Lux->value());
+    theParameters.insert("Lu10",ui->LuyLux->value());
+    theParameters.insert("Lu20",ui->LuzLux->value());
+
+    theParameters.insert("Lv0",ui->Lvx->value());
+    theParameters.insert("Lv10",ui->LvyLvx->value());
+    theParameters.insert("Lv20",ui->LvzLvx->value());
+
+    theParameters.insert("Lw0",ui->Lwx->value());
+    theParameters.insert("Lw10",ui->LwyLwx->value());
+    theParameters.insert("Lw20",ui->LwzLwx->value());
+
+    theParameters.insert("LuAlpha",ui->LuAlpha->value());
+    theParameters.insert("LvAlpha",ui->LvAlpha->value());
+    theParameters.insert("LwAlpha",ui->LwAlpha->value());
+
+    theParameters.insert("LuRefAngle",ui->refAngleLu->value());
+    theParameters.insert("LvRefAngle",ui->refAngleLv->value());
+    theParameters.insert("LwRefAngle",ui->refAngleLw->value());
+
+    theParameters.insert("LuRefDist",ui->refDistLu->value());
+    theParameters.insert("LvRefDist",ui->refDistLv->value());
+    theParameters.insert("LwRefDist",ui->refDistLw->value());
+
+    /* for use in U file */
+
+    if (ui->RB_digitalFilter->isChecked())
+        { theParameters.insert("FilterMethod",0); }
+    else
+        { theParameters.insert("FilterMethod",1); }
+
+    theParameters.insert("shapeFunction",ui->shapeFunction->currentIndex());
+    theParameters.insert("gridFactor",ui->gridFactor->value());
+    theParameters.insert("filterFactor",ui->filterFactor->value());
+
+    theParameters.insert("velocityShape",ui->velocityShape->currentIndex());
+    theParameters.insert("eddyDensity",ui->eddyDensity->value());
+
+    theParameters.insert("intersection0",ui->dir1->value());
+    theParameters.insert("intersection1",ui->dir2->value());
+    theParameters.insert("intersection2",ui->dir3->value());
+    theParameters.insert("yOffset",ui->yOffset->value());
+    theParameters.insert("zOffset",ui->zOffset->value());
+
+    hasParameters = true;
+}
+
+void InflowParameterWidget::refreshDisplay(void)
+{
+    /* for use in inflowProperties file */
+
+    ui->modelSelectionCBX->setCurrentIndex(int(theParameters.value("profile")));
+
+    ui->vel->setValue(theParameters.value("vel0"));
+    ui->refAngleU->setValue(theParameters.value("refAngleU"));
+    ui->refDistU->setValue(theParameters.value("refDistU"));
+    ui->alphaU->setValue(theParameters.value("alphaU"));
+
+    ui->alpha1->setValue(theParameters.value("alpha0"));
+    ui->alpha2->setValue(theParameters.value("alpha1"));
+    ui->alpha3->setValue(theParameters.value("alpha2"));
+
+    ui->PHI11->setValue(theParameters.value("phi00"));
+    ui->PHI21->setValue(theParameters.value("phi10"));
+    ui->PHI31->setValue(theParameters.value("phi20"));
+    ui->PHI22->setValue(theParameters.value("phi11"));
+    ui->PHI23->setValue(theParameters.value("phi21"));
+    ui->PHI33->setValue(theParameters.value("phi22"));
+
+    ui->Lux->setValue(theParameters.value("Lu0"));
+    ui->LuyLux->setValue(theParameters.value("Lu10"));
+    ui->LuzLux->setValue(theParameters.value("Lu20"));
+
+    ui->Lvx->setValue(theParameters.value("Lv0"));
+    ui->LvyLvx->setValue(theParameters.value("Lv10"));
+    ui->LvzLvx->setValue(theParameters.value("Lv20"));
+
+    ui->Lwx->setValue(theParameters.value("Lw0"));
+    ui->LwyLwx->setValue(theParameters.value("Lw10"));
+    ui->LwzLwx->setValue(theParameters.value("Lw20"));
+
+    ui->LuAlpha->setValue(theParameters.value("LuAlpha"));
+    ui->LvAlpha->setValue(theParameters.value("LvAlpha"));
+    ui->LwAlpha->setValue(theParameters.value("LwAlpha"));
+
+    ui->refAngleLu->setValue(theParameters.value("LuRefAngle"));
+    ui->refAngleLv->setValue(theParameters.value("LvRefAngle"));
+    ui->refAngleLw->setValue(theParameters.value("LwRefAngle"));
+
+    ui->refDistLu->setValue(theParameters.value("LuRefDist"));
+    ui->refDistLv->setValue(theParameters.value("LvRefDist"));
+    ui->refDistLw->setValue(theParameters.value("LwRefDist"));
+
+    /* for use in U file */
+
+    ui->RB_digitalFilter->setChecked(int(theParameters.value("FilterMethod"))==0?true:false);
+
+    ui->shapeFunction->setCurrentIndex(int(theParameters.value("shapeFunction")));
+    ui->gridFactor->setValue(theParameters.value("gridFactor"));
+    ui->filterFactor->setValue(int(theParameters.value("filterFactor")));
+
+    ui->velocityShape->setCurrentIndex(int(theParameters.value("velocityShape")));
+    ui->eddyDensity->setValue(theParameters.value("eddyDensity"));
+
+    ui->dir1->setValue(theParameters.value("intersection0"));
+    ui->dir2->setValue(theParameters.value("intersection1"));
+    ui->dir3->setValue(theParameters.value("intersection2"));
+    ui->yOffset->setValue(theParameters.value("yOffset"));
+    ui->zOffset->setValue(theParameters.value("zOffset"));
 }
 
 void InflowParameterWidget::on_PHI21_valueChanged(double arg1)
@@ -193,78 +372,10 @@ void InflowParameterWidget::setExponentialTurbulent(void)
 
 void InflowParameterWidget::sendParameterMap(void)
 {
+    this->refreshParameterMap();
+
     // collect data
-    QMap<QString, double> data;
-    data.clear();
-
-    //
-    // populate data map
-    //
-
-    /* for use in inflowProperties file */
-
-    double val= double(ui->modelSelectionCBX->currentIndex());
-    data.insert("profile",val);
-
-    data.insert("vel0",ui->vel->value());
-    data.insert("refAngleU",ui->refAngleU->value());
-    data.insert("refDistU",ui->refDistU->value());
-    data.insert("alphaU",ui->alphaU->value());
-
-    data.insert("alpha0",ui->alpha1->value());
-    data.insert("alpha1",ui->alpha2->value());
-    data.insert("alpha2",ui->alpha3->value());
-
-    data.insert("phi00",ui->PHI11->value());
-    data.insert("phi10",ui->PHI21->value());
-    data.insert("phi20",ui->PHI31->value());
-    data.insert("phi11",ui->PHI22->value());
-    data.insert("phi21",ui->PHI23->value());
-    data.insert("phi22",ui->PHI33->value());
-
-    data.insert("Lu0",ui->Lux->value());
-    data.insert("Lu10",ui->LuyLux->value());
-    data.insert("Lu20",ui->LuzLux->value());
-
-    data.insert("Lv0",ui->Lvx->value());
-    data.insert("Lv10",ui->LvyLvx->value());
-    data.insert("Lv20",ui->LvzLvx->value());
-
-    data.insert("Lw0",ui->Lwx->value());
-    data.insert("Lw10",ui->LwyLwx->value());
-    data.insert("Lw20",ui->LwzLwx->value());
-
-    data.insert("LuAlpha",ui->LuAlpha->value());
-    data.insert("LvAlpha",ui->LvAlpha->value());
-    data.insert("LwAlpha",ui->LwAlpha->value());
-
-    data.insert("LuRefAngle",ui->refAngleLu->value());
-    data.insert("LvRefAngle",ui->refAngleLv->value());
-    data.insert("LwRefAngle",ui->refAngleLw->value());
-
-    data.insert("LuRefDist",ui->refDistLu->value());
-    data.insert("LvRefDist",ui->refDistLv->value());
-    data.insert("LwRefDist",ui->refDistLw->value());
-
-    /* for use in U file */
-
-    if (ui->RB_digitalFilter->isChecked())
-        { data.insert("FilterMethod",0); }
-    else
-        { data.insert("FilterMethod",1); }
-
-    data.insert("shapeFunction",ui->shapeFunction->currentIndex());
-    data.insert("gridFactor",ui->gridFactor->value());
-    data.insert("filterFactor",ui->filterFactor->value());
-
-    data.insert("velocityShape",ui->velocityShape->currentIndex());
-    data.insert("eddyDensity",ui->eddyDensity->value());
-
-    data.insert("intersection0",ui->dir1->value());
-    data.insert("intersection1",ui->dir2->value());
-    data.insert("intersection2",ui->dir3->value());
-    data.insert("yOffset",ui->yOffset->value());
-    data.insert("zOffset",ui->zOffset->value());
+    QMap<QString, double> data(theParameters);
 
     // send the parameter map
     emit parametersReady(data);

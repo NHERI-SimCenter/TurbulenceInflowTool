@@ -2,6 +2,7 @@
 #define INFLOWPARAMETERWIDGET_H
 
 #include <QFrame>
+#include <QMap>
 
 namespace Ui {
 class InflowParameterWidget;
@@ -33,8 +34,13 @@ private slots:
 private:
     void setUniformTurbulent(void);
     void setExponentialTurbulent(void);
+    void refreshParameterMap(void);
+    void refreshDisplay(void);
 
     Ui::InflowParameterWidget *ui;
+
+    QMap<QString, double> theParameters;
+    bool hasParameters = false;
 };
 
 #endif // INFLOWPARAMETERWIDGET_H
