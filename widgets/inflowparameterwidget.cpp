@@ -50,6 +50,9 @@ void InflowParameterWidget::setDefaultParameters()
     theParameters["refDistU"] = 1.0;
     theParameters["alphaU"] = 0.0;
 
+    theParameters["refAnglePHI"] = 0.0;
+    theParameters["refDistPHI"] = 1.0;
+
     theParameters["alpha0"] = 0.0;
     theParameters["alpha1"] = 0.0;
     theParameters["alpha2"] = 0.0;
@@ -125,6 +128,9 @@ void InflowParameterWidget::refreshParameterMap(void)
     theParameters.insert("refDistU",ui->refDistU->value());
     theParameters.insert("alphaU",ui->alphaU->value());
 
+    theParameters.insert("refAnglePHI",ui->refAnglePHI->value());
+    theParameters.insert("refDistPHI",ui->refDistPHI->value());
+
     theParameters.insert("alpha0",ui->alpha1->value());
     theParameters.insert("alpha1",ui->alpha2->value());
     theParameters.insert("alpha2",ui->alpha3->value());
@@ -193,6 +199,9 @@ void InflowParameterWidget::refreshDisplay(void)
     ui->refAngleU->setValue(theParameters.value("refAngleU"));
     ui->refDistU->setValue(theParameters.value("refDistU"));
     ui->alphaU->setValue(theParameters.value("alphaU"));
+
+    ui->refAnglePHI->setValue(theParameters.value("refAnglePHI"));
+    ui->refDistPHI->setValue(theParameters.value("refDistPHI"));
 
     ui->alpha1->setValue(theParameters.value("alpha0"));
     ui->alpha2->setValue(theParameters.value("alpha1"));
