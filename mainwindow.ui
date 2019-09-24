@@ -215,7 +215,12 @@
      <string>Help</string>
     </property>
     <addaction name="action_About"/>
+    <addaction name="action_Version"/>
     <addaction name="action_Documentation"/>
+    <addaction name="actionProvide_feeback"/>
+    <addaction name="actionSubmit_Feature_Request"/>
+    <addaction name="actionHow_to_cite"/>
+    <addaction name="actionLicense"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
@@ -258,13 +263,56 @@
    <property name="text">
     <string>&amp;Quit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="action_Documentation">
    <property name="text">
-    <string>&amp;Documentation</string>
+    <string>&amp;Manual</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionLicense">
+   <property name="text">
+    <string>&amp;License</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionHow_to_cite">
+   <property name="text">
+    <string>How to Ci&amp;te</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionProvide_feeback">
+   <property name="text">
+    <string>Provide &amp;Feeback</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionSubmit_Feature_Request">
+   <property name="text">
+    <string>Submit Feature &amp;Request</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="action_Version">
+   <property name="text">
+    <string>&amp;Version</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

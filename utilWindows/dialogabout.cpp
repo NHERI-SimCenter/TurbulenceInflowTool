@@ -46,7 +46,7 @@ DialogAbout::DialogAbout(QString versionText, QWidget *parent) :
     {
         ui->aboutTextBrowser->setHtml(file.readAll());
     }
-    QString versionString = "About Version ";
+    QString versionString = "About ";
     versionString = versionString.append(versionText);
     ui->label_about->setText(versionString);
 }
