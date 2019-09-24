@@ -5,6 +5,9 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QRect>
+#include <QMessageBox>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <QStandardItemModel>
 #include <QDebug>
@@ -16,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->headerWidget->setHeadingText("Turbulent Inflow Adjustment Tool for OpenFOAM");
+    ui->headerWidget->setHeadingText("Turbulent Inflow Tool");
 
     standardModel = new CustomizedItemModel(); //QStandardItemModel ;
     QStandardItem *rootNode = standardModel->invisibleRootItem();
@@ -97,6 +100,70 @@ MainWindow::MainWindow(QWidget *parent) :
     int height = this->height()<0.65*rec.height()?int(0.65*rec.height()):this->height();
     int width  = this->width()<0.65*rec.width()?int(0.65*rec.width()):this->width();
     this->resize(width, height);
+
+    // setting text
+    versionText = "Turbulent Inflow Tool - Version 1.0.0";
+    citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, Frank McKenna. (2019, Sept 30). NHERI-SimCenter/TurbulentInflowTool: Release v1.0.0 (Version v1.0.0). Zenodo. http://doi.org/...";
+    manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulentInflowTool/";
+    manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulantInflowTool/";
+    feedbackURL = "https://docs.google.com/forms/d/e/1FAIpQLSfh20kBxDmvmHgz9uFwhkospGLCeazZzL770A2GuYZ2KgBZBA/viewform";
+    featureRequestURL = "https://docs.google.com/forms/d/e/1FAIpQLScTLkSwDjPNzH8wx8KxkyhoIT7AI9KZ16Wg9TuW1GOhSYFOag/viewform";
+    copyrightText = QString("\
+                            <p>\
+                            The source code is licensed under a BSD 2-Clause License:<p>\
+                            \"Copyright (c) 2017-2018, The Regents of the University of California (Regents).\"\
+                            All rights reserved.<p>\
+                            <p>\
+                            Redistribution and use in source and binary forms, with or without \
+                            modification, are permitted provided that the following conditions are met:\
+                            <p>\
+                            1. Redistributions of source code must retain the above copyright notice, this\
+                            list of conditions and the following disclaimer.\
+                            \
+                            \
+                            2. Redistributions in binary form must reproduce the above copyright notice,\
+                            this list of conditions and the following disclaimer in the documentation\
+                            and/or other materials provided with the distribution.\
+                            <p>\
+                            THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND\
+                            ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\
+                            WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\
+                            DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR\
+                            ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\
+                            (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\
+                            LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\
+            ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\
+            (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\
+            SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\
+            <p>\
+            The views and conclusions contained in the software and documentation are those\
+            of the authors and should not be interpreted as representing official policies,\
+            either expressed or implied, of the FreeBSD Project.\
+            <p>\
+            REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, \
+            THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.\
+            THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS \
+            PROVIDED \"AS IS\". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,\
+            UPDATES, ENHANCEMENTS, OR MODIFICATIONS.\
+            <p>\
+            ------------------------------------------------------------------------------------\
+            <p>\
+            The compiled binary form of this application is licensed under a GPL Version 3 license.\
+            The licenses are as published by the Free Software Foundation and appearing in the LICENSE file\
+            included in the packaging of this application. \
+            <p>\
+            ------------------------------------------------------------------------------------\
+            <p>\
+            This software makes use of the QT packages (unmodified): core, gui, widgets and network\
+                                                                     <p>\
+                                                                     QT is copyright \"The Qt Company Ltd&quot; and licensed under the GNU Lesser General \
+                                                                     Public License (version 3) which references the GNU General Public License (version 3)\
+      <p>\
+      The licenses are as published by the Free Software Foundation and appearing in the LICENSE file\
+      included in the packaging of this application. \
+      <p>\
+      ");
+
 }
 
 MainWindow::~MainWindow()
@@ -111,7 +178,7 @@ void MainWindow::on_action_Quit_triggered()
 
 void MainWindow::on_action_About_triggered()
 {
-    DialogAbout *dlg = new DialogAbout("0.9");
+    DialogAbout *dlg = new DialogAbout(versionText);
 
     //
     // adjust size of application window to the available display
@@ -168,8 +235,11 @@ MainWindow::selectionChangedSlot(const QItemSelection & /*newSelection*/, const 
 
 void MainWindow::on_action_Documentation_triggered()
 {
-    HelpWindow *help = new HelpWindow();
-    help->show();
+    QDesktopServices::openUrl(QUrl(manualURL, QUrl::TolerantMode));
+    //QDesktopServices::openUrl(QUrl("https://www.designsafe-ci.org/help/new-ticket/", QUrl::TolerantMode));
+
+    //HelpWindow *help = new HelpWindow();
+    //help->show();
 }
 
 
@@ -179,4 +249,46 @@ void MainWindow::fetchUFileData(bool, QDir &)
     {
         ui->exportWidget->setUFileData(head, tail, data);
     }
+}
+
+void MainWindow::on_actionLicense_triggered()
+{
+    QMessageBox msgBox;
+    QSpacerItem *theSpacer = new QSpacerItem(700, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    msgBox.setText(copyrightText);
+    QGridLayout *layout = (QGridLayout*)msgBox.layout();
+    layout->addItem(theSpacer, layout->rowCount(),0,1,layout->columnCount());
+    msgBox.exec();
+}
+
+void MainWindow::on_actionHow_to_cite_triggered()
+{
+    QMessageBox msgBox;
+    QSpacerItem *theSpacer = new QSpacerItem(700, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    msgBox.setText(citeText);
+    QGridLayout *layout = (QGridLayout*)msgBox.layout();
+    layout->addItem(theSpacer, layout->rowCount(),0,1,layout->columnCount());
+    msgBox.exec();
+}
+
+void MainWindow::on_actionProvide_feeback_triggered()
+{
+    QDesktopServices::openUrl(QUrl(feedbackURL, QUrl::TolerantMode));
+    //QDesktopServices::openUrl(QUrl("https://www.designsafe-ci.org/help/new-ticket/", QUrl::TolerantMode));
+}
+
+void MainWindow::on_actionSubmit_Feature_Request_triggered()
+{
+    QDesktopServices::openUrl(QUrl(featureRequestURL, QUrl::TolerantMode));
+    //QDesktopServices::openUrl(QUrl("https://www.designsafe-ci.org/help/new-ticket/", QUrl::TolerantMode));
+}
+
+void MainWindow::on_action_Version_triggered()
+{
+    QMessageBox msgBox;
+    QSpacerItem *theSpacer = new QSpacerItem(700, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    msgBox.setText(versionText);
+    QGridLayout *layout = (QGridLayout*)msgBox.layout();
+    layout->addItem(theSpacer, layout->rowCount(),0,1,layout->columnCount());
+    msgBox.exec();
 }

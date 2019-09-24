@@ -35,6 +35,16 @@ private slots:
     void selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSelection &/*oldSelection*/);
     void on_action_Documentation_triggered();
 
+    void on_actionLicense_triggered();
+
+    void on_actionHow_to_cite_triggered();
+
+    void on_actionProvide_feeback_triggered();
+
+    void on_actionSubmit_Feature_Request_triggered();
+
+    void on_action_Version_triggered();
+
 public slots:
     void fetchUFileData(bool, QDir &);
 
@@ -47,6 +57,13 @@ private:
     QByteArray head;
     QByteArray tail;
     QMap<QString, QMap<QString, QString> * > data;
+
+    QString citeText;
+    QString versionText;
+    QString feedbackURL;
+    QString featureRequestURL;
+    QString manualURL;
+    QString copyrightText;
 };
 
 #endif // MAINWINDOW_H
