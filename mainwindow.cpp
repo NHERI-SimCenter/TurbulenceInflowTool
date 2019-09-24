@@ -8,6 +8,10 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QFileDialog>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QDateTime>
 
 #include <QStandardItemModel>
 #include <QDebug>
@@ -102,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->resize(width, height);
 
     // setting text
-    versionText = "Turbulent Inflow Tool - Version 1.0.0";
+    versionText = "Turbulent Inflow Tool - Version " + QString(APP_VERSION);
     citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, Frank McKenna. (2019, Sept 30). NHERI-SimCenter/TurbulentInflowTool: Release v1.0.0 (Version v1.0.0). Zenodo. http://doi.org/...";
     manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulentInflowTool/";
     manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulantInflowTool/";
@@ -194,22 +198,141 @@ void MainWindow::on_action_About_triggered()
 
 void MainWindow::on_action_New_triggered()
 {
-
+    ui->inflowWidget->reset();
 }
 
 void MainWindow::on_action_Open_triggered()
 {
+    /* identify filename and location for loading */
+
+    QString theFolder = QDir::homePath();
+    QString theFilter = "Json file (*.json)";
+    QFileDialog dlg;
+
+    QString filename = dlg.getOpenFileName(this, "Load file", theFolder, theFilter);
+
+    qWarning() << filename;
+
+    /* load JSON object from file */
+    QFile loadFile;
+    loadFile.setFileName(filename);
+
+    if (!loadFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox msg(QMessageBox::Information, "Info", "Could not open file.");
+        msg.exec();
+        return;
+    }
+
+    QString theFile = loadFile.readAll();
+    loadFile.close();
+
+    bool sourceValid = false;
+
+    QJsonDocument infoDoc = QJsonDocument::fromJson(theFile.toUtf8());
+
+    /* start a JSON object to represent the system */
+    QJsonObject json = infoDoc.object();
+
+    QString creator;
+    creator  = json["creator"].toString();
+
+    if (creator == "TurbulentInflowTool") sourceValid = true;
+
+    QString version;
+    version  = json["version"].toString();
+
+    bool versionValid = false;
+    if (version.startsWith("1.") ) versionValid = true;
+    //if (version.startsWith("2.0") ) versionValid = true;
+    //if (version.startsWith("2.1") ) versionValid = true;
+
+    if (sourceValid && versionValid) {
+
+        QString username;
+        username = json["username"].toString();
+        QString author;
+        author   = json["author"].toString();
+        QString filedate;
+        filedate = json["date"].toString();
+
+        /* read parameter information and update UI */
+
+        if (version.startsWith("1.0"))
+        {
+            if (json.contains("parameters")) {
+                QJsonObject params = json["parameters"].toObject();
+                ui->inflowWidget->inputFromJSON(params);
+            }
+        }
+        else
+        {
+            QMessageBox msg(QMessageBox::Information, "Info", "Could not read file: invalid Version");
+            msg.exec();
+        }
+    }
+    else
+    {
+        QMessageBox msg(QMessageBox::Information, "Info", "Not a valid model file.");
+        msg.exec();
+    }
 
 }
 
 void MainWindow::on_action_Save_triggered()
 {
+    /* identify filename and location for saving */
 
-}
+    QString path = QDir::homePath();
+    QDir d;
+    d.setPath(path);
+    QString filename = d.filePath("TurbulentInflowTool.json");
+    QString theFilter = "Json file (*.json)";
+    QFileDialog dlg;
 
-void MainWindow::on_actionSave_As_triggered()
-{
+    filename = dlg.getSaveFileName(this, "Save file", filename, theFilter );
 
+    // check if cancelled
+    if (!filename.isEmpty())
+    {
+        /* start a JSON object to represent the system */
+        QJsonObject *json = new QJsonObject();
+
+        json->insert("creator", QString("TurbulentInflowTool"));
+        json->insert("version", QString(APP_VERSION));
+#ifdef Q_OS_WIN
+        QString username = qgetenv("USERNAME");
+#else
+        QString username = qgetenv("USER");
+#endif
+        json->insert("author", username);
+        json->insert("date", QDateTime::currentDateTime().toString());
+
+        QJsonObject params;
+
+        ui->inflowWidget->outputToJSON(params);
+
+        json->insert("parameters", params);
+
+        QJsonDocument infoDoc = QJsonDocument(*json);
+
+        /* write JSON object to file */
+
+        QFile saveFile( filename );
+
+        if (saveFile.open(QIODevice::WriteOnly)) {
+
+            saveFile.write( infoDoc.toJson() );
+            saveFile.close();
+        }
+        else
+        {
+            QMessageBox msg(QMessageBox::Information, "Info", "Could not save to file.");
+            msg.exec();
+        }
+
+        // clean up
+        delete json;
+    }
 }
 
 void MainWindow::on_btn_selectSource_clicked()
@@ -292,3 +415,4 @@ void MainWindow::on_action_Version_triggered()
     layout->addItem(theSpacer, layout->rowCount(),0,1,layout->columnCount());
     msgBox.exec();
 }
+
