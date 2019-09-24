@@ -4,6 +4,7 @@
 #include "math.h"
 
 #include <QFileDialog>
+#include <QJsonObject>
 #include <QDebug>
 
 InflowParameterWidget::InflowParameterWidget(QWidget *parent) :
@@ -13,6 +14,9 @@ InflowParameterWidget::InflowParameterWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->sourceGroup->hide();
     setDefaultParameters();
+
+    theParameters.clear();
+    hasParameters = false;
 }
 
 InflowParameterWidget::~InflowParameterWidget()
@@ -241,6 +245,7 @@ void InflowParameterWidget::refreshDisplay(void)
     /* for use in U file */
 
     ui->RB_digitalFilter->setChecked(int(theParameters.value("FilterMethod"))==0?true:false);
+    ui->RB_syntheticEddie->setChecked(int(theParameters.value("FilterMethod"))==1?true:false);
 
     ui->shapeFunction->setCurrentIndex(int(theParameters.value("shapeFunction")));
     ui->gridFactor->setValue(theParameters.value("gridFactor"));
@@ -399,4 +404,49 @@ void InflowParameterWidget::on_RB_digitalFilter_clicked()
 void InflowParameterWidget::on_RB_syntheticEddie_clicked()
 {
     ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
+}
+
+
+bool InflowParameterWidget::outputToJSON(QJsonObject &rvObject)
+{
+    refreshParameterMap();
+
+    // just need to send the class type here.. type needed in object in case user screws up
+    rvObject["type"]="CFD-Inflow";
+
+    rvObject["EventClassification"]="Wind";
+
+    foreach (QString key, theParameters.keys())
+    {
+        rvObject[key] = theParameters.value(key);
+    }
+
+    return true;
+}
+
+bool InflowParameterWidget::inputFromJSON(QJsonObject &rvObject)
+{
+    // initialize theParameters to reflect all properties
+    refreshParameterMap();
+
+    // update theParameters using information from the JSON file
+    foreach (QString key, theParameters.keys())
+    {
+        if (rvObject.contains(key)) {
+          QJsonValue theValue = rvObject[key];
+          theParameters[key] = theValue.toDouble();
+        }
+        else
+          return false;
+    }
+
+    // update parameter values
+    refreshDisplay();
+
+    return true;
+}
+
+void InflowParameterWidget::reset(void)
+{
+    setDefaultParameters();
 }

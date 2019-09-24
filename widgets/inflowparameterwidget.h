@@ -17,6 +17,11 @@ public:
     ~InflowParameterWidget();
     void selectSourceLocation(void);
 
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
+
+    void reset(void);
+
 signals:
     void parametersReady(QMap<QString, double> &);
 

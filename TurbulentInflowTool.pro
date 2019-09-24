@@ -10,6 +10,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = TurbulentInflowTool
 TEMPLATE = app
+VERSION  = 1.0.0
+
+PRODUCT_NAME = 'TurbulentInflowTool'
+
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+
+
 
 win32 {
     RC_ICONS = icons/NHERI-TInF-icon.ico
