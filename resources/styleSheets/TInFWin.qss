@@ -13,6 +13,11 @@ QDoubleSpinBox {
     padding: 5px;
 }
 
+QGroupBox {
+    font: bold 11pt;
+    padding-top: 40px;
+}
+
 QComboBox {
     font: 11pt;
     padding: 5px;
@@ -29,6 +34,7 @@ QCheckBox {
 }
 
 QPushButton {
+    font: 11pt;
     color: white;
     border-style: outset;
     background-color: #64B5F6;
@@ -91,8 +97,13 @@ QComboBox QAbstractItemView {
 
 
 QLineEdit {
+    font: 11pt;
     background-color: #E0E0E0;
     border-radius: 5px;
+}
+
+QRadioButton {
+    font: 11pt;
 }
 
 QSpinBox {
@@ -167,151 +178,14 @@ QLabel#propertiesTitle {
     font-weight: bold;
 }
 
-QLabel#vizTitle {
-    font-size: 12px;
-    font-weight: bold;
-}
 
-QLabel#outTitle {
-    font: bold 10pt;
-    font-weight: bold;
-}
-
-QLabel#inTitle {
-    font: bold 10pt;
-    font-weight: bold;
-}
-
-QLabel#labelChangingLayer {
-    font-size: 8pt;
-    font-weight: bold;
-}
-
-QLabel#labelLayerProperties {
-    font-size: 8pt;
-    font-weight: bold;
-}
 
 /*
 * ======= <SECTION LABEL STYLES> =======
 */
 
-QFrame#line {
-    background-color: #B0BEC5;
-    border:none;
-}
-
-QFrame#line2 {
-    background-color: #B0BEC5;
-    border:none;
-}
-
-QFrame#inputMotion {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-
-QFrame#firstOutput {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#outputDataFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#mainProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#floorMassFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#storyPropertiesFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#outputDataFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#pushButtons {
-    border:none;
-}
-
-QFrame#layerSelection {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#propertiesFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#pileProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#soilProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#forceFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#loadProperties {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#pushOverFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#soilMotionFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
-
-QFrame#loadSelectionFrame {
-    background-color: #FFFFFF;
-    border:none;
-}
 
 QLabel#pilePropertyLabel {
-    font-weight: bold;
-}
-
-QLabel#label_GWT {
-    font-weight: bold;
-}
-
-QLabel#label_Layers {
-    font-weight: bold;
-}
-
-QLabel#label_LoadControl {
-    font-weight: bold;
-}
-
-QLabel#label_DisplayGraphics {
-    font-weight: bold;
-}
-
-QLabel#label_FEAparameters {
     font-weight: bold;
 }
 

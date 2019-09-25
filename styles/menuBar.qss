@@ -1,7 +1,6 @@
-/* ---   Styles for EE-UQ    --- */
-/* --- Written: charles.wang --- */
-
-
+/* ---    Styles for EE-UQ    --- */
+/* --- Written:  charles.wang --- */
+/* --- modified: Peter Mackenzie-Helnwein --- */
 
 /* --- The menu buttons on the left --- */
 
@@ -9,7 +8,7 @@ QTreeView#treeViewOnTheLeft{
     background: rgb(79, 83, 89);
 
     /* set the font properties*/
-    font-size:17px;
+    font-size: 15pt;
     color: white;
 }
 

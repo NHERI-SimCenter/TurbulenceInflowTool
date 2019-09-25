@@ -12,6 +12,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QDateTime>
+#include <QTextBrowser>
 
 #include <QStandardItemModel>
 #include <QDebug>
@@ -44,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setModel(standardModel);
     ui->treeView->expandAll();
     ui->treeView->setHeaderHidden(true);
-    ui->treeView->setMinimumWidth(110);
-    ui->treeView->setMaximumWidth(110);
-    ui->treeView->setMinimumWidth(110);
+    //ui->treeView->setMinimumWidth(110);
+    //ui->treeView->setMaximumWidth(110);
+    //ui->treeView->setMinimumWidth(110);
 
     //Disable Edit for the TreeView
     ui->treeView->setEditTriggers(QTreeView::EditTrigger::NoEditTriggers);
@@ -135,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
                             DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR\
                             ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\
                             (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\
-                            LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\
+            LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\
             ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\
             (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\
             SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\
@@ -162,10 +163,10 @@ MainWindow::MainWindow(QWidget *parent) :
                                                                      <p>\
                                                                      QT is copyright \"The Qt Company Ltd&quot; and licensed under the GNU Lesser General \
                                                                      Public License (version 3) which references the GNU General Public License (version 3)\
-      <p>\
-      The licenses are as published by the Free Software Foundation and appearing in the LICENSE file\
-      included in the packaging of this application. \
-      <p>\
+            <p>\
+            The licenses are as published by the Free Software Foundation and appearing in the LICENSE file\
+            included in the packaging of this application. \
+            <p>\
       ");
 
 }
@@ -376,11 +377,19 @@ void MainWindow::fetchUFileData(bool, QDir &)
 
 void MainWindow::on_actionLicense_triggered()
 {
-    QMessageBox msgBox;
-    QSpacerItem *theSpacer = new QSpacerItem(700, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    msgBox.setText(copyrightText);
-    QGridLayout *layout = (QGridLayout*)msgBox.layout();
-    layout->addItem(theSpacer, layout->rowCount(),0,1,layout->columnCount());
+    QDialog msgBox;
+    QTextBrowser *theBrowser = new QTextBrowser();
+    theBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    theBrowser->setText(copyrightText);
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(theBrowser);
+    msgBox.setLayout(layout);
+
+    QRect rec = QGuiApplication::primaryScreen()->geometry();
+    int height = this->height()<0.80*rec.height()?int(0.80*rec.height()):this->height();
+    int width  = this->width()<0.65*rec.width()?int(0.65*rec.width()):this->width();
+    msgBox.resize(width, height);
+
     msgBox.exec();
 }
 
@@ -391,6 +400,7 @@ void MainWindow::on_actionHow_to_cite_triggered()
     msgBox.setText(citeText);
     QGridLayout *layout = (QGridLayout*)msgBox.layout();
     layout->addItem(theSpacer, layout->rowCount(),0,1,layout->columnCount());
+
     msgBox.exec();
 }
 
