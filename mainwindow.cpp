@@ -45,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setModel(standardModel);
     ui->treeView->expandAll();
     ui->treeView->setHeaderHidden(true);
-    ui->treeView->setMinimumWidth(110);
-    ui->treeView->setMaximumWidth(110);
-    ui->treeView->setMinimumWidth(110);
+    //ui->treeView->setMinimumWidth(110);
+    //ui->treeView->setMaximumWidth(110);
+    //ui->treeView->setMinimumWidth(110);
 
     //Disable Edit for the TreeView
     ui->treeView->setEditTriggers(QTreeView::EditTrigger::NoEditTriggers);
