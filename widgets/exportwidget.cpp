@@ -52,8 +52,8 @@ void ExportWidget::setLocationAvailable(bool status, QDir &loc)
     }
     else {
         hasLocation = false;
-        oldLocation = QDir::homePath();
-        newLocation = QDir::homePath();
+        oldLocation.setPath(QDir::homePath());
+        newLocation.setPath(QDir::homePath());
     }
 }
 
