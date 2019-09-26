@@ -6,7 +6,7 @@ QPushButton {
     border-width: 1px;
     border-radius: 5px;
     border-color: #607D8B;
-    font: bold 15 px;
+    font: bold 15pt;
     padding: 3px;
 }
 
@@ -78,7 +78,9 @@ QDoubleSpinBox {
 /*
  * ======= <HEADER AND FOOTER> =======
  */
+
 QGroupBox {
+    font: bold 13pt;
     padding-top: 3ex;
     background-color: #ffffff;
     border-radius: 5px;

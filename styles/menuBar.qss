@@ -8,7 +8,7 @@ QTreeView#treeViewOnTheLeft{
     background: rgb(79, 83, 89);
 
     /* set the font properties*/
-    font-size: 15pt;
+    font-size: 14pt;
     color: white;
 }
 

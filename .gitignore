@@ -26,3 +26,5 @@ docs/help/theory\.xref
 *.orig
 
 ExampleInput/building/0/U_
+
+*.o

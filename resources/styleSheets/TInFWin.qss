@@ -1,40 +1,40 @@
 QFrame {
-    font: 11pt;
+    font: 10pt;
     padding: 5px;
 }
 
 QSpinBox {
-    font: 11pt;
+    font: 10pt;
     padding: 5px;
 }
 
 QDoubleSpinBox {
-    font: 11pt;
+    font: 10pt;
     padding: 5px;
 }
 
 QGroupBox {
-    font: bold 11pt;
-    padding-top: 40px;
+    font: bold 10pt;
+    padding-top: 15px;
 }
 
 QComboBox {
-    font: 11pt;
+    font: 10pt;
     padding: 5px;
 }
 
 QLabel {
-    font: 11pt;
+    font: 10pt;
     padding: 5px;
 }
 
 QCheckBox {
-    font: 11pt;
+    font: 10pt;
     padding: 5px;
 }
 
 QPushButton {
-    font: 11pt;
+    font: bold 10pt;
     color: white;
     border-style: outset;
     background-color: #64B5F6;
@@ -42,7 +42,6 @@ QPushButton {
     border-width: 1px;
     border-radius: 5px;
     border-color: #607D8B;
-    font: bold 10 pt;
     padding: 3px;
 }
 
