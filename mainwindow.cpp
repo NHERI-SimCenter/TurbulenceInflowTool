@@ -41,14 +41,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     infoItemIdx = sourceItem->index();
 
+#ifdef Q_OS_WIN
+#define COLWIDTH 140
+#else
+#define COLWIDTH 110
+#endif
+
     //register the model
     ui->treeView->setModel(standardModel);
     ui->treeView->expandAll();
     //ui->treeView->setHeaderHidden(true);
     //ui->treeView->header()->setStretchLastSection(true);
-    ui->treeView->setMinimumWidth(140);
-    ui->treeView->setMaximumWidth(140);
-    ui->treeView->setColumnWidth(0,140);
+    ui->treeView->setMinimumWidth(COLWIDTH);
+    ui->treeView->setMaximumWidth(COLWIDTH);
+    ui->treeView->setColumnWidth(0,COLWIDTH);
     ui->treeView->setIconSize(QSize(0,0));
 
     //Disable Edit for the TreeView
