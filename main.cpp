@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QFile>
+#include <QGuiApplication>
 
 QString openStyleFiles()
 {
@@ -40,6 +41,8 @@ QString openStyleFiles()
 
 int main(int argc, char *argv[])
 {
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
     QApplication app(argc, argv);
     MainWindow w;
     QApplication::setWindowIcon(QIcon(":/resources/NHERI-TInF-icon.icns"));
