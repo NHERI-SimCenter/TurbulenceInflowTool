@@ -44,10 +44,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //register the model
     ui->treeView->setModel(standardModel);
     ui->treeView->expandAll();
-    ui->treeView->setHeaderHidden(true);
-    //ui->treeView->setMinimumWidth(110);
-    //ui->treeView->setMaximumWidth(110);
-    //ui->treeView->setMinimumWidth(110);
+    //ui->treeView->setHeaderHidden(true);
+    //ui->treeView->header()->setStretchLastSection(true);
+    ui->treeView->setMinimumWidth(140);
+    ui->treeView->setMaximumWidth(140);
+    ui->treeView->setColumnWidth(0,140);
+    ui->treeView->setIconSize(QSize(0,0));
 
     //Disable Edit for the TreeView
     ui->treeView->setEditTriggers(QTreeView::EditTrigger::NoEditTriggers);
