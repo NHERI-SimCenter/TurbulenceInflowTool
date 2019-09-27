@@ -116,7 +116,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // setting text
     versionText = "Turbulent Inflow Tool - Version " + QString(APP_VERSION);
-    citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, Frank McKenna. (2019, Sept 30). NHERI-SimCenter/TurbulentInflowTool: Release v1.0.0 (Version v1.0.0). Zenodo. http://doi.org/...";
+    citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, and Frank McKenna. (2019, September 26). NHERI-SimCenter/TurbulentInflowTool: Vesrions 1.0.0 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.3462805";
+
     manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulentInflowTool/";
     manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulantInflowTool/";
     feedbackURL = "https://docs.google.com/forms/d/e/1FAIpQLSfh20kBxDmvmHgz9uFwhkospGLCeazZzL770A2GuYZ2KgBZBA/viewform";
