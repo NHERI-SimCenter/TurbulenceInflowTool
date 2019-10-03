@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = TurbulentInflowTool
 TEMPLATE = app
-VERSION  = 1.0.0
+VERSION  = 1.0.1
 
 PRODUCT_NAME = 'TurbulentInflowTool'
 
