@@ -119,7 +119,6 @@ MainWindow::MainWindow(QWidget *parent) :
     citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, and Frank McKenna. (2019, September 26). NHERI-SimCenter/TurbulentInflowTool: Vesrions 1.0.0 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.3462805";
 
     manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulentInflowTool/";
-    manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulantInflowTool/";
     feedbackURL = "https://docs.google.com/forms/d/e/1FAIpQLSfh20kBxDmvmHgz9uFwhkospGLCeazZzL770A2GuYZ2KgBZBA/viewform";
     featureRequestURL = "https://docs.google.com/forms/d/e/1FAIpQLScTLkSwDjPNzH8wx8KxkyhoIT7AI9KZ16Wg9TuW1GOhSYFOag/viewform";
     copyrightText = QString("\
