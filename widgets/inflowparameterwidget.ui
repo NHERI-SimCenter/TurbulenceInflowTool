@@ -29,7 +29,7 @@
    <item>
     <widget class="QLabel" name="headerLabel">
      <property name="text">
-      <string>Turbulent Inflow Model Parameters</string>
+      <string>Turbulence Inflow Model Parameters</string>
      </property>
     </widget>
    </item>
@@ -49,8 +49,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>624</width>
-        <height>1105</height>
+        <width>638</width>
+        <height>1093</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -432,12 +432,12 @@
             </property>
             <item>
              <property name="text">
-              <string>turbulent inflow (uniform model)</string>
+              <string>turbulence inflow (uniform model)</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>turbulent inflow (exponential model)</string>
+              <string>turbulence inflow (exponential model)</string>
              </property>
             </item>
            </widget>

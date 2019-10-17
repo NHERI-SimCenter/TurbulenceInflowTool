@@ -27,7 +27,7 @@ FoamFile
         }
 
 
-        // turbulent intensity (symmTensorField)
+        // turbulence intensity (symmTensorField)
         I_Profile
         {
                         profile           exponential;
