@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->headerWidget->setHeadingText("Turbulent Inflow Tool");
+    ui->headerWidget->setHeadingText("Turbulence Inflow Tool");
 
     standardModel = new CustomizedItemModel(); //QStandardItemModel ;
     QStandardItem *rootNode = standardModel->invisibleRootItem();
@@ -115,11 +115,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->resize(width, height);
 
     // setting text
-    versionText = "Turbulent Inflow Tool - Version " + QString(APP_VERSION);
-    citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, and Frank McKenna. (2019, September 26). NHERI-SimCenter/TurbulentInflowTool: Vesrions 1.0.0 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.3462805";
+    versionText = "Turbulence Inflow Tool - Version " + QString(APP_VERSION);
+    citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, and Frank McKenna. (2019, September 26). NHERI-SimCenter/TurbulentInflowTool: Versions 1.0.2 (Version v1.0.2). Zenodo. http://doi.org/10.5281/zenodo.3462805";
 
     manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulentInflowTool/";
-    manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulantInflowTool/";
     feedbackURL = "https://docs.google.com/forms/d/e/1FAIpQLSfh20kBxDmvmHgz9uFwhkospGLCeazZzL770A2GuYZ2KgBZBA/viewform";
     featureRequestURL = "https://docs.google.com/forms/d/e/1FAIpQLScTLkSwDjPNzH8wx8KxkyhoIT7AI9KZ16Wg9TuW1GOhSYFOag/viewform";
     copyrightText = QString("\
@@ -246,7 +245,8 @@ void MainWindow::on_action_Open_triggered()
     QString creator;
     creator  = json["creator"].toString();
 
-    if (creator == "TurbulentInflowTool") sourceValid = true;
+    if (creator == "TurbulentInflowTool")  sourceValid = true;  // v1.0.0 and 1.0.1
+    if (creator == "TurbulenceInflowTool") sourceValid = true;  // >= v1.0.2
 
     QString version;
     version  = json["version"].toString();
@@ -295,7 +295,7 @@ void MainWindow::on_action_Save_triggered()
     QString path = QDir::homePath();
     QDir d;
     d.setPath(path);
-    QString filename = d.filePath("TurbulentInflowTool.json");
+    QString filename = d.filePath("TurbulenceInflowTool.json");
     QString theFilter = "Json file (*.json)";
     QFileDialog dlg;
 
@@ -307,7 +307,7 @@ void MainWindow::on_action_Save_triggered()
         /* start a JSON object to represent the system */
         QJsonObject *json = new QJsonObject();
 
-        json->insert("creator", QString("TurbulentInflowTool"));
+        json->insert("creator", QString("TurbulenceInflowTool"));
         json->insert("version", QString(APP_VERSION));
 #ifdef Q_OS_WIN
         QString username = qgetenv("USERNAME");

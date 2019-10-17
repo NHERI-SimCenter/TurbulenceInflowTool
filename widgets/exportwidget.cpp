@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -125,7 +126,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
         out << endl;
 
 
-        out << "// turbulent intensity (symmTensorField)" << endl;
+        out << "// turbulence intensity (symmTensorField)" << endl;
         out << "IDict" << endl;
         out << "{" << endl;
         out << "    referenceValue         ("
@@ -447,6 +448,11 @@ void ExportWidget::on_btn_export_clicked()
         // update controlDict file
         this->exportControlDictFile(origFile, newFile);
     }
+
+    QString title = "TInF Export";
+    QString msg = "File 0/U has been updated.\nFile system/controlDict has been updated\nFile constant/inflowProperties has been created";
+    QMessageBox dlg(QMessageBox::Icon::Information, title, msg, QMessageBox::Ok);
+    dlg.exec();
 }
 
 void ExportWidget::setUFileData(QByteArray &head, QByteArray &tail, QMap<QString, QMap<QString, QString> * > &data)
