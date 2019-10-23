@@ -6,7 +6,7 @@
 
 # TurbulenceInflowTool
 
-The Turbulence Inflow Tool (TInF) is designed to collect all required properties and parame- ters needed for various turbulence inflow models in OpenFOAM, and to augment an existing wind-around-a-building model by adding the necessary sections to respective parameter def- inition files.
+The Turbulence Inflow Tool (TInF) is designed to collect all required properties and parame- ters needed for various turbulence inflow models in OpenFOAM, and to augment an existing wind-around-a-building model by adding the necessary sections to respective parameter definition files.
 
 The generic workflow involved is as follows.
 1. Build your OpenFOAM model as you would without using a turbulence inflow model. Use a generic patch with a suitable name for you will need to identify that patch by its name inside TInF.
