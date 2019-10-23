@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3462805.svg)](https://doi.org/10.5281/zenodo.3462805)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3516436.svg)](https://doi.org/10.5281/zenodo.3516436)
 
 ![missing TInF logo][logo]
 
@@ -15,3 +15,8 @@ The generic workflow involved is as follows.
 The tool also provides a Save to file and Open from file functionality that will allow you to define and share complex sets of settings and parameters for the supported turbulence inflow models and, such, efficiently and reliably apply the same parameters to several different models.
 
 Technical detail is available from the TInF manual available through: [https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulenceInflowTool/](https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulenceInflowTool/)
+
+# references
+
+1. [https://nheri-simcenter.github.io/TurbulenceInflowTool/](https://nheri-simcenter.github.io/TurbulenceInflowTool/)
+2. [https://simcenter.designsafe-ci.org/research-tools/tinf/](https://simcenter.designsafe-ci.org/research-tools/tinf/)
