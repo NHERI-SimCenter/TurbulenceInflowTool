@@ -398,12 +398,22 @@ void InflowParameterWidget::sendParameterMap(void)
 
 void InflowParameterWidget::on_RB_digitalFilter_clicked()
 {
-    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
+    ui->stackedMethods->setCurrentIndex(0);
 }
 
 void InflowParameterWidget::on_RB_syntheticEddie_clicked()
 {
-    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
+    ui->stackedMethods->setCurrentIndex(1);
+}
+
+void InflowParameterWidget::on_RB_divergenceFree_clicked()
+{
+    ui->stackedMethods->setCurrentIndex(2);
+}
+
+void InflowParameterWidget::on_RB_turbulentSpot_clicked()
+{
+    ui->stackedMethods->setCurrentIndex(3);
 }
 
 
