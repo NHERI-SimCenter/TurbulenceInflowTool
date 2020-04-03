@@ -108,6 +108,17 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
         out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << endl;
         out << "" << endl;
 
+        /* this was moved to the inflowProperties-file starting with version 1.1.0 */
+
+        out << "        intersection       ( "
+            << theParameters.value("intersection0") << " "
+            << theParameters.value("intersection1") << " "
+            << theParameters.value("intersection2") << " );" << endl;
+        out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
+        out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
+
+        /* the above section was part of the U-file prior to version 1.1.0 */
+
 
         out << "// mean velocity" << endl;
         out << "UDict" << endl;
@@ -330,7 +341,7 @@ void ExportWidget::exportUFile(QString fileName)
                 qWarning() << "unknown turbulence model";
             }
 
-            /* this was moved to the ControlDict-file starting with version 1.1.0 *
+            /* this was moved to the inflowProperties-file starting with version 1.1.0 *
              *
 
             out << "        intersection       ( "
@@ -395,17 +406,6 @@ void ExportWidget::exportControlDictFile(QString origFileName, QString fileName)
             out << ");" << endl;
             out << endl;
         }
-
-        /* this was moved to the ControlDict-file starting with version 1.1.0 */
-
-        out << "        intersection       ( "
-            << theParameters.value("intersection0") << " "
-            << theParameters.value("intersection1") << " "
-            << theParameters.value("intersection2") << " );" << endl;
-        out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
-        out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
-
-        /* the above section was part of the U-file prior to version 1.1.0 */
 
         out << line << endl;
     }
