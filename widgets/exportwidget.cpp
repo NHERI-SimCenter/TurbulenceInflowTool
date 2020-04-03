@@ -243,8 +243,9 @@ void ExportWidget::exportUFile(QString fileName)
             QMap<QString, QString> theMap = *boundaries.value(key);
 
             switch (int(theParameters.value("FilterMethod"))) {
-            case 0:
-                out << "        type               digitalFilter;" << endl;
+            case 0: /* digital filter */
+
+                out << "        type               turbulentDFMInlet;" << endl;
                 switch (int(theParameters.value("shapeFunction"))) {
                 case 0:
                     out << "        filterShape        gaussian;" << endl;
@@ -258,9 +259,15 @@ void ExportWidget::exportUFile(QString fileName)
                 out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << endl;
                 out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << endl;
 
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
                 break;
-            case 1:
-                out << "        type        syntheticEddy;" << endl;
+
+            case 1:  /* synthetic eddy */
+
+                out << "        type        turbulentSEMInlet;" << endl;
                 switch (int(theParameters.value("shapeFunction"))) {
                 case 0:
                     out << "        filterShape        gaussian;" << endl;
@@ -276,7 +283,49 @@ void ExportWidget::exportUFile(QString fileName)
                 }
                 out << "        eddyDensity       " << theParameters.value("eddyDensity") << ";" << endl;
 
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
                 break;
+
+            case 2:  /* divergence-free synthetic eddy */
+
+                out << "        type        turbulentDFSEMInlet;" << endl;
+                switch (int(theParameters.value("shapeFunction"))) {
+                case 0:
+                    out << "        filterShape        gaussian;" << endl;
+                    break;
+                case 1:
+                    out << "        filterShape        tent;" << endl;
+                    break;
+                case 2:
+                    out << "        filterShape        step;" << endl;
+                    break;
+                default:
+                    out << "        filterShape        gaussian;" << endl;
+                }
+                out << "        eddyDensity       " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
+                break;
+
+            case 3:  /* digital spot */
+
+                out << "        type        turbulentATSMInlet;" << endl;
+
+                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << endl;
+                out << "        vortonDensity      " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
+                break;
+
             default:
                 qWarning() << "unknown turbulence model";
             }
@@ -292,7 +341,7 @@ void ExportWidget::exportUFile(QString fileName)
             if (theMap.contains("filterShape"))  theMap.remove("filterShape");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
             if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
-            if (theMap.contains("eddyDensity")) theMap.remove("eddyDensity");
+            if (theMap.contains("eddyDensity"))  theMap.remove("eddyDensity");
 
             if (theMap.contains("intersection"))    theMap.remove("intersection");
             if (theMap.contains("yOffset"))         theMap.remove("yOffset");
