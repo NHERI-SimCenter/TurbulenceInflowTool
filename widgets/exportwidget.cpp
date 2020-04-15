@@ -119,7 +119,6 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
 
         /* the above section was part of the U-file prior to version 1.1.0 */
 
-
         out << "// mean velocity" << endl;
         out << "UDict" << endl;
         out << "{" << endl;
