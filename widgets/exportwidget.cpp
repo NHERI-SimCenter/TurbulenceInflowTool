@@ -108,112 +108,126 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
         out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << endl;
         out << "" << endl;
 
+        /* this was moved to the inflowProperties-file starting with version 1.1.0 */
 
-        out << "// mean velocity" << endl;
-        out << "UDict" << endl;
-        out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("vel0") << ";" << endl;
+        if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
+        {
+            out << "        intersection       ( "
+                << theParameters.value("intersection0") << " "
+                << theParameters.value("intersection1") << " "
+                << theParameters.value("intersection2") << " );" << endl;
+            out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
+            out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
 
-        out << "    profile                 " << profile << ";" << endl;
+            /* the above section was part of the U-file prior to version 1.1.0 */
 
-        if ( int(theParameters.value("profile")) > 0 ) {
-            out << "    referenceAngl           " << theParameters.value("refAngleU") << ";" << endl;
-            out << "    referenceDist           " << theParameters.value("refDistU") << ";" << endl;
-            out << "    alpha                   " << theParameters.value("alphaU") << ";" << endl;
-        }
-        out << "}" << endl;
+            out << "// mean velocity" << endl;
+            out << "UDict" << endl;
+            out << "{" << endl;
+            out << "    referenceValue          " << theParameters.value("vel0") << ";" << endl;
 
-        out << endl;
+            out << "    profile                 " << profile << ";" << endl;
+
+            if ( int(theParameters.value("profile")) > 0 ) {
+                out << "    referenceAngl           " << theParameters.value("refAngleU") << ";" << endl;
+                out << "    referenceDist           " << theParameters.value("refDistU") << ";" << endl;
+                out << "    alpha                   " << theParameters.value("alphaU") << ";" << endl;
+            }
+            out << "}" << endl;
+
+            out << endl;
 
 
-        out << "// turbulence intensity (symmTensorField)" << endl;
-        out << "IDict" << endl;
-        out << "{" << endl;
-        out << "    referenceValue         ("
-            << theParameters.value("phi00") << "  "
-            << theParameters.value("phi10") << "  "
-            << theParameters.value("phi20") << "  "
-            << theParameters.value("phi11") << "  "
-            << theParameters.value("phi21") << "  "
-            << theParameters.value("phi22")
-            << ");" << endl;
-
-        out << "    profile                 " << profile << ";" << endl;
-
-        if ( int(theParameters.value("profile")) > 0 ) {
-            out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << endl;
-            out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << endl;
-            out << "    alpha                     ("
-                << theParameters.value("alpha0") << "  "
-                << theParameters.value("alpha1") << "  "
-                << theParameters.value("alpha2")
+            out << "// turbulence intensity (symmTensorField)" << endl;
+            out << "IDict" << endl;
+            out << "{" << endl;
+            out << "    referenceValue         ("
+                << theParameters.value("phi00") << "  "
+                << theParameters.value("phi10") << "  "
+                << theParameters.value("phi20") << "  "
+                << theParameters.value("phi11") << "  "
+                << theParameters.value("phi21") << "  "
+                << theParameters.value("phi22")
                 << ");" << endl;
+
+            out << "    profile                 " << profile << ";" << endl;
+
+            if ( int(theParameters.value("profile")) > 0 ) {
+                out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << endl;
+                out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << endl;
+                out << "    alpha                     ("
+                    << theParameters.value("alpha0") << "  "
+                    << theParameters.value("alpha1") << "  "
+                    << theParameters.value("alpha2")
+                    << ");" << endl;
+            }
+
+            out << "}" << endl;
+
+            out << endl;
+
+
+            out << "// turbulence length scale profile for u component" << endl;
+            out << "LuxDict" << endl;
+            out << "{" << endl;
+            out << "    referenceValue          " << theParameters.value("Lu0") << ";" << endl;
+
+            out << "    profile                 " << profile << ";" << endl;
+
+            if ( int(theParameters.value("profile")) > 0 ) {
+                out << "    referenceAngl           " << theParameters.value("LuRefAngle") << ";" << endl;
+                out << "    referenceDist           " << theParameters.value("LuRefDist") << ";" << endl;
+                out << "    alpha                   " << theParameters.value("LuAlpha") << ";" << endl;
+            }
+            out << "}" << endl;
+
+            out << endl;
+
+            out << "// turbulence length scale profile for v component" << endl;
+            out << "LvxDict" << endl;
+            out << "{" << endl;
+            out << "    referenceValue          " << theParameters.value("Lv0") << ";" << endl;
+
+            out << "    profile                 " << profile << ";" << endl;
+
+            if ( int(theParameters.value("profile")) > 0 ) {
+                out << "    referenceAngl           " << theParameters.value("LvRefAngle") << ";" << endl;
+                out << "    referenceDist           " << theParameters.value("LvRefDist") << ";" << endl;
+                out << "    alpha                   " << theParameters.value("LvAlpha") << ";" << endl;
+            }
+            out << "}" << endl;
+
+            out << endl;
+
+
+            out << "// turbulence length scale profile for w component" << endl;
+            out << "LwxDict" << endl;
+            out << "{" << endl;
+            out << "    referenceValue          " << theParameters.value("Lw0") << ";" << endl;
+
+            out << "    profile                 " << profile << ";" << endl;
+
+            if ( int(theParameters.value("profile")) > 0 ) {
+                out << "    referenceAngl           " << theParameters.value("LwRefAngle") << ";" << endl;
+                out << "    referenceDist           " << theParameters.value("LwRefDist") << ";" << endl;
+                out << "    alpha                   " << theParameters.value("LwAlpha") << ";" << endl;
+            }
+            out << "}" << endl;
+
+            out << endl;
+
+            out << "LuyToLuxRatio              " << theParameters.value("Lu10") << ";" << endl;
+            out << "LuzToLuxRatio              " << theParameters.value("Lu20") << ";" << endl;
+            out << "LvyToLvxRatio              " << theParameters.value("Lv10") << ";" << endl;
+            out << "LvzToLvxRatio              " << theParameters.value("Lv20") << ";" << endl;
+            out << "LwyToLwxRatio              " << theParameters.value("Lw10") << ";" << endl;
+            out << "LwzToLwxRatio              " << theParameters.value("Lw20") << ";" << endl;
+
+            out << endl;
+            out << endl;
+            out << "// ************************************************************************* //" << endl;
+
         }
-
-        out << "}" << endl;
-
-        out << endl;
-
-
-        out << "// turbulence length scale profile for u component" << endl;
-        out << "LuxDict" << endl;
-        out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Lu0") << ";" << endl;
-
-        out << "    profile                 " << profile << ";" << endl;
-
-        if ( int(theParameters.value("profile")) > 0 ) {
-            out << "    referenceAngl           " << theParameters.value("LuRefAngle") << ";" << endl;
-            out << "    referenceDist           " << theParameters.value("LuRefDist") << ";" << endl;
-            out << "    alpha                   " << theParameters.value("LuAlpha") << ";" << endl;
-        }
-        out << "}" << endl;
-
-        out << endl;
-
-        out << "// turbulence length scale profile for v component" << endl;
-        out << "LvxDict" << endl;
-        out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Lv0") << ";" << endl;
-
-        out << "    profile                 " << profile << ";" << endl;
-
-        if ( int(theParameters.value("profile")) > 0 ) {
-            out << "    referenceAngl           " << theParameters.value("LvRefAngle") << ";" << endl;
-            out << "    referenceDist           " << theParameters.value("LvRefDist") << ";" << endl;
-            out << "    alpha                   " << theParameters.value("LvAlpha") << ";" << endl;
-        }
-        out << "}" << endl;
-
-        out << endl;
-
-
-        out << "// turbulence length scale profile for w component" << endl;
-        out << "LwxDict" << endl;
-        out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Lw0") << ";" << endl;
-
-        out << "    profile                 " << profile << ";" << endl;
-
-        if ( int(theParameters.value("profile")) > 0 ) {
-            out << "    referenceAngl           " << theParameters.value("LwRefAngle") << ";" << endl;
-            out << "    referenceDist           " << theParameters.value("LwRefDist") << ";" << endl;
-            out << "    alpha                   " << theParameters.value("LwAlpha") << ";" << endl;
-        }
-        out << "}" << endl;
-
-        out << endl;
-
-        out << "LuyToLuxRatio              " << theParameters.value("Lu10") << ";" << endl;
-        out << "LuzToLuxRatio              " << theParameters.value("Lu20") << ";" << endl;
-        out << "LvyToLvxRatio              " << theParameters.value("Lv10") << ";" << endl;
-        out << "LvzToLvxRatio              " << theParameters.value("Lv20") << ";" << endl;
-        out << "LwyToLwxRatio              " << theParameters.value("Lw10") << ";" << endl;
-        out << "LwzToLwxRatio              " << theParameters.value("Lw20") << ";" << endl;
-
-        out << endl;
-        out << endl;
-        out << "// ************************************************************************* //" << endl;
 
         out.flush();
     }
@@ -243,8 +257,9 @@ void ExportWidget::exportUFile(QString fileName)
             QMap<QString, QString> theMap = *boundaries.value(key);
 
             switch (int(theParameters.value("FilterMethod"))) {
-            case 0:
-                out << "        type               digitalFilter;" << endl;
+            case 0: /* digital filter */
+
+                out << "        type               turbulentDFMInlet;" << endl;
                 switch (int(theParameters.value("shapeFunction"))) {
                 case 0:
                     out << "        filterShape        gaussian;" << endl;
@@ -258,9 +273,15 @@ void ExportWidget::exportUFile(QString fileName)
                 out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << endl;
                 out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << endl;
 
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
                 break;
-            case 1:
-                out << "        type        syntheticEddy;" << endl;
+
+            case 1:  /* synthetic eddy */
+
+                out << "        type        turbulentSEMInlet;" << endl;
                 switch (int(theParameters.value("shapeFunction"))) {
                 case 0:
                     out << "        filterShape        gaussian;" << endl;
@@ -276,10 +297,55 @@ void ExportWidget::exportUFile(QString fileName)
                 }
                 out << "        eddyDensity       " << theParameters.value("eddyDensity") << ";" << endl;
 
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
                 break;
+
+            case 2:  /* divergence-free synthetic eddy */
+
+                out << "        type        turbulentDFSEMInlet;" << endl;
+                switch (int(theParameters.value("shapeFunction"))) {
+                case 0:
+                    out << "        filterShape        gaussian;" << endl;
+                    break;
+                case 1:
+                    out << "        filterShape        tent;" << endl;
+                    break;
+                case 2:
+                    out << "        filterShape        step;" << endl;
+                    break;
+                default:
+                    out << "        filterShape        gaussian;" << endl;
+                }
+                out << "        eddyDensity       " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
+                break;
+
+            case 3:  /* digital spot */
+
+                out << "        type        turbulentATSMInlet;" << endl;
+
+                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << endl;
+                out << "        vortonDensity      " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+
+                break;
+
             default:
                 qWarning() << "unknown turbulence model";
             }
+
+            /* this was moved to the inflowProperties-file starting with version 1.1.0 *
+             *
 
             out << "        intersection       ( "
                 << theParameters.value("intersection0") << " "
@@ -288,11 +354,14 @@ void ExportWidget::exportUFile(QString fileName)
             out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
             out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
 
+             *
+             */
+
             if (theMap.contains("type"))         theMap.remove("type");
             if (theMap.contains("filterShape"))  theMap.remove("filterShape");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
             if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
-            if (theMap.contains("eddyDensity")) theMap.remove("eddyDensity");
+            if (theMap.contains("eddyDensity"))  theMap.remove("eddyDensity");
 
             if (theMap.contains("intersection"))    theMap.remove("intersection");
             if (theMap.contains("yOffset"))         theMap.remove("yOffset");

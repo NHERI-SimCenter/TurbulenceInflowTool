@@ -183,6 +183,19 @@ void InflowParameterWidget::refreshParameterMap(void)
 
     theParameters.insert("velocityShape",ui->velocityShape->currentIndex());
     theParameters.insert("eddyDensity",ui->eddyDensity->value());
+    theParameters.insert("divergenceFreeEddyDensity",ui->divEddyDensity->value());
+    theParameters.insert("turbulentSpotDensity",ui->turbulentSpotDensity->value());
+    if (ui->RB_turbulentSpotTypeL->isChecked()) {
+        theParameters.insert("turbulentSpotType", -1.0);
+    }
+    else {
+        theParameters.insert("turbulentSpotType", 1.0);
+    }
+
+    theParameters.insert("periodicY",ui->CBx_periodicY->isChecked()?1:0);
+    theParameters.insert("periodicZ",ui->CBx_periodicZ->isChecked()?1:0);
+    theParameters.insert("cleanRestart",ui->CBx_cleanRestart->isChecked()?1:0);
+    theParameters.insert("interpolateParameters",ui->CBx_interpolateParameters->isChecked()?1:0);
 
     theParameters.insert("intersection0",ui->dir1->value());
     theParameters.insert("intersection1",ui->dir2->value());
@@ -253,6 +266,23 @@ void InflowParameterWidget::refreshDisplay(void)
 
     ui->velocityShape->setCurrentIndex(int(theParameters.value("velocityShape")));
     ui->eddyDensity->setValue(theParameters.value("eddyDensity"));
+
+    ui->divEddyDensity->setValue(theParameters.value("divergenceFreeEddyDensity"));
+
+    ui->turbulentSpotDensity->setValue(theParameters.value("turbulentSpotDensity"));
+    if (theParameters.value("turbulentSpotType") > 0.0) {
+        ui->RB_turbulentSpotTypeL->setChecked(false);
+        ui->RB_turbulentSpotTypeR->setChecked(true);
+    }
+    else {
+        ui->RB_turbulentSpotTypeL->setChecked(true);
+        ui->RB_turbulentSpotTypeR->setChecked(false);
+    }
+
+    ui->CBx_periodicY->setChecked(theParameters.value("periodicY") > 0.1);
+    ui->CBx_periodicZ->setChecked(theParameters.value("periodicZ") > 0.1);
+    ui->CBx_cleanRestart->setChecked(theParameters.value("cleanRestart") > 0.1);
+    ui->CBx_interpolateParameters->setChecked(theParameters.value("interpolateParameters") > 0.1);
 
     ui->dir1->setValue(theParameters.value("intersection0"));
     ui->dir2->setValue(theParameters.value("intersection1"));
@@ -398,12 +428,22 @@ void InflowParameterWidget::sendParameterMap(void)
 
 void InflowParameterWidget::on_RB_digitalFilter_clicked()
 {
-    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
+    ui->stackedMethods->setCurrentIndex(0);
 }
 
 void InflowParameterWidget::on_RB_syntheticEddie_clicked()
 {
-    ui->stackedMethods->setCurrentIndex((ui->RB_digitalFilter->isChecked())?0:1);
+    ui->stackedMethods->setCurrentIndex(1);
+}
+
+void InflowParameterWidget::on_RB_divergenceFree_clicked()
+{
+    ui->stackedMethods->setCurrentIndex(2);
+}
+
+void InflowParameterWidget::on_RB_turbulentSpot_clicked()
+{
+    ui->stackedMethods->setCurrentIndex(3);
 }
 
 
@@ -449,4 +489,15 @@ bool InflowParameterWidget::inputFromJSON(QJsonObject &rvObject)
 void InflowParameterWidget::reset(void)
 {
     setDefaultParameters();
+}
+
+void InflowParameterWidget::on_CBx_interpolateParameters_clicked()
+{
+    bool interpolate = ui->CBx_interpolateParameters->isChecked() ;
+
+    ui->localCoordinateSystemGroup->setEnabled(!interpolate);
+    ui->typeSelectionGroup->setEnabled(!interpolate);
+    ui->velocityGroup->setEnabled(!interpolate);
+    ui->phiTensorGroup->setEnabled(!interpolate);
+    ui->lengthScaleGroup->setEnabled(!interpolate);
 }

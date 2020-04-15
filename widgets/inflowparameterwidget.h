@@ -28,6 +28,8 @@ signals:
 private slots:
     void on_RB_digitalFilter_clicked();
     void on_RB_syntheticEddie_clicked();
+    void on_RB_divergenceFree_clicked();
+    void on_RB_turbulentSpot_clicked();
     void on_PHI21_valueChanged(double arg1);
     void on_PHI31_valueChanged(double arg1);
     void on_PHI32_valueChanged(double arg1);
@@ -35,6 +37,8 @@ private slots:
     void on_resetButton_clicked();
     void on_modelSelectionCBX_currentIndexChanged(int index);
     void sendParameterMap(void);
+
+    void on_CBx_interpolateParameters_clicked();
 
 private:
     void setUniformTurbulent(void);
