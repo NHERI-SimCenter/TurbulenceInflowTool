@@ -490,3 +490,14 @@ void InflowParameterWidget::reset(void)
 {
     setDefaultParameters();
 }
+
+void InflowParameterWidget::on_CBx_interpolateParameters_clicked()
+{
+    bool interpolate = ui->CBx_interpolateParameters->isChecked() ;
+
+    ui->localCoordinateSystemGroup->setEnabled(!interpolate);
+    ui->typeSelectionGroup->setEnabled(!interpolate);
+    ui->velocityGroup->setEnabled(!interpolate);
+    ui->phiTensorGroup->setEnabled(!interpolate);
+    ui->lengthScaleGroup->setEnabled(!interpolate);
+}

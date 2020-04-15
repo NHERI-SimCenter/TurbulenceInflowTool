@@ -38,6 +38,8 @@ private slots:
     void on_modelSelectionCBX_currentIndexChanged(int index);
     void sendParameterMap(void);
 
+    void on_CBx_interpolateParameters_clicked();
+
 private:
     void setUniformTurbulent(void);
     void setExponentialTurbulent(void);

@@ -488,7 +488,7 @@ synthetic eddy</string>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="localCoordinateSystemGroup">
          <property name="title">
           <string>Local coordinate system definition</string>
          </property>
