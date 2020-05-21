@@ -172,10 +172,18 @@ void InflowParameterWidget::refreshParameterMap(void)
 
     /* for use in U file */
 
+    // there must be four options FIX IT!
+
     if (ui->RB_digitalFilter->isChecked())
         { theParameters.insert("FilterMethod",0); }
-    else
+    else if (ui->RB_syntheticEddie->isChecked())
         { theParameters.insert("FilterMethod",1); }
+    else if (ui->RB_divergenceFree->isChecked())
+        { theParameters.insert("FilterMethod",2); }
+    else if (ui->RB_turbulentSpot->isChecked())
+        { theParameters.insert("FilterMethod",3); }
+    else
+        { theParameters.insert("FilterMethod",0); }
 
     theParameters.insert("shapeFunction",ui->shapeFunction->currentIndex());
     theParameters.insert("gridFactor",ui->gridFactor->value());
@@ -259,6 +267,8 @@ void InflowParameterWidget::refreshDisplay(void)
 
     ui->RB_digitalFilter->setChecked(int(theParameters.value("FilterMethod"))==0?true:false);
     ui->RB_syntheticEddie->setChecked(int(theParameters.value("FilterMethod"))==1?true:false);
+    ui->RB_divergenceFree->setChecked(int(theParameters.value("FilterMethod"))==2?true:false);
+    ui->RB_turbulentSpot->setChecked(int(theParameters.value("FilterMethod"))==3?true:false);
 
     ui->shapeFunction->setCurrentIndex(int(theParameters.value("shapeFunction")));
     ui->gridFactor->setValue(theParameters.value("gridFactor"));

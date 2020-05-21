@@ -178,7 +178,7 @@ synthetic eddy</string>
           <item row="1" column="0" colspan="4">
            <widget class="QStackedWidget" name="stackedMethods">
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="digitalFilterPage">
              <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,3">
