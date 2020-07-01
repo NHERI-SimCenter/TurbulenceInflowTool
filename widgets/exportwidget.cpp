@@ -147,7 +147,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
             out << endl;
             out << "RDict" << endl;
             out << "{" << endl;
-            out << "    referenceValue            ("
+            out << "    referenceValue          ("
                 << theParameters.value("phi00") << "  "
                 << theParameters.value("phi10") << "  "
                 << theParameters.value("phi20") << "  "
