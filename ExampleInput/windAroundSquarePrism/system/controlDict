@@ -1,0 +1,134 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs            ("libturbulentInflow.so");
+
+application     pisoFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         1000;
+
+deltaT          0.02;
+
+writeControl    timeStep;
+
+writeInterval   50;
+
+purgeWrite      40;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+functions
+{
+    Lambda2
+    {
+        type            Lambda2;
+        libs            ("libfieldFunctionObjects.so");;
+        writeControl    writeTime;
+    }
+
+    fieldAverage1
+    {
+        type            fieldAverage;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    writeTime;
+
+        fields
+        (
+            U
+            {
+                mean        on;
+                prime2Mean  on;
+                base        time;
+            }
+
+            p
+            {
+                mean        on;
+                prime2Mean  on;
+                base        time;
+            }
+        );
+    }
+
+    forces1
+    {
+        type        forces;
+        libs        ("libforces.so");
+
+        writeControl    timeStep;
+        timeInterval    1;
+
+        log         yes;
+        patches     (building);
+        rho             rhoInf;
+        rhoInf          1;
+        CofR            (55 55 0);
+
+        binData
+        {
+            nBin        20;
+            direction   (0 0 1);
+            cumulative  yes;
+        }
+    }
+
+    forceCoeffs1
+    {
+        type            forceCoeffs;
+        libs            ("libforces.so");
+
+        writeControl    timeStep;
+        timeInterval    1;
+
+        log             yes;
+
+        patches         (building);
+        rho             rhoInf;
+        rhoInf          1;
+        liftDir         (0 0 1);
+        dragDir         (1 0 0);
+        CofR            (55 55 0);
+        pitchAxis       (0 0 1);
+        magUInf         10;
+        lRef            10;
+        Aref            10;
+
+        binData
+        {
+            nBin        20;
+            direction   (0 0 1);
+            cumulative  yes;
+        }
+    }
+}
+
+// ************************************************************************* //
