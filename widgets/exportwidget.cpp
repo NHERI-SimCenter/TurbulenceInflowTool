@@ -112,16 +112,23 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
 
         if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
         {
-            out << "        intersection       ( "
+            out << endl;
+            out << "Naxis       ( "
                 << theParameters.value("intersection0") << " "
                 << theParameters.value("intersection1") << " "
                 << theParameters.value("intersection2") << " );" << endl;
-            out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
-            out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
+            
+            out << "offset      ( "
+                << theParameters.value("offset0") << " "
+                << theParameters.value("offset1") << " "
+                << theParameters.value("offset2") << " );" << endl;
+            
+            out << endl;
 
             /* the above section was part of the U-file prior to version 1.1.0 */
 
             out << "// mean velocity" << endl;
+            out << endl;
             out << "UDict" << endl;
             out << "{" << endl;
             out << "    referenceValue          " << theParameters.value("vel0") << ";" << endl;
@@ -134,14 +141,13 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
                 out << "    alpha                   " << theParameters.value("alphaU") << ";" << endl;
             }
             out << "}" << endl;
-
             out << endl;
 
-
-            out << "// turbulence intensity (symmTensorField)" << endl;
-            out << "IDict" << endl;
+            out << "// Reynolds stress tensor (symmTensorField)" << endl;
+            out << endl;
+            out << "RDict" << endl;
             out << "{" << endl;
-            out << "    referenceValue         ("
+            out << "    referenceValue            ("
                 << theParameters.value("phi00") << "  "
                 << theParameters.value("phi10") << "  "
                 << theParameters.value("phi20") << "  "
@@ -163,10 +169,46 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
             }
 
             out << "}" << endl;
+            out << endl;
+            
+            out << "// length scale tensor (tensorField)" << endl;
+            out << endl;
+            out << "LDict" << endl;
+            out << "{" << endl;
+            out << "    referenceValue          ("
+                << theParameters.value("L11") << "  "
+                << theParameters.value("L12") << "  "
+                << theParameters.value("L13") << "  "
+                << theParameters.value("L21") << "  "
+                << theParameters.value("L22") << "  "
+                << theParameters.value("L23") << "  "
+                << theParameters.value("L31") << "  "
+                << theParameters.value("L32") << "  "
+                << theParameters.value("L33")
+                << ");" << endl;
 
+            out << "    profile                 " << profile << ";" << endl;
+
+            if ( int(theParameters.value("profile")) > 0 ) {
+                out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << endl;
+                out << "    referenceDist           " << theParameters.value("refDistL") << ";" << endl;
+                out << "    alpha                     ("
+                    << theParameters.value("alpha11") << "  "
+                    << theParameters.value("alpha12") << "  "
+                    << theParameters.value("alpha13") << "  "
+                    << theParameters.value("alpha21") << "  "
+                    << theParameters.value("alpha22") << "  "
+                    << theParameters.value("alpha23") << "  "
+                    << theParameters.value("alpha31") << "  "
+                    << theParameters.value("alpha32") << "  "
+                    << theParameters.value("alpha33")
+                    << ");" << endl;
+            }
+
+            out << "}" << endl;
             out << endl;
 
-
+            /*
             out << "// turbulence length scale profile for u component" << endl;
             out << "LuxDict" << endl;
             out << "{" << endl;
@@ -213,15 +255,8 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
                 out << "    alpha                   " << theParameters.value("LwAlpha") << ";" << endl;
             }
             out << "}" << endl;
-
-            out << endl;
-
-            out << "LuyToLuxRatio              " << theParameters.value("Lu10") << ";" << endl;
-            out << "LuzToLuxRatio              " << theParameters.value("Lu20") << ";" << endl;
-            out << "LvyToLvxRatio              " << theParameters.value("Lv10") << ";" << endl;
-            out << "LvzToLvxRatio              " << theParameters.value("Lv20") << ";" << endl;
-            out << "LwyToLwxRatio              " << theParameters.value("Lw10") << ";" << endl;
-            out << "LwzToLwxRatio              " << theParameters.value("Lw20") << ";" << endl;
+             
+             */
 
             out << endl;
             out << endl;
@@ -260,42 +295,42 @@ void ExportWidget::exportUFile(QString fileName)
             case 0: /* digital filter */
 
                 out << "        type               turbulentDFMInlet;" << endl;
-                switch (int(theParameters.value("shapeFunction"))) {
+                switch (int(theParameters.value("filterType"))) {
                 case 0:
-                    out << "        filterShape        gaussian;" << endl;
+                    out << "        filterType         gaussian;" << endl;
                     break;
                 case 1:
-                    out << "        filterShape        exponential;" << endl;
+                    out << "        filterType         exponential;" << endl;
                     break;
                 default:
-                    out << "        filterShape        exponential;" << endl;
+                    out << "        filterType         exponential;" << endl;
                 }
                 out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << endl;
                 out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << endl;
 
                 out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
                 out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << endl;
 
                 break;
 
             case 1:  /* synthetic eddy */
 
-                out << "        type        turbulentSEMInlet;" << endl;
-                switch (int(theParameters.value("shapeFunction"))) {
+                out << "        type               turbulentSEMInlet;" << endl;
+                switch (int(theParameters.value("eddyType"))) {
                 case 0:
-                    out << "        filterShape        gaussian;" << endl;
+                    out << "        eddyType        gaussian;" << endl;
                     break;
                 case 1:
-                    out << "        filterShape        tent;" << endl;
+                    out << "        eddyType        tent;" << endl;
                     break;
                 case 2:
-                    out << "        filterShape        step;" << endl;
+                    out << "        eddyType        step;" << endl;
                     break;
                 default:
-                    out << "        filterShape        gaussian;" << endl;
+                    out << "        eddyType        gaussian;" << endl;
                 }
-                out << "        eddyDensity       " << theParameters.value("eddyDensity") << ";" << endl;
+                out << "        density            " << theParameters.value("eddyDensity") << ";" << endl;
 
                 out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
                 out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
@@ -305,21 +340,8 @@ void ExportWidget::exportUFile(QString fileName)
 
             case 2:  /* divergence-free synthetic eddy */
 
-                out << "        type        turbulentDFSEMInlet;" << endl;
-                switch (int(theParameters.value("shapeFunction"))) {
-                case 0:
-                    out << "        filterShape        gaussian;" << endl;
-                    break;
-                case 1:
-                    out << "        filterShape        tent;" << endl;
-                    break;
-                case 2:
-                    out << "        filterShape        step;" << endl;
-                    break;
-                default:
-                    out << "        filterShape        gaussian;" << endl;
-                }
-                out << "        eddyDensity       " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+                out << "        type               turbulentDFSEMInlet;" << endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
 
                 out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
                 out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
@@ -329,10 +351,10 @@ void ExportWidget::exportUFile(QString fileName)
 
             case 3:  /* digital spot */
 
-                out << "        type        turbulentATSMInlet;" << endl;
+                out << "        type               turbulentATSMInlet;" << endl;
 
                 out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << endl;
-                out << "        vortonDensity      " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
 
                 out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
                 out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
@@ -341,7 +363,14 @@ void ExportWidget::exportUFile(QString fileName)
                 break;
 
             default:
-                qWarning() << "unknown turbulence model";
+                qWarning() << "unknown turbulent inflow boundary conditions";
+            }
+            
+            if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
+            {
+                out << "        calculateU         true;" << endl;
+                out << "        calculateL         true;" << endl;
+                out << "        calculateR         true;" << endl;
             }
 
             /* this was moved to the inflowProperties-file starting with version 1.1.0 *
@@ -358,14 +387,15 @@ void ExportWidget::exportUFile(QString fileName)
              */
 
             if (theMap.contains("type"))         theMap.remove("type");
-            if (theMap.contains("filterShape"))  theMap.remove("filterShape");
+            if (theMap.contains("filterType"))   theMap.remove("filterType");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
             if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
-            if (theMap.contains("eddyDensity"))  theMap.remove("eddyDensity");
-
-            if (theMap.contains("intersection"))    theMap.remove("intersection");
-            if (theMap.contains("yOffset"))         theMap.remove("yOffset");
-            if (theMap.contains("zOffset"))         theMap.remove("zOffset");
+            if (theMap.contains("density"))      theMap.remove("density");
+            if (theMap.contains("eddyType"))     theMap.remove("eddyType");
+            if (theMap.contains("vortonType"))   theMap.remove("vortonType");
+            if (theMap.contains("periodicInY"))  theMap.remove("periodicInY");
+            if (theMap.contains("periodicInZ"))  theMap.remove("periodicInZ");
+            if (theMap.contains("cleanRestart")) theMap.remove("cleanRestart");
 
             foreach (QString s, theMap.keys() )
             {
