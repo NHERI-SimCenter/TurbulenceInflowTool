@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>967</height>
+    <height>1388</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -56,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>638</width>
-        <height>1161</height>
+        <height>1362</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -160,15 +160,14 @@
           <item row="0" column="2">
            <widget class="QRadioButton" name="RB_divergenceFree">
             <property name="text">
-             <string>divergence-free
-synthetic eddy</string>
+             <string>divergence-free synthetic eddy</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
            <widget class="QRadioButton" name="RB_digitalFilter">
             <property name="text">
-             <string>digital filter</string>
+             <string>digital filtering</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -204,7 +203,10 @@ synthetic eddy</string>
               <item row="2" column="1">
                <widget class="QSpinBox" name="filterFactor">
                 <property name="minimum">
-                 <number>4</number>
+                 <number>2</number>
+                </property>
+                <property name="value">
+                 <number>2</number>
                 </property>
                </widget>
               </item>
@@ -233,7 +235,7 @@ synthetic eddy</string>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="shapeFunction">
+               <widget class="QComboBox" name="filterType">
                 <item>
                  <property name="text">
                   <string>gaussian</string>
@@ -270,14 +272,14 @@ synthetic eddy</string>
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QLabel" name="label_velocityShape">
+               <widget class="QLabel" name="label_eddyType">
                 <property name="text">
-                 <string>velocity shape</string>
+                 <string>eddy type</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="velocityShape">
+               <widget class="QComboBox" name="eddyType">
                 <item>
                  <property name="text">
                   <string>gaussian</string>
@@ -505,20 +507,56 @@ synthetic eddy</string>
           <property name="bottomMargin">
            <number>6</number>
           </property>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_zOffset">
-            <property name="text">
-             <string>zOffset</string>
+          <item row="3" column="2">
+           <widget class="QDoubleSpinBox" name="offset2">
+            <property name="minimum">
+             <double>-10.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>10.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
             </property>
            </widget>
           </item>
-          <item row="3" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="zOffset">
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="dir2">
             <property name="minimum">
-             <double>-1000000.000000000000000</double>
+             <double>-10.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>1000000.000000000000000</double>
+             <double>10.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="offset1">
+            <property name="minimum">
+             <double>-10.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>10.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="dir3">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QDoubleSpinBox" name="offset0">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -538,20 +576,10 @@ synthetic eddy</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="dir3">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="yOffset">
-            <property name="minimum">
-             <double>-1000000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>1000000.000000000000000</double>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_offsetVector">
+            <property name="text">
+             <string>offset (vector)</string>
             </property>
            </widget>
           </item>
@@ -559,26 +587,6 @@ synthetic eddy</string>
            <widget class="QLabel" name="label_intersectionVector">
             <property name="text">
              <string>intersection direction (vector)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="dir2">
-            <property name="minimum">
-             <double>-10.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>10.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_yOffset">
-            <property name="text">
-             <string>yOffset</string>
             </property>
            </widget>
           </item>
@@ -675,7 +683,7 @@ synthetic eddy</string>
           <item row="0" column="0">
            <widget class="QLabel" name="label_velocityU">
             <property name="text">
-             <string>normal velocity</string>
+             <string>magnitude</string>
             </property>
            </widget>
           </item>
@@ -746,7 +754,7 @@ synthetic eddy</string>
        <item>
         <widget class="QGroupBox" name="phiTensorGroup">
          <property name="title">
-          <string>Turbulence intensity (tensor)</string>
+          <string>Reynolds stress (symmetric tensor)</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
           <property name="leftMargin">
@@ -761,41 +769,15 @@ synthetic eddy</string>
           <property name="bottomMargin">
            <number>6</number>
           </property>
+          <item row="1" column="0">
+           <widget class="QDoubleSpinBox" name="PHI11"/>
+          </item>
           <item row="1" column="1">
            <widget class="QDoubleSpinBox" name="PHI12">
             <property name="enabled">
              <bool>false</bool>
             </property>
            </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QDoubleSpinBox" name="alpha1">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0" colspan="3">
-           <widget class="QLabel" name="label_alphaPHI">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>alpha (x, y, z)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="2">
-           <widget class="QDoubleSpinBox" name="PHI33"/>
-          </item>
-          <item row="5" column="0">
-           <widget class="QDoubleSpinBox" name="PHI31"/>
           </item>
           <item row="1" column="2">
            <widget class="QDoubleSpinBox" name="PHI13">
@@ -804,17 +786,44 @@ synthetic eddy</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="refDistPHI">
-            <property name="maximum">
-             <double>300.000000000000000</double>
+          <item row="2" column="0">
+           <widget class="QDoubleSpinBox" name="PHI21">
+            <property name="minimum">
+             <double>-100.000000000000000</double>
             </property>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="PHI22"/>
           </item>
           <item row="2" column="2">
            <widget class="QDoubleSpinBox" name="PHI23">
             <property name="enabled">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QDoubleSpinBox" name="PHI31">
+            <property name="minimum">
+             <double>-100.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDoubleSpinBox" name="PHI32">
+            <property name="minimum">
+             <double>-100.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QDoubleSpinBox" name="PHI33"/>
+          </item>
+          <item row="6" column="0" colspan="3">
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -824,35 +833,6 @@ synthetic eddy</string>
              <string>reference angle (deg)</string>
             </property>
            </widget>
-          </item>
-          <item row="10" column="1">
-           <widget class="QDoubleSpinBox" name="alpha2">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QDoubleSpinBox" name="PHI21"/>
-          </item>
-          <item row="10" column="2">
-           <widget class="QDoubleSpinBox" name="alpha3">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QDoubleSpinBox" name="PHI11"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="PHI22"/>
           </item>
           <item row="7" column="1" colspan="2">
            <widget class="QDoubleSpinBox" name="refAnglePHI">
@@ -867,9 +847,6 @@ synthetic eddy</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
-           <widget class="QDoubleSpinBox" name="PHI32"/>
-          </item>
           <item row="8" column="0">
            <widget class="QLabel" name="label_refDistPHI">
             <property name="text">
@@ -877,10 +854,53 @@ synthetic eddy</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="0" colspan="3">
-           <widget class="Line" name="line_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="8" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="refDistPHI">
+            <property name="maximum">
+             <double>300.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0" colspan="3">
+           <widget class="QLabel" name="label_alphaPHI">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>alpha (vector)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QDoubleSpinBox" name="alpha1">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <widget class="QDoubleSpinBox" name="alpha2">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="2">
+           <widget class="QDoubleSpinBox" name="alpha3">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
             </property>
            </widget>
           </item>
@@ -888,11 +908,11 @@ synthetic eddy</string>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="lengthScaleGroup">
+        <widget class="QGroupBox" name="LTensorGroup">
          <property name="title">
-          <string>Integral length scales</string>
+          <string>Length scales (tensor)</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,1,0,1,0,1" columnminimumwidth="0,0,0,0,0,0">
+         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0">
           <property name="leftMargin">
            <number>6</number>
           </property>
@@ -905,101 +925,49 @@ synthetic eddy</string>
           <property name="bottomMargin">
            <number>6</number>
           </property>
-          <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="refAngleLu">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="minimum">
-             <double>-180.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>180.000000000000000</double>
-            </property>
-           </widget>
+          <item row="1" column="0">
+           <widget class="QDoubleSpinBox" name="L11"/>
           </item>
-          <item row="6" column="3">
-           <widget class="QDoubleSpinBox" name="LvAlpha">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="L12"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="L13"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QDoubleSpinBox" name="L21"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="L22"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QDoubleSpinBox" name="L23"/>
           </item>
           <item row="5" column="0">
-           <widget class="QLabel" name="label_referenceDist">
-            <property name="text">
-             <string>reference distance</string>
-            </property>
-           </widget>
+           <widget class="QDoubleSpinBox" name="L31"/>
           </item>
           <item row="5" column="1">
-           <widget class="QDoubleSpinBox" name="refDistLu">
-            <property name="maximum">
-             <double>300.000000000000000</double>
+           <widget class="QDoubleSpinBox" name="L32"/>
+          </item>
+          <item row="5" column="2">
+           <widget class="QDoubleSpinBox" name="L33"/>
+          </item>
+          <item row="6" column="0" colspan="3">
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_flowdir">
-            <property name="text">
-             <string>flow dir  reference value (x)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="5">
-           <widget class="QDoubleSpinBox" name="LwAlpha">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_referenceAngle">
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_refAngleL">
             <property name="text">
              <string>reference angle (deg)</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
-           <widget class="QLabel" name="label_v_component">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>v</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="5">
-           <widget class="QLabel" name="label_w_component">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>w</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="5">
-           <widget class="QDoubleSpinBox" name="refAngleLw">
+          <item row="7" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="refAngleL">
             <property name="decimals">
              <number>1</number>
             </property>
@@ -1011,207 +979,120 @@ synthetic eddy</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="5">
-           <widget class="QDoubleSpinBox" name="Lwx">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="LuzLux">
-            <property name="maximum">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_u_component">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_refDistL">
             <property name="text">
-             <string>u</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <string>reference distance</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_perpendicular">
-            <property name="text">
-             <string>perp. ratio (y)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="5">
-           <widget class="QDoubleSpinBox" name="refDistLw">
+          <item row="8" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="refDistL">
             <property name="maximum">
              <double>300.000000000000000</double>
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
-           <widget class="QDoubleSpinBox" name="Lvx">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QDoubleSpinBox" name="LvzLvx">
-            <property name="maximum">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QDoubleSpinBox" name="LuAlpha">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="LuyLux">
-            <property name="maximum">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_alphas">
-            <property name="text">
-             <string>alpha</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="3">
-           <widget class="QDoubleSpinBox" name="refDistLv">
-            <property name="maximum">
-             <double>300.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="3">
-           <widget class="QDoubleSpinBox" name="refAngleLv">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="minimum">
-             <double>-180.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>180.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_up_dir">
-            <property name="text">
-             <string>vertical ratio (z)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="5">
-           <widget class="QDoubleSpinBox" name="LwzLwx">
-            <property name="maximum">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="Lux">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="5">
-           <widget class="QDoubleSpinBox" name="LwyLwx">
-            <property name="maximum">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="QDoubleSpinBox" name="LvyLvx">
-            <property name="maximum">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2" rowspan="3">
-           <widget class="Line" name="line1">
+          <item row="9" column="0" colspan="3">
+           <widget class="QLabel" name="label_alphaL">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+            <property name="text">
+             <string>alpha (tensor)</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="4" rowspan="3">
-           <widget class="Line" name="line2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+          <item row="10" column="0">
+           <widget class="QDoubleSpinBox" name="alpha11">
+            <property name="decimals">
+             <number>3</number>
             </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
             </property>
            </widget>
           </item>
-          <item row="4" column="4" rowspan="3">
-           <widget class="Line" name="line4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="10" column="1">
+           <widget class="QDoubleSpinBox" name="alpha12">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
             </property>
            </widget>
           </item>
-          <item row="4" column="2" rowspan="3">
-           <widget class="Line" name="line3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="10" column="2">
+           <widget class="QDoubleSpinBox" name="alpha13">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QDoubleSpinBox" name="alpha21">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="1">
+           <widget class="QDoubleSpinBox" name="alpha22">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="2">
+           <widget class="QDoubleSpinBox" name="alpha23">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QDoubleSpinBox" name="alpha31">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1">
+           <widget class="QDoubleSpinBox" name="alpha32">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="2">
+           <widget class="QDoubleSpinBox" name="alpha33">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
             </property>
            </widget>
           </item>

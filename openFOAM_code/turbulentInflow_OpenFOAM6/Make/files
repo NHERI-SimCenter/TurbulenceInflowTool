@@ -1,0 +1,17 @@
+turbulentDFMInlet/turbulentDFMInletFvPatchVectorField.C
+turbulentMeanInlet/turbulentMeanInletFvPatchVectorField.C
+turbulentKineticEnergy/turbulentKineticEnergyFvPatchScalarField.C
+
+turbulentSEMInlet/eddy/eddy.C
+turbulentSEMInlet/eddy/eddyIO.C
+turbulentSEMInlet/turbulentSEMInletFvPatchVectorField.C
+
+turbulentATSMInlet/vorton/vorton.C
+turbulentATSMInlet/vorton/vortonIO.C
+turbulentATSMInlet/turbulentATSMInletFvPatchVectorField.C
+
+turbulentDFSEMInlet/eddy/dfeddy.C
+turbulentDFSEMInlet/eddy/dfeddyIO.C
+turbulentDFSEMInlet/turbulentDFSEMInletFvPatchVectorField.C
+
+LIB = $(FOAM_USER_LIBBIN)/libturbulentInflow
