@@ -35,7 +35,7 @@ private slots:
 private:
     bool readUfile(QString);
     bool readControlDict(QString);
-    QStringList getLine(void);
+    bool getLine(QStringList &);
     QMap<QString, QString> *readParameters(void);
 
     Ui::FileWidget *ui;
