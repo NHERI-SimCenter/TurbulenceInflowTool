@@ -210,6 +210,7 @@ bool FileWidget::getLine(QStringList &reply)
     {
         QByteArray line = UIter->next().simplified();
         if (qstrncmp(line,"//",2) == 0) continue;
+        if (qstrncmp(line, "#",1) == 0) continue;
         if (line.contains('{')) {
             hasLine = true;
             break;
