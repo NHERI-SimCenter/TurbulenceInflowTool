@@ -376,12 +376,16 @@ void MainWindow::on_action_Documentation_triggered()
 }
 
 
-void MainWindow::fetchUFileData(bool, QDir &)
+void MainWindow::fetchUFileData(bool hasValidData, QDir &)
 {
-    if (ui->fileWidget->fetchUFileData(head, tail, data))
-    {
-        ui->exportWidget->setUFileData(head, tail, data);
+    if (hasValidData) {
+        if (ui->fileWidget->fetchUFileData(head, tail, data))
+        {
+            ui->exportWidget->setUFileData(head, tail, data);
+        }
     }
+
+    /* do we need an else to reset info??? */
 }
 
 void MainWindow::on_actionLicense_triggered()

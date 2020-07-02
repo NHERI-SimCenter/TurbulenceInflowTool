@@ -101,20 +101,23 @@ void FileWidget::on_sourceLocateBtn_clicked()
         // parse for boundary patches
         while (UIter->hasNext())
         {
-            QStringList list = this->getLine();
+            QStringList list;
 
-            // skip empty lines
-            if (list.length() == 0) continue;
+            if (this->getLine(list))
+            {
+                // skip empty lines
+                if (list.length() == 0) continue;
 
-            // terminate if done with boundaryFields section
-            if (list[0] == '}') {
-                UFileTail.append("}\n");
-                break;
+                // terminate if done with boundaryFields section
+                if (list[0] == '}') {
+                    UFileTail.append("}\n");
+                    break;
+                }
+
+                // read and store the boundary item
+                boundaryList.append(list[0]);
+                boundaries.insert(list[0], this->readParameters());
             }
-
-            // read and store the boundary item
-            boundaryList.append(list[0]);
-            boundaries.insert(list[0], this->readParameters());
         }
 
         // collect the remainder of the file
@@ -198,7 +201,7 @@ bool FileWidget::readControlDict(QString filename)
     }
 }
 
-QStringList FileWidget::getLine(void)
+bool FileWidget::getLine(QStringList &reply)
 {
     bool hasLine = false;
     QByteArray lineString = "";
@@ -207,33 +210,45 @@ QStringList FileWidget::getLine(void)
     {
         QByteArray line = UIter->next().simplified();
         if (qstrncmp(line,"//",2) == 0) continue;
-        if (line.contains('{')) break;
+        if (line.contains('{')) {
+            hasLine = true;
+            break;
+        }
         lineString += line;
-        if (line.contains('}')) break;
+        if (line.contains('}')) {
+            hasLine = true;
+            break;
+        }
         if (line.contains(';')) {
             int idx = lineString.indexOf(';');
             lineString.truncate(idx);
+            hasLine = true;
             break;
         }
     }
 
-    QByteArrayList reply0 = lineString.simplified().split(' ');
+    reply.clear();
 
-    QStringList reply;
-    foreach (QByteArray item, reply0)
+    if (hasLine)
     {
-        reply.append(item);
+        QByteArrayList reply0 = lineString.simplified().split(' ');
+
+        foreach (QByteArray item, reply0)
+        {
+            reply.append(item);
+        }
     }
 
-    return reply;
+    return hasLine;
 }
 
 QMap<QString, QString> *FileWidget::readParameters(void)
 {
     QMap<QString, QString> *params = new QMap<QString, QString>();
 
-    while ( true ) {
-        QStringList items = this->getLine();
+    QStringList items;
+
+    while ( this->getLine(items) ) {
         if (items[0] == '}') break;
 
         if (items.length() > 0 ) {
