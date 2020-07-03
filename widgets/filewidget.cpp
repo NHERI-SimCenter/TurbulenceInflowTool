@@ -36,7 +36,20 @@ void FileWidget::on_sourceLocateBtn_clicked()
 
     ui->sourceLocationDisplay->setText(fileTreeLocation.path());
 
+    // if selection made, open it and check valid dir .. if valid
+    // set fileTreeLocation to point to it
+    QStringList filesSelected;
+    filesSelected = dlg->selectedFiles();
+    if (filesSelected.size() == 1) {
+        QString dirName = filesSelected.at(0);
+        QDir dir(dirName);
+        if (dir.exists())
+            fileTreeLocation = dir;
+    }
+
     QStringList folders = fileTreeLocation.entryList(QStringList(),QDir::Dirs);
+
+    //QStringList folders = fileTreeLocation.entryList(filesSelected);
     int stack = folders.length();
 
     if (folders.contains("0") && folders.contains("constant")  && folders.contains("system")) {
