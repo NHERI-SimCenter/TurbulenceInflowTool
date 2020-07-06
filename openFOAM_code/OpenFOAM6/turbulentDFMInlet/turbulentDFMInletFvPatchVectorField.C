@@ -1270,6 +1270,9 @@ void Foam::turbulentDFMInletFvPatchVectorField::write(Ostream& os) const
     fvPatchVectorField::write(os);
     writeEntry("value", os);
 
+    writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
+    writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
+
     uFluctTemporal_.writeEntry("uFluctTemporal", os);
 
     U_.writeEntry("U", os);

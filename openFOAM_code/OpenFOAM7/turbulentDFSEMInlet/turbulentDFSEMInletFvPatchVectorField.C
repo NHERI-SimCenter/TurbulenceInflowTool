@@ -23,226 +23,23 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "turbulentATSMInletFvPatchVectorField.H"
+#include "turbulentDFSEMInletFvPatchVectorField.H"
 #include "volFields.H"
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "momentOfInertia.H"
 #include "IFstream.H"
 #include "OFstream.H"
-#include "IOmanip.H"
 #include "globalIndex.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-Foam::label Foam::turbulentATSMInletFvPatchVectorField::seedIterMax_ = 1000;
+Foam::label Foam::turbulentDFSEMInletFvPatchVectorField::seedIterMax_ = 1000;
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-void Foam::turbulentATSMInletFvPatchVectorField::createFiles()
-{
-    if (nOutputFace_ > 0)
-    {
-        fileName baseDir = db().time().path();
-
-        word outputPrefix = "postProcessing";
-        word prefix = "turbulentATSMInlet";
-
-        if (Pstream::parRun())
-        {
-            baseDir = baseDir/".."/outputPrefix;
-        }
-        else
-        {
-            baseDir = baseDir/outputPrefix;
-        }
-
-        const word startTimeName = db().time().timeName(db().time().startTime().value());
-
-        label start = 0;
-
-        for (label i=0; i<Pstream::myProcNo(); i++)
-        {
-            start = start + patchSize_[i];
-        }
-
-        forAll(outputFaceIndices_, i)
-        {
-            if (!filePtrs_.set(i))
-            {
-                fileName outputDir(baseDir/prefix/startTimeName);
-
-                mkDir(outputDir);
-
-                word fName(db().time().timeName(outputFaceIndices_[i]+start));
-
-                // Check if file already exists
-                IFstream is(outputDir/(fName + ".dat"));
-
-                filePtrs_.set(i, new OFstream(outputDir/(fName + ".dat")));
-
-                initStream(filePtrs_[i]);
-
-                writeFileHeader(i);
-            }
-        }
-    }
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::writeFileHeader(const label i)
-{
-    label start = 0;
-
-    for (label i=0; i<Pstream::myProcNo(); i++)
-    {
-        start = start + patchSize_[i];
-    }
-
-    writeHeaderValue(filePtrs_[i], "face index", outputFaceIndices_[i]+start);
-    writeHeaderValue(filePtrs_[i], "face centroid", patch().Cf()[outputFaceIndices_[i]]);
-    writeHeaderValue(filePtrs_[i], "mean velocity magnitude", U_[outputFaceIndices_[i]]);
-    writeHeaderValue(filePtrs_[i], "Reynolds stress tensor", R_[outputFaceIndices_[i]]);
-    writeHeaderValue(filePtrs_[i], "integral length scales", L_[outputFaceIndices_[i]]);
-    writeHeaderValue(filePtrs_[i], "synthetic method", "turbulent spot");
-    writeHeaderValue(filePtrs_[i], "vorton type", vortonType_);
-
-    writeCommented(filePtrs_[i], "Time");
-
-    writeTabbed(filePtrs_[i], "ux");
-    writeTabbed(filePtrs_[i], "uy");
-    writeTabbed(filePtrs_[i], "uz");
-
-    filePtrs_[i] << endl;
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::writeValues(const label i, const vector u)
-{
-    writeTime(filePtrs_[i]);
-
-    filePtrs_[i]
-        << tab << u.component(vector::X)
-        << tab << u.component(vector::Y)
-        << tab << u.component(vector::Z) << endl;
-}
-
-
-Foam::label Foam::turbulentATSMInletFvPatchVectorField::charWidth() const
-{
-    label addChars = 8;
-    return IOstream::defaultPrecision() + addChars;
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::initStream(Ostream& os) const
-{
-    os.setf(ios_base::scientific, ios_base::floatfield);
-    os.width(charWidth());
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::writeCommented
-(
-    Ostream& os,
-    const string& str
-) const
-{
-    os  << setw(1) << "#" << setw(1) << ' '
-        << setf(ios_base::left) << setw(charWidth() - 2) << str.c_str();
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::writeTabbed
-(
-    Ostream& os,
-    const string& str
-) const
-{
-    os  << tab << setw(charWidth()) << str.c_str();
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::writeHeader
-(
-    Ostream& os,
-    const string& str
-) const
-{
-    os  << setw(1) << "#" << setw(1) << ' '
-        << setf(ios_base::left) << setw(charWidth() - 2) << str.c_str() << nl;
-}
-
-template<class Type>
-void Foam::turbulentATSMInletFvPatchVectorField::writeHeaderValue
-(
-    Ostream& os,
-    const string& property,
-    const Type& value
-) const
-{
-    os  << setw(1) << '#' << setw(1) << ' '
-        << setf(ios_base::left) << setw(charWidth() - 2) << property.c_str()
-        << setw(1) << ':' << setw(1) << ' ' << value << nl;
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::writeTime(Ostream& os) const
-{
-    os  << setw(charWidth()) << db().time().timeName();
-}
-
-void Foam::turbulentATSMInletFvPatchVectorField::initialiseOutput()
-{
-    sort(outputFaceIndices_);
-
-    if (!Pstream::parRun())
-    {
-        filePtrs_.setSize(nOutputFace_);
-    }
-    else
-    {
-        label start = 0;
-
-        for (label i=0; i<Pstream::myProcNo(); i++)
-        {
-            start = start + patchSize_[i];
-        }
-
-        label currentNumb = 0;
-        label currentStar = 0;
-
-        forAll(outputFaceIndices_, i)
-        {
-            if (outputFaceIndices_[i]>=start&&outputFaceIndices_[i]<start+patchSize_[Pstream::myProcNo()])
-            {
-                if (currentNumb == 0)
-                {
-                    currentStar = i;
-                }
-                currentNumb += 1;
-            }
-        }
-
-        labelList temp = outputFaceIndices_;
-
-        if (currentNumb > 0)
-        {
-            nOutputFace_ = currentNumb;
-
-            filePtrs_.setSize(nOutputFace_);
-            outputFaceIndices_.setSize(nOutputFace_);
-
-            forAll(outputFaceIndices_, i)
-            {
-                outputFaceIndices_[i] = temp[currentStar+i]-start;
-            }
-        }
-        else
-        {
-            filePtrs_.setSize(0);
-            outputFaceIndices_.setSize(0);
-        }
-    }
-
-    createFiles();
-}
-
 const Foam::pointToPointPlanarInterpolation&
-Foam::turbulentATSMInletFvPatchVectorField::patchMapper() const
+Foam::turbulentDFSEMInletFvPatchVectorField::patchMapper() const
 {
     // Initialise interpolation (2D planar interpolation by triangulation)
     if (mapperPtr_.empty())
@@ -291,15 +88,9 @@ Foam::turbulentATSMInletFvPatchVectorField::patchMapper() const
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::initialisePatch()
+void Foam::turbulentDFSEMInletFvPatchVectorField::initialisePatch()
 {
     const vectorField nf(patch().nf());
-
-    // Set number of patch faces for each processor
-    patchSize_[Pstream::myProcNo()] = nf.size();
-
-    Pstream::gatherList(patchSize_);
-    Pstream::scatterList(patchSize_);
 
     // Patch normal points into domain
     patchNormal_ = -gAverage(nf);
@@ -377,29 +168,49 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialisePatch()
     // Local patch bounds (this processor)
     patchBounds_ = boundBox(patch.localPoints(), false);
 
-    patchSpanY_ = patchBounds_.span().y();
-    patchSpanZ_ = patchBounds_.span().z();
+    boundBox globalBounds = boundBox(patch.localPoints(), true);
+
+    patchSpanY_ = globalBounds.span().y();
+    patchSpanZ_ = globalBounds.span().z();
 
     patchBounds_.inflate(0.1);
 
-    // Determine if all vortons spawned from a single processor
+    // Determine if all eddies spawned from a single processor
     singleProc_ = patch.size() == returnReduce(patch.size(), sumOp<label>());
     reduce(singleProc_, orOp<bool>());
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::initialiseVortonBox()
+void Foam::turbulentDFSEMInletFvPatchVectorField::initialiseEddyBox()
 {
     const scalarField& magSf = patch().magSf();
 
-    // Maximum extent across all processors
-    maxSigmaX_ = 3.0/sqrt(constant::mathematical::pi)*cmptMax(gMax(L_));
+    //const scalarField cellDx(Foam::sqrt(magSf));
+    const scalarField cellDx(max(Foam::sqrt(magSf), 2/patch().deltaCoeffs()));
 
-    // Vorton box volume
+    // Inialise eddy box extents
+    forAll(*this, faceI)
+    {
+        scalar& s = sigmax_[faceI];
+
+        // Length scale in x direction (based on eq. 14)
+        s = mag(L_[faceI]);
+        s = min(s, kappa_*delta_);
+
+        // Allow eddies to be smaller than the mesh scale as suggested by
+        // the reference?
+        // s = min(s, nCellPerEddy_*cellDx[faceI]);
+        s = max(s, nCellPerEddy_*cellDx[faceI]);
+    }
+
+    // Maximum extent across all processors
+    maxSigmaX_ = gMax(sigmax_);
+
+    // Eddy box volume
     v0_ = 2*gSum(magSf)*maxSigmaX_;
 
     {
-        Info<< "Patch: " << patch().patch().name() << " vorton box:" << nl
+        Info<< "Patch: " << patch().patch().name() << " eddy box:" << nl
             << "    volume    : " << v0_ << nl
             << "    maxSigmaX : " << maxSigmaX_ << nl
             << endl;
@@ -407,7 +218,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialiseVortonBox()
 }
 
 
-Foam::pointIndexHit Foam::turbulentATSMInletFvPatchVectorField::setNewPosition
+Foam::pointIndexHit Foam::turbulentDFSEMInletFvPatchVectorField::setNewPosition
 (
     const bool global
 )
@@ -485,43 +296,42 @@ Foam::pointIndexHit Foam::turbulentATSMInletFvPatchVectorField::setNewPosition
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::initialiseVortons()
+void Foam::turbulentDFSEMInletFvPatchVectorField::initialiseEddies()
 {
-    // Initialise vorton properties
-    scalar sumVolVorton = 0;
-    scalar sumVolVortonAllProc = 0;
+    // Initialise eddy properties
+    scalar sumVolEddy = 0;
+    scalar sumVolEddyAllProc = 0;
 
-    if (nVortonLocal_ && !isCleanRestart_)
+    if (nEddyLocal_ && !isCleanRestart_)
     {
-        vortons_.setSize(nVortonLocal_);
+        eddies_.setSize(nEddyLocal_);
 
-        forAll(vortons_, k)
+        forAll(eddies_, k)
         {    
-            label faceI = vortonLabel_[k];
+            label faceI = eddyLabel_[k];
 
-            vorton v
+            dfeddy e
             (
-                vortonType_,
                 faceI,
-                vortonPosition_[k],
-                vortonDistance_[k],
+                eddyPosition_[k],
+                eddyDistance_[k],
                 R_[faceI],
-                vortonScale_[k],
-                vortonIntensity_[k]
+                eddyScale_[k],
+                eddyIntensity_[k]
             );
 
-            vortons_[k] = v;
+            eddies_[k] = e;
 
-            sumVolVorton += v.volume();
+            sumVolEddy += e.volume();
         }
 
-        sumVolVortonAllProc = returnReduce(sumVolVorton, sumOp<scalar>());
+        sumVolEddyAllProc = returnReduce(sumVolEddy, sumOp<scalar>());
     }
     else
     {
-        DynamicList<vorton> vortons(size());
+        DynamicList<dfeddy> eddies(size());
 
-        while (sumVolVortonAllProc/v0_ < density_)
+        while (sumVolEddyAllProc/v0_ < density_)
         {
             bool search = true;
             label iter = 0;
@@ -535,9 +345,8 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialiseVortons()
                 // Note: only 1 processor will pick up this face
                 if (faceI != -1)
                 {
-                    vorton v
+                    dfeddy e
                     (
-                        vortonType_,
                         faceI,
                         pos.hitPoint(),
                         rndGen_.scalarAB(-maxSigmaX_, maxSigmaX_),
@@ -546,45 +355,45 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialiseVortons()
                         rndGen_
                     );
 
-                    // If vorton valid, patchFaceI is non-zero
-                    if (v.patchFaceI() != -1)
+                    // If eddy valid, patchFaceI is non-zero
+                    if (e.patchFaceI() != -1)
                     {
-                        vortons.append(v);
-                        sumVolVorton += v.volume();
+                        eddies.append(e);
+                        sumVolEddy += e.volume();
                         search = false;
                     }
                 }
-                // else vorton on remote processor
+                // else eddy on remote processor
 
                 reduce(search, andOp<bool>());
             }
 
-            sumVolVortonAllProc = returnReduce(sumVolVorton, sumOp<scalar>());
+            sumVolEddyAllProc = returnReduce(sumVolEddy, sumOp<scalar>());
         }
 
-        vortons_.transfer(vortons);
+        eddies_.transfer(eddies);
 
-        nVortonLocal_ = vortons_.size();
+        nEddyLocal_ = eddies_.size();
 
-        vortonLabel_.setSize(nVortonLocal_);
-        vortonPosition_.setSize(nVortonLocal_);
-        vortonDistance_.setSize(nVortonLocal_);
-        vortonScale_.setSize(nVortonLocal_);
-        vortonIntensity_.setSize(nVortonLocal_);
+        eddyLabel_.setSize(nEddyLocal_);
+        eddyPosition_.setSize(nEddyLocal_);
+        eddyDistance_.setSize(nEddyLocal_);
+        eddyScale_.setSize(nEddyLocal_);
+        eddyIntensity_.setSize(nEddyLocal_);
 
-        forAll(vortons_, k)
+        forAll(eddies_, k)
         {
-            const vorton& v = vortons_[k];
-            vortonLabel_[k] = v.patchFaceI();
-            vortonPosition_[k] = v.position0();
-            vortonDistance_[k] = v.x();
-            vortonScale_[k] = v.sigma();
-            vortonIntensity_[k] = v.gamma();
+            const dfeddy& e = eddies_[k];
+            eddyLabel_[k] = e.patchFaceI();
+            eddyPosition_[k] = e.position0();
+            eddyDistance_[k] = e.x();
+            eddyScale_[k] = e.sigma();
+            eddyIntensity_[k] = e.alpha();
         }
     }
 
-    nVortonGlobal_ = nVortonLocal_;
-    reduce(nVortonGlobal_, sumOp<label>());
+    nEddyGlobal_ = nEddyLocal_;
+    reduce(nEddyGlobal_, sumOp<label>());
 
     if (debug)
     {
@@ -595,14 +404,14 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialiseVortons()
             Pout<< " processor:" << Pstream::myProcNo();
         }
 
-        Pout<< " seeded:" << nVortonGlobal_ << " vortons" << endl;
+        Pout<< " seeded:" << nEddyGlobal_ << " eddies" << endl;
     }
 
-    if (nVortonGlobal_ > 0)
+    if (nEddyGlobal_ > 0)
     {
-        Info<< "Turbulent ATSM patch: " << patch().name()
-            << " seeded " << nVortonGlobal_ << " vortons with total volume "
-            << sumVolVortonAllProc
+        Info<< "Turbulent DFDFSEM patch: " << patch().name()
+            << " seeded " << nEddyGlobal_ << " eddies with total volume "
+            << sumVolEddyAllProc
             << endl;
     }
     else
@@ -610,12 +419,12 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialiseVortons()
         WarningInFunction
             << "Patch: " << patch().patch().name()
             << " on field " << internalField().name()
-            << ": No vortons seeded - please check your set-up" << endl;
+            << ": No eddies seeded - please check your set-up" << endl;
     }
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::convectVortons
+void Foam::turbulentDFSEMInletFvPatchVectorField::convectEddies
 (
     const scalar deltaT
 )
@@ -624,17 +433,17 @@ void Foam::turbulentATSMInletFvPatchVectorField::convectVortons
 
     label nRecycled = 0;
 
-    forAll(vortons_, vortonI)
+    forAll(eddies_, eddyI)
     {
-        vorton& v = vortons_[vortonI];
+        dfeddy& e = eddies_[eddyI];
 
-        v.move(deltaT*U_[v.patchFaceI()]);
+        e.move(deltaT*U_[e.patchFaceI()]);
 
-        vortonDistance_[vortonI] = v.x();
+        eddyDistance_[eddyI] = e.x();
 
-        const scalar position0 = v.x();
+        const scalar position0 = e.x();
 
-        // Check to see if vorton has exited downstream box plane
+        // Check to see if eddy has exited downstream box plane
         if (position0 > maxSigmaX_)
         {
             bool search = true;
@@ -642,7 +451,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::convectVortons
 
             while (search && iter++ < seedIterMax_)
             {
-               // Spawn new vorton with new random properties (intensity etc)
+               // Spawn new eddy with new random properties (intensity etc)
                pointIndexHit pos(setNewPosition(false));
                label faceI = pos.index();
 
@@ -656,9 +465,8 @@ void Foam::turbulentATSMInletFvPatchVectorField::convectVortons
                    Urand = rndGen_.scalar01()*UMax_;
                }
 
-               v = vorton
+               e = dfeddy
                     (
-                        vortonType_,
                         faceI,
                         pos.hitPoint(),
                         -maxSigmaX_ + rndGen_.scalar01()*deltaT*U_[faceI],
@@ -667,13 +475,13 @@ void Foam::turbulentATSMInletFvPatchVectorField::convectVortons
                         rndGen_
                     );
 
-                vortonLabel_[vortonI] = v.patchFaceI();
-                vortonPosition_[vortonI] = v.position0();
-                vortonDistance_[vortonI] = v.x();
-                vortonScale_[vortonI] = v.sigma();
-                vortonIntensity_[vortonI] = v.gamma();
+                eddyLabel_[eddyI] = e.patchFaceI();
+                eddyPosition_[eddyI] = e.position0();
+                eddyDistance_[eddyI] = e.x();
+                eddyScale_[eddyI] = e.sigma();
+                eddyIntensity_[eddyI] = e.alpha();
 
-                if (v.patchFaceI() != -1)
+                if (e.patchFaceI() != -1)
                 {
                     search = false;
                 }
@@ -688,36 +496,36 @@ void Foam::turbulentATSMInletFvPatchVectorField::convectVortons
     if (debug && nRecycled > 0)
     {
         Info<< "Patch: " << patch().patch().name() << " recycled "
-            << nRecycled << " vortons" << endl;
+            << nRecycled << " eddies" << endl;
     }
 }
 
 
-Foam::vectorField Foam::turbulentATSMInletFvPatchVectorField::uDashVorton
+Foam::vectorField Foam::turbulentDFSEMInletFvPatchVectorField::uDashEddy
 (
-    const List<vorton>& vortons,
+    const List<dfeddy>& eddies,
     const pointField& Cf
 ) const
 {
     vectorField uDash(Cf.size(), vector::zero);
 
-    forAll(vortons, k)
+    forAll(eddies, k)
     {
-        const vorton& v = vortons[k];
-        uDash += v.uDash(Cf, patchNormal_);
+        const dfeddy& e = eddies[k];
+        uDash += e.uDash(Cf, patchNormal_);
 
         if (periodicInY_)
         {
             const vector yOffSet = vector(0, patchSpanY_, 0);
-            uDash += v.uDash(Cf+yOffSet, patchNormal_);
-            uDash += v.uDash(Cf-yOffSet, patchNormal_);
+            uDash += e.uDash(Cf+yOffSet, patchNormal_);
+            uDash += e.uDash(Cf-yOffSet, patchNormal_);
         }
 
         if (periodicInZ_)
         {
             const vector zOffSet = vector(0, 0, patchSpanZ_);
-            uDash += v.uDash(Cf+zOffSet, patchNormal_);
-            uDash += v.uDash(Cf-zOffSet, patchNormal_);
+            uDash += e.uDash(Cf+zOffSet, patchNormal_);
+            uDash += e.uDash(Cf-zOffSet, patchNormal_);
         }
 
         if (periodicInY_&&periodicInZ_)
@@ -725,10 +533,10 @@ Foam::vectorField Foam::turbulentATSMInletFvPatchVectorField::uDashVorton
             const vector yOffSet = vector(0, patchSpanY_, 0);
             const vector zOffSet = vector(0, 0, patchSpanZ_);
 
-            uDash += v.uDash(Cf+yOffSet+zOffSet, patchNormal_);
-            uDash += v.uDash(Cf+yOffSet-zOffSet, patchNormal_);
-            uDash += v.uDash(Cf-yOffSet+zOffSet, patchNormal_);
-            uDash += v.uDash(Cf-yOffSet-zOffSet, patchNormal_);
+            uDash += e.uDash(Cf+yOffSet+zOffSet, patchNormal_);
+            uDash += e.uDash(Cf+yOffSet-zOffSet, patchNormal_);
+            uDash += e.uDash(Cf-yOffSet+zOffSet, patchNormal_);
+            uDash += e.uDash(Cf-yOffSet-zOffSet, patchNormal_);
         }
     }
 
@@ -736,9 +544,9 @@ Foam::vectorField Foam::turbulentATSMInletFvPatchVectorField::uDashVorton
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
+void Foam::turbulentDFSEMInletFvPatchVectorField::calcOverlappingProcEddies
 (
-    List<List<vorton>>& overlappingVortons
+    List<List<dfeddy>>& overlappingEddies
 ) const
 {
     int oldTag = UPstream::msgType();
@@ -752,26 +560,162 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
     // Per processor indices into all segments to send
     List<DynamicList<label>> dynSendMap(Pstream::nProcs());
 
-    forAll(vortons_, i)
+    if (!periodicInY_ && !periodicInZ_)
     {
-        // Collect overlapping vortons
-        const vorton& v = vortons_[i];
-
-        // Vorton bounds
-        point x = v.position(patchNormal_);
-        boundBox vbb = v.bounds();
-        vbb.min() += x;
-        vbb.max() += x;
-
-        forAll(patchBBs, procI)
+        forAll(eddies_, i)
         {
-            // Not including intersection with local patch
-            if (procI != Pstream::myProcNo())
+            // Collect overlapping eddies
+            const dfeddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            boundBox ebb = e.bounds();
+            ebb.min() += x;
+            ebb.max() += x;
+
+            forAll(patchBBs, procI)
             {
-                if (vbb.overlaps(patchBBs[procI]))
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
                 {
-                    dynSendMap[procI].append(i);
-                }
+                    if (ebb.overlaps(patchBBs[procI]))
+                    {
+                        dynSendMap[procI].append(i);
+                    }
+                }      
+            }
+        }
+    }
+    else if (periodicInY_ && !periodicInZ_)
+    {
+        forAll(eddies_, i)
+        {
+            // Collect overlapping eddies
+            const dfeddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            List<boundBox> lebb(3, e.bounds());
+
+            lebb[0].min() += x;
+            lebb[0].max() += x;
+
+            lebb[1].min() += x+vector(0, patchSpanY_, 0);
+            lebb[1].max() += x+vector(0, patchSpanY_, 0);
+
+            lebb[2].min() += x-vector(0, patchSpanY_, 0);
+            lebb[2].max() += x-vector(0, patchSpanY_, 0);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lebb, indi)
+                    {
+                        if (lebb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
+            }
+        }
+    }
+    else if (!periodicInY_ && periodicInZ_)
+    {
+        forAll(eddies_, i)
+        {
+            // Collect overlapping eddies
+            const dfeddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            List<boundBox> lebb(3, e.bounds());
+
+            lebb[0].min() += x;
+            lebb[0].max() += x;
+
+            lebb[1].min() += x+vector(0, 0, patchSpanZ_);
+            lebb[1].max() += x+vector(0, 0, patchSpanZ_);
+
+            lebb[2].min() += x-vector(0, 0, patchSpanZ_);
+            lebb[2].max() += x-vector(0, 0, patchSpanZ_);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lebb, indi)
+                    {
+                        if (lebb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
+            }
+        }
+    }
+    else
+    {
+        forAll(eddies_, i)
+        {
+            // Collect overlapping eddies
+            const dfeddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            List<boundBox> lebb(9, e.bounds());
+
+            lebb[0].min() += x;
+            lebb[0].max() += x;
+
+            lebb[1].min() += x+vector(0, patchSpanY_, 0);
+            lebb[1].max() += x+vector(0, patchSpanY_, 0);
+
+            lebb[2].min() += x-vector(0, patchSpanY_, 0);
+            lebb[2].max() += x-vector(0, patchSpanY_, 0);
+
+            lebb[3].min() += x+vector(0, 0, patchSpanZ_);
+            lebb[3].max() += x+vector(0, 0, patchSpanZ_);
+
+            lebb[4].min() += x-vector(0, 0, patchSpanZ_);
+            lebb[4].max() += x-vector(0, 0, patchSpanZ_);
+
+            lebb[5].min() += x+vector(0, patchSpanY_, patchSpanZ_);
+            lebb[5].max() += x+vector(0, patchSpanY_, patchSpanZ_);
+
+            lebb[6].min() += x-vector(0, patchSpanY_, patchSpanZ_);
+            lebb[6].max() += x-vector(0, patchSpanY_, patchSpanZ_);
+
+            lebb[7].min() += x+vector(0, patchSpanY_,-patchSpanZ_);
+            lebb[7].max() += x+vector(0, patchSpanY_,-patchSpanZ_);
+
+            lebb[8].min() += x-vector(0, patchSpanY_,-patchSpanZ_);
+            lebb[8].max() += x-vector(0, patchSpanY_,-patchSpanZ_);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lebb, indi)
+                    {
+                        if (lebb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
             }
         }
     }
@@ -782,7 +726,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
         sendMap[procI].transfer(dynSendMap[procI]);
     }
 
-    // Send the number of vortons for local processors to receive
+    // Send the number of eddies for local processors to receive
     labelListList sendSizes(Pstream::nProcs());
     sendSizes[Pstream::myProcNo()].setSize(Pstream::nProcs());
     forAll(sendMap, procI)
@@ -817,7 +761,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
         }
     }
 
-    mapDistribute map(segmentI, xferMove(sendMap), xferMove(constructMap));
+    mapDistribute map(segmentI, std::move(sendMap), std::move(constructMap));
 
     PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
 
@@ -827,11 +771,11 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
 
         if (domain != Pstream::myProcNo() && sendElems.size())
         {
-            List<vorton> subVortons(UIndirectList<vorton>(vortons_, sendElems));
+            List<dfeddy> subEddies(UIndirectList<dfeddy>(eddies_, sendElems));
 
             UOPstream toDomain(domain, pBufs);
 
-            toDomain<< subVortons;
+            toDomain<< subEddies;
         }
     }
 
@@ -847,7 +791,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
         {
             UIPstream str(domain, pBufs);
             {
-                str >> overlappingVortons[domain];
+                str >> overlappingEddies[domain];
             }
         }
     }
@@ -859,15 +803,17 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::turbulentATSMInletFvPatchVectorField::
-turbulentATSMInletFvPatchVectorField
+Foam::turbulentDFSEMInletFvPatchVectorField::
+turbulentDFSEMInletFvPatchVectorField
 (
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF
 )
 :
     fixedValueFvPatchField<vector>(p, iF),
+    delta_(Zero),
     density_(Zero),
+    kappa_(Zero),
 
     perturb_(1e-5),
     mapMethod_("nearestCell"),
@@ -882,7 +828,6 @@ turbulentATSMInletFvPatchVectorField
     UMax_(Zero),
 
     patchArea_(-1),
-    patchSize_(Pstream::nProcs(), 0),
     triFace_(),
     triToFace_(),
     triCumulativeMagSf_(),
@@ -892,43 +837,41 @@ turbulentATSMInletFvPatchVectorField
     patchSpanY_(0),
     patchSpanZ_(0),
 
-    vortons_(),
-    vortonType_("typeR"),
-    nVortonGlobal_(Zero),
-    nVortonLocal_(Zero),
-    vortonLabel_(),
-    vortonPosition_(),
-    vortonDistance_(),
-    vortonScale_(),
-    vortonIntensity_(),
+    eddies_(),
+    nEddyGlobal_(Zero),
+    nEddyLocal_(Zero),
+    eddyLabel_(),
+    eddyPosition_(),
+    eddyDistance_(),
+    eddyIntensity_(),
 
+    nCellPerEddy_(5),
     patchNormal_(Zero),
     v0_(Zero),
     rndGen_(Pstream::myProcNo()),
+    sigmax_(size(), Zero),
     maxSigmaX_(Zero),
     curTimeIndex_(-1),
     patchBounds_(boundBox::invertedBox),
     singleProc_(false),
     isCleanRestart_(false),
-    isRestart_(false),
-
-    nOutputFace_(0),
-    outputFaceIndices_(),
-    filePtrs_()
+    isRestart_(false)
 {}
 
 
-Foam::turbulentATSMInletFvPatchVectorField::
-turbulentATSMInletFvPatchVectorField
+Foam::turbulentDFSEMInletFvPatchVectorField::
+turbulentDFSEMInletFvPatchVectorField
 (
-    const turbulentATSMInletFvPatchVectorField& ptf,
+    const turbulentDFSEMInletFvPatchVectorField& ptf,
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF,
     const fvPatchFieldMapper& mapper
 )
 :
     fixedValueFvPatchField<vector>(ptf, p, iF, mapper),
+    delta_(ptf.delta_),
     density_(ptf.density_),
+    kappa_(ptf.kappa_),
 
     perturb_(ptf.perturb_),
     mapMethod_(ptf.mapMethod_),
@@ -943,7 +886,6 @@ turbulentATSMInletFvPatchVectorField
     UMax_(ptf.UMax_),
 
     patchArea_(ptf.patchArea_),
-    patchSize_(ptf.patchSize_),
     triFace_(ptf.triFace_),
     triToFace_(ptf.triToFace_),
     triCumulativeMagSf_(ptf.triCumulativeMagSf_),
@@ -953,34 +895,31 @@ turbulentATSMInletFvPatchVectorField
     patchSpanY_(ptf.patchSpanY_),
     patchSpanZ_(ptf.patchSpanZ_),
 
-    vortons_(),
-    vortonType_(ptf.vortonType_),
-    nVortonGlobal_(Zero),
-    nVortonLocal_(Zero),
-    vortonLabel_(),
-    vortonPosition_(),
-    vortonDistance_(),
-    vortonScale_(),
-    vortonIntensity_(),
+    eddies_(),
+    nEddyGlobal_(Zero),
+    nEddyLocal_(Zero),
+    eddyLabel_(),
+    eddyPosition_(),
+    eddyDistance_(),
+    eddyScale_(),
+    eddyIntensity_(),
 
+    nCellPerEddy_(ptf.nCellPerEddy_),
     patchNormal_(ptf.patchNormal_),
     v0_(ptf.v0_),
     rndGen_(ptf.rndGen_),
+    sigmax_(mapper(sigmax_)),
     maxSigmaX_(ptf.maxSigmaX_),
     curTimeIndex_(ptf.curTimeIndex_),
     patchBounds_(ptf.patchBounds_),
     singleProc_(ptf.singleProc_),
     isCleanRestart_(ptf.isCleanRestart_),
-    isRestart_(ptf.isRestart_),
-
-    nOutputFace_(ptf.nOutputFace_),
-    outputFaceIndices_(ptf.outputFaceIndices_),
-    filePtrs_()
+    isRestart_(ptf.isRestart_)
 {}
 
 
-Foam::turbulentATSMInletFvPatchVectorField::
-turbulentATSMInletFvPatchVectorField
+Foam::turbulentDFSEMInletFvPatchVectorField::
+turbulentDFSEMInletFvPatchVectorField
 (
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF,
@@ -988,7 +927,9 @@ turbulentATSMInletFvPatchVectorField
 )
 :
     fixedValueFvPatchField<vector>(p, iF, dict),
+    delta_(readScalar(dict.lookup("delta"))),
     density_(dict.lookupOrDefault<scalar>("density", 1.0)),
+    kappa_(dict.lookupOrDefault<scalar>("kappa", 0.41)),
 
     perturb_(dict.lookupOrDefault<scalar>("perturb", 1e-5)),
     mapMethod_(dict.lookupOrDefault<word>("mapMethod", "nearestCell")),
@@ -997,13 +938,12 @@ turbulentATSMInletFvPatchVectorField
     interpolateL_(dict.lookupOrDefault<bool>("interpolateL", false)),
     interpolateU_(dict.lookupOrDefault<bool>("interpolateU", false)),
     R_(interpolateOrRead<symmTensor>("R", dict, interpolateR_)),
-    L_(interpolateOrRead<vector>("L", dict, interpolateL_)),
+    L_(interpolateOrRead<scalar>("L", dict, interpolateL_)),
     U_(interpolateOrRead<scalar>("U", dict, interpolateU_)),
     UMean_(0),
     UMax_(0),
 
     patchArea_(-1),
-    patchSize_(Pstream::nProcs(), 0),
     triFace_(),
     triToFace_(),
     triCumulativeMagSf_(),
@@ -1013,64 +953,63 @@ turbulentATSMInletFvPatchVectorField
     patchSpanY_(0),
     patchSpanZ_(0),
 
-    vortons_(),
-    vortonType_(dict.lookupOrDefault<word>("vortonType", "typeR")),
-    nVortonGlobal_(dict.lookupOrDefault<label>("nVorton", 0)),
-    nVortonLocal_(dict.lookupOrDefault<label>("nVortonLocal", 0)),
-    vortonLabel_(),
-    vortonPosition_(),
-    vortonDistance_(),
-    vortonScale_(),
-    vortonIntensity_(),
+    eddies_(),
+    nEddyGlobal_(dict.lookupOrDefault<label>("nEddy", 0)),
+    nEddyLocal_(dict.lookupOrDefault<label>("nEddyLocal", 0)),
+    eddyLabel_(),
+    eddyPosition_(),
+    eddyDistance_(),
+    eddyScale_(),
+    eddyIntensity_(),
 
+    nCellPerEddy_(dict.lookupOrDefault<label>("nCellPerEddy", 5)),
     patchNormal_(Zero),
     v0_(Zero),
     rndGen_((Pstream::myProcNo()+1)*time(NULL)),
+    sigmax_(size(), Zero),
     maxSigmaX_(Zero),
     curTimeIndex_(-1),
     patchBounds_(boundBox::invertedBox),
     singleProc_(false),
     isCleanRestart_(dict.lookupOrDefault<bool>("cleanRestart", false)),
-    isRestart_(false),
-
-    nOutputFace_(dict.lookupOrDefault<label>("nOutputFace", 0)),
-    outputFaceIndices_(dict.lookupOrDefault<labelList>("outputFaceIndices", labelList(nOutputFace_, 0))),
-    filePtrs_()
+    isRestart_(false)
 {
     // Set UMean as patch area average value
     UMean_ = gSum(U_*patch().magSf())/(gSum(patch().magSf()) + ROOTVSMALL);
     UMax_ = gMax(U_);
 
-    if (nVortonLocal_ && !isCleanRestart_)
+    if (nEddyLocal_ && !isCleanRestart_)
     {
         isRestart_ = true;
 
-        ITstream& is = dict.lookup("vortonLabel");
-        is >> static_cast<List<label>&>(vortonLabel_);
+        ITstream& is = dict.lookup("eddyLabel");
+        is >> static_cast<List<label>&>(eddyLabel_);
 
-        is = dict.lookup("vortonPosition");
-        is >> static_cast<List<vector>&>(vortonPosition_);
+        is = dict.lookup("eddyPosition");
+        is >> static_cast<List<vector>&>(eddyPosition_);
 
-        is = dict.lookup("vortonDistance");
-        is >> static_cast<List<scalar>&>(vortonDistance_);
+        is = dict.lookup("eddyDistance");
+        is >> static_cast<List<scalar>&>(eddyDistance_);
 
-        is = dict.lookup("vortonScale");
-        is >> static_cast<List<vector>&>(vortonScale_);
+        is = dict.lookup("eddyScale");
+        is >> static_cast<List<vector>&>(eddyScale_);
 
-        is = dict.lookup("vortonIntensity");
-        is >> static_cast<List<vector>&>(vortonIntensity_);
+        is = dict.lookup("eddyIntensity");
+        is >> static_cast<List<vector>&>(eddyIntensity_);
     }
 }
 
 
-Foam::turbulentATSMInletFvPatchVectorField::
-turbulentATSMInletFvPatchVectorField
+Foam::turbulentDFSEMInletFvPatchVectorField::
+turbulentDFSEMInletFvPatchVectorField
 (
-    const turbulentATSMInletFvPatchVectorField& ptf
+    const turbulentDFSEMInletFvPatchVectorField& ptf
 )
 :
     fixedValueFvPatchField<vector>(ptf),
+    delta_(ptf.delta_),
     density_(ptf.density_),
+    kappa_(ptf.kappa_),
 
     perturb_(ptf.perturb_),
     mapMethod_(ptf.mapMethod_),
@@ -1085,7 +1024,6 @@ turbulentATSMInletFvPatchVectorField
     UMax_(ptf.UMax_),
 
     patchArea_(ptf.patchArea_),
-    patchSize_(ptf.patchSize_),
     triFace_(ptf.triFace_),
     triToFace_(ptf.triToFace_),
     triCumulativeMagSf_(ptf.triCumulativeMagSf_),
@@ -1095,41 +1033,40 @@ turbulentATSMInletFvPatchVectorField
     patchSpanY_(ptf.patchSpanY_),
     patchSpanZ_(ptf.patchSpanZ_),
 
-    vortons_(),
-    vortonType_(ptf.vortonType_),
-    nVortonGlobal_(Zero),
-    nVortonLocal_(Zero),
-    vortonLabel_(),
-    vortonPosition_(),
-    vortonDistance_(),
-    vortonScale_(),
-    vortonIntensity_(),
+    eddies_(),
+    nEddyGlobal_(Zero),
+    nEddyLocal_(Zero),
+    eddyLabel_(),
+    eddyPosition_(),
+    eddyDistance_(),
+    eddyScale_(),
+    eddyIntensity_(),
 
+    nCellPerEddy_(ptf.nCellPerEddy_),
     patchNormal_(ptf.patchNormal_),
     v0_(ptf.v0_),
     rndGen_(ptf.rndGen_),
+    sigmax_(ptf.sigmax_),
     maxSigmaX_(ptf.maxSigmaX_),
     curTimeIndex_(ptf.curTimeIndex_),
     patchBounds_(ptf.patchBounds_),
     singleProc_(ptf.singleProc_),
     isCleanRestart_(ptf.isCleanRestart_),
-    isRestart_(ptf.isRestart_),
-
-    nOutputFace_(ptf.nOutputFace_),
-    outputFaceIndices_(ptf.outputFaceIndices_),
-    filePtrs_()
+    isRestart_(ptf.isRestart_)
 {}
 
 
-Foam::turbulentATSMInletFvPatchVectorField::
-turbulentATSMInletFvPatchVectorField
+Foam::turbulentDFSEMInletFvPatchVectorField::
+turbulentDFSEMInletFvPatchVectorField
 (
-    const turbulentATSMInletFvPatchVectorField& ptf,
+    const turbulentDFSEMInletFvPatchVectorField& ptf,
     const DimensionedField<vector, volMesh>& iF
 )
 :
     fixedValueFvPatchField<vector>(ptf, iF),
+    delta_(ptf.delta_),
     density_(ptf.density_),
+    kappa_(ptf.kappa_),
 
     perturb_(ptf.perturb_),
     mapMethod_(ptf.mapMethod_),
@@ -1144,7 +1081,6 @@ turbulentATSMInletFvPatchVectorField
     UMax_(ptf.UMax_),
 
     patchArea_(ptf.patchArea_),
-    patchSize_(ptf.patchSize_),
     triFace_(ptf.triFace_),
     triToFace_(ptf.triToFace_),
     triCumulativeMagSf_(ptf.triCumulativeMagSf_),
@@ -1154,35 +1090,32 @@ turbulentATSMInletFvPatchVectorField
     patchSpanY_(ptf.patchSpanY_),
     patchSpanZ_(ptf.patchSpanZ_),
 
-    vortons_(),
-    vortonType_(ptf.vortonType_),
-    nVortonGlobal_(Zero),
-    nVortonLocal_(Zero),
-    vortonLabel_(),
-    vortonPosition_(),
-    vortonDistance_(),
-    vortonScale_(),
-    vortonIntensity_(),
+    eddies_(),
+    nEddyGlobal_(Zero),
+    nEddyLocal_(Zero),
+    eddyLabel_(),
+    eddyPosition_(),
+    eddyDistance_(),
+    eddyScale_(),
+    eddyIntensity_(),
 
+    nCellPerEddy_(ptf.nCellPerEddy_),
     patchNormal_(ptf.patchNormal_),
     v0_(ptf.v0_),
     rndGen_(ptf.rndGen_),
+    sigmax_(ptf.sigmax_),
     maxSigmaX_(ptf.maxSigmaX_),
     curTimeIndex_(ptf.curTimeIndex_),
     patchBounds_(ptf.patchBounds_),
     singleProc_(ptf.singleProc_),
     isCleanRestart_(ptf.isCleanRestart_),
-    isRestart_(ptf.isRestart_),
-
-    nOutputFace_(ptf.nOutputFace_),
-    outputFaceIndices_(ptf.outputFaceIndices_),
-    filePtrs_()
+    isRestart_(ptf.isRestart_)
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::turbulentATSMInletFvPatchVectorField::autoMap
+void Foam::turbulentDFSEMInletFvPatchVectorField::autoMap
 (
     const fvPatchFieldMapper& m
 )
@@ -1192,13 +1125,13 @@ void Foam::turbulentATSMInletFvPatchVectorField::autoMap
     // Clear interpolator
     mapperPtr_.clear();
 
-    R_.autoMap(m);
-    L_.autoMap(m);
-    U_.autoMap(m);
+    m(U_, U_);
+    m(R_, R_);
+    m(L_, L_);
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::rmap
+void Foam::turbulentDFSEMInletFvPatchVectorField::rmap
 (
     const fvPatchVectorField& ptf,
     const labelList& addr
@@ -1206,19 +1139,19 @@ void Foam::turbulentATSMInletFvPatchVectorField::rmap
 {
     fixedValueFvPatchField<vector>::rmap(ptf, addr);
 
-    const turbulentATSMInletFvPatchVectorField& ATSMptf =
-        refCast<const turbulentATSMInletFvPatchVectorField>(ptf);
+    const turbulentDFSEMInletFvPatchVectorField& dfsemptf =
+        refCast<const turbulentDFSEMInletFvPatchVectorField>(ptf);
 
-    R_.rmap(ATSMptf.R_, addr);
-    L_.rmap(ATSMptf.L_, addr);
-    U_.rmap(ATSMptf.U_, addr);
+    R_.rmap(dfsemptf.R_, addr);
+    L_.rmap(dfsemptf.L_, addr);
+    U_.rmap(dfsemptf.U_, addr);
 
     // Clear interpolator
     mapperPtr_.clear();
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::updateCoeffs()
+void Foam::turbulentDFSEMInletFvPatchVectorField::updateCoeffs()
 {
     if (updated())
     {
@@ -1228,24 +1161,23 @@ void Foam::turbulentATSMInletFvPatchVectorField::updateCoeffs()
     if (curTimeIndex_ == -1)
     {
         initialisePatch();
-        initialiseVortonBox();
-        initialiseVortons();
-        initialiseOutput();
+        initialiseEddyBox();
+        initialiseEddies();
     }
 
     if (curTimeIndex_ != db().time().timeIndex())
     {
         if (debug)
         {
-            label n = vortons_.size();
-            Info<< "Number of vortons: " << returnReduce(n, sumOp<label>())
+            label n = eddies_.size();
+            Info<< "Number of eddies: " << returnReduce(n, sumOp<label>())
                 << endl;
         }
 
         const scalar deltaT = db().time().deltaTValue();
 
-        // Move vortons using mean velocity
-        convectVortons(deltaT);
+        // Move eddies using mean velocity
+        convectEddies(deltaT);
 
         // Set velocity
         vectorField& U = *this;
@@ -1255,34 +1187,34 @@ void Foam::turbulentATSMInletFvPatchVectorField::updateCoeffs()
         const pointField& Cf = patch().Cf();
 
         // Apply second part of normalisation coefficient
-        const scalar c = Foam::sqrt(v0_)/Foam::sqrt(scalar(nVortonGlobal_));
+        const scalar c = Foam::sqrt(v0_)/Foam::sqrt(scalar(nEddyGlobal_));
 
-        // In parallel, need to collect all vortons that will interact with
+        // In parallel, need to collect all eddies that will interact with
         // local faces
 
         if (singleProc_ || !Pstream::parRun())
         {
-            U += c*uDashVorton(vortons_, Cf);
+            U += c*uDashEddy(eddies_, Cf);
         }
         else
         {
-            // Process local vorton contributions
-            U += c*uDashVorton(vortons_, Cf);
+            // Process local eddy contributions
+            U += c*uDashEddy(eddies_, Cf);
 
-            // Add contributions from overlapping vortons
-            List<List<vorton>> overlappingVortons(Pstream::nProcs());
-            calcOverlappingProcVortons(overlappingVortons);
+            // Add contributions from overlapping eddies
+            List<List<dfeddy>> overlappingEddies(Pstream::nProcs());
+            calcOverlappingProcEddies(overlappingEddies);
 
-            forAll(overlappingVortons, procI)
+            forAll(overlappingEddies, procI)
             {
-                const List<vorton>& vortons = overlappingVortons[procI];
+                const List<dfeddy>& eddies = overlappingEddies[procI];
 
-                if (vortons.size())
+                if (eddies.size())
                 {
-                    //Pout<< "Applying " << vortons.size()
-                    //    << " vortons from processor " << procI << endl;
+                    //Pout<< "Applying " << eddies.size()
+                    //    << " eddies from processor " << procI << endl;
 
-                    U += c*uDashVorton(vortons, Cf);
+                    U += c*uDashEddy(eddies, Cf);
                 }
             }
         }
@@ -1297,11 +1229,6 @@ void Foam::turbulentATSMInletFvPatchVectorField::updateCoeffs()
 
         U *= fCorr;
 
-        forAll(outputFaceIndices_, i)
-        {
-            writeValues(i, U[outputFaceIndices_[i]]);
-        }
-
         if (debug)
         {
             Info<< "Patch:" << patch().patch().name()
@@ -1315,29 +1242,35 @@ void Foam::turbulentATSMInletFvPatchVectorField::updateCoeffs()
 }
 
 
-void Foam::turbulentATSMInletFvPatchVectorField::write(Ostream& os) const
+void Foam::turbulentDFSEMInletFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchField<vector>::write(os);
-    writeEntry("value", os);
+    writeEntry(os, "value", *this);
 
-    U_.writeEntry("U", os);
-    L_.writeEntry("L", os);
-    R_.writeEntry("R", os);
+    writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
+    writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
+
+    writeEntry(os, "U", U_);
+    writeEntry(os, "R", R_);
+    writeEntry(os, "L", L_);
+
+    os.writeKeyword("delta") << delta_ << token::END_STATEMENT << nl;
 
     writeEntryIfDifferent<scalar>(os, "density", 1.0, density_);
+    writeEntryIfDifferent<scalar>(os, "kappa", 0.41, kappa_);
     writeEntryIfDifferent<scalar>(os, "perturb", 1e-5, perturb_);
+    writeEntryIfDifferent<label>(os, "nCellPerEddy", 5, nCellPerEddy_);
 
-    writeEntryIfDifferent<label>(os, "nVorton", 0, nVortonGlobal_);
-    writeEntryIfDifferent<label>(os, "nVortonLocal", 0, nVortonLocal_);
-    writeEntryIfDifferent<word>(os, "vortonType", "typeR", vortonType_);
+    writeEntryIfDifferent<label>(os, "nEddy", 0, nEddyGlobal_);
+    writeEntryIfDifferent<label>(os, "nEddyLocal", 0, nEddyLocal_);
 
-    if (nVortonLocal_)
+    if (nEddyLocal_)
     {
-        vortonLabel_.writeEntry("vortonLabel", os);
-        vortonPosition_.writeEntry("vortonPosition", os);
-        vortonDistance_.writeEntry("vortonDistance", os);
-        vortonScale_.writeEntry("vortonScale", os);
-        vortonIntensity_.writeEntry("vortonIntensity", os);
+        writeEntry(os, "eddyLabel", eddyLabel_);
+        writeEntry(os, "eddyPosition", eddyPosition_);
+        writeEntry(os, "eddyDistance", eddyDistance_);
+        writeEntry(os, "eddyScale", eddyScale_);
+        writeEntry(os, "eddyIntensity", eddyIntensity_);
     }
 
     if (!mapMethod_.empty())
@@ -1350,12 +1283,6 @@ void Foam::turbulentATSMInletFvPatchVectorField::write(Ostream& os) const
             mapMethod_
         );
     }
-
-    if (nOutputFace_ > 0)
-    {
-        os.writeKeyword("nOutputFace") << nOutputFace_ << token::END_STATEMENT << nl;
-        outputFaceIndices_.writeEntry("outputFaceIndices", os);
-    }
 }
 
 
@@ -1366,7 +1293,7 @@ namespace Foam
    makePatchTypeField
    (
        fvPatchVectorField,
-       turbulentATSMInletFvPatchVectorField
+       turbulentDFSEMInletFvPatchVectorField
    );
 }
 
