@@ -377,8 +377,10 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialisePatch()
     // Local patch bounds (this processor)
     patchBounds_ = boundBox(patch.localPoints(), false);
 
-    patchSpanY_ = patchBounds_.span().y();
-    patchSpanZ_ = patchBounds_.span().z();
+    boundBox globalBounds = boundBox(patch.localPoints(), true);
+
+    patchSpanY_ = globalBounds.span().y();
+    patchSpanZ_ = globalBounds.span().z();
 
     patchBounds_.inflate(0.1);
 
@@ -752,26 +754,162 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
     // Per processor indices into all segments to send
     List<DynamicList<label>> dynSendMap(Pstream::nProcs());
 
-    forAll(vortons_, i)
+    if (!periodicInY_ && !periodicInZ_)
     {
-        // Collect overlapping vortons
-        const vorton& v = vortons_[i];
-
-        // Vorton bounds
-        point x = v.position(patchNormal_);
-        boundBox vbb = v.bounds();
-        vbb.min() += x;
-        vbb.max() += x;
-
-        forAll(patchBBs, procI)
+        forAll(vortons_, i)
         {
-            // Not including intersection with local patch
-            if (procI != Pstream::myProcNo())
+            // Collect overlapping vortons
+            const vorton& v = vortons_[i];
+
+            // Vorton bounds
+            point x = v.position(patchNormal_);
+
+            boundBox vbb = v.bounds();
+            vbb.min() += x;
+            vbb.max() += x;
+
+            forAll(patchBBs, procI)
             {
-                if (vbb.overlaps(patchBBs[procI]))
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
                 {
-                    dynSendMap[procI].append(i);
-                }
+                    if (vbb.overlaps(patchBBs[procI]))
+                    {
+                        dynSendMap[procI].append(i);
+                    }
+                }      
+            }
+        }
+    }
+    else if (periodicInY_ && !periodicInZ_)
+    {
+        forAll(vortons_, i)
+        {
+            // Collect overlapping vortons
+            const vorton& v = vortons_[i];
+
+            // Vorton bounds
+            point x = v.position(patchNormal_);
+
+            List<boundBox> lvbb(3, v.bounds());
+
+            lvbb[0].min() += x;
+            lvbb[0].max() += x;
+
+            lvbb[1].min() += x+vector(0, patchSpanY_, 0);
+            lvbb[1].max() += x+vector(0, patchSpanY_, 0);
+
+            lvbb[2].min() += x-vector(0, patchSpanY_, 0);
+            lvbb[2].max() += x-vector(0, patchSpanY_, 0);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lvbb, indi)
+                    {
+                        if (lvbb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
+            }
+        }
+    }
+    else if (!periodicInY_ && periodicInZ_)
+    {
+        forAll(vortons_, i)
+        {
+            // Collect overlapping vortons
+            const vorton& v = vortons_[i];
+
+            // Vorton bounds
+            point x = v.position(patchNormal_);
+
+            List<boundBox> lvbb(3, v.bounds());
+
+            lvbb[0].min() += x;
+            lvbb[0].max() += x;
+
+            lvbb[1].min() += x+vector(0, 0, patchSpanZ_);
+            lvbb[1].max() += x+vector(0, 0, patchSpanZ_);
+
+            lvbb[2].min() += x-vector(0, 0, patchSpanZ_);
+            lvbb[2].max() += x-vector(0, 0, patchSpanZ_);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lvbb, indi)
+                    {
+                        if (lvbb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
+            }
+        }
+    }
+    else
+    {
+        forAll(vortons_, i)
+        {
+            // Collect overlapping vortons
+            const vorton& v = vortons_[i];
+
+            // Vorton bounds
+            point x = v.position(patchNormal_);
+
+            List<boundBox> lvbb(9, v.bounds());
+
+            lvbb[0].min() += x;
+            lvbb[0].max() += x;
+
+            lvbb[1].min() += x+vector(0, patchSpanY_, 0);
+            lvbb[1].max() += x+vector(0, patchSpanY_, 0);
+
+            lvbb[2].min() += x-vector(0, patchSpanY_, 0);
+            lvbb[2].max() += x-vector(0, patchSpanY_, 0);
+
+            lvbb[3].min() += x+vector(0, 0, patchSpanZ_);
+            lvbb[3].max() += x+vector(0, 0, patchSpanZ_);
+
+            lvbb[4].min() += x-vector(0, 0, patchSpanZ_);
+            lvbb[4].max() += x-vector(0, 0, patchSpanZ_);
+
+            lvbb[5].min() += x+vector(0, patchSpanY_, patchSpanZ_);
+            lvbb[5].max() += x+vector(0, patchSpanY_, patchSpanZ_);
+
+            lvbb[6].min() += x-vector(0, patchSpanY_, patchSpanZ_);
+            lvbb[6].max() += x-vector(0, patchSpanY_, patchSpanZ_);
+
+            lvbb[7].min() += x+vector(0, patchSpanY_,-patchSpanZ_);
+            lvbb[7].max() += x+vector(0, patchSpanY_,-patchSpanZ_);
+
+            lvbb[8].min() += x-vector(0, patchSpanY_,-patchSpanZ_);
+            lvbb[8].max() += x-vector(0, patchSpanY_,-patchSpanZ_);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lvbb, indi)
+                    {
+                        if (lvbb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
             }
         }
     }
@@ -1319,6 +1457,9 @@ void Foam::turbulentATSMInletFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchField<vector>::write(os);
     writeEntry("value", os);
+
+    writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
+    writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
 
     U_.writeEntry("U", os);
     L_.writeEntry("L", os);

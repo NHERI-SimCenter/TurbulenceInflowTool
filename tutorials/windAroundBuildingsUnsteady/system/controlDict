@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  6
+    \\  /    A nd           | Version:  7
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
@@ -10,17 +10,13 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "system";
     object      controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-libs
-(
-    "libturbulentInflow.so"
-);
+libs            ("libturbulentInflow.so");
 
-application     icoFoam;
+application     pisoFoam;
 
 startFrom       startTime;
 
@@ -28,15 +24,15 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         0.001;
+endTime         500;
 
-deltaT          0.001;
+deltaT          0.05;
 
 writeControl    timeStep;
 
-writeInterval   1;
+writeInterval   40;
 
-purgeWrite      0;
+purgeWrite      10;
 
 writeFormat     ascii;
 
@@ -50,8 +46,33 @@ timePrecision   6;
 
 runTimeModifiable true;
 
+/*
+
+functions
+{
+    fieldAverage1
+    {
+        type            fieldAverage;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    writeTime;
+
+        fields
+        (
+            U
+            {
+                mean        on;
+                prime2Mean  on;
+                base        time;
+            }
+
+            p
+            {
+                mean        on;
+                prime2Mean  on;
+                base        time;
+            }
+        );
+    }
+}
 
 // ************************************************************************* //
-
-
-

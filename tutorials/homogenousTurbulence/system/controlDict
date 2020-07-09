@@ -1,0 +1,220 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs            ("libturbulentInflow.so");
+
+application     TInFFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         10;
+
+deltaT          0.025;
+
+writeControl    timeStep;
+
+writeInterval   10;
+
+purgeWrite      40;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+/*
+
+functions
+{
+    fieldAverage1
+    {
+        type            fieldAverage;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    writeTime;
+
+        fields
+        (
+            U
+            {
+                mean        on;
+                prime2Mean  on;
+                base        time;
+            }
+        );
+    }
+
+    patchProbes1
+    {
+        type            patchProbes;
+        functionObjectLibs ("libsampling.so");
+        enabled         true;
+        
+        writeControl    timeStep;
+        outputInterval  1;
+        fields          (U);
+
+        patchName       "inlet";
+
+        probeLocations
+        (
+             (0 0.025 0.025)
+             (0 0.075 0.025)
+             (0 0.125 0.025)
+             (0 0.175 0.025)
+             (0 0.225 0.025)
+             (0 0.275 0.025)
+             (0 0.325 0.025)
+             (0 0.375 0.025)
+             (0 0.425 0.025)
+             (0 0.475 0.025)
+             (0 0.525 0.025)
+             (0 0.575 0.025)
+             (0 0.625 0.025)
+             (0 0.675 0.025)
+             (0 0.725 0.025)
+             (0 0.775 0.025)
+             (0 0.825 0.025)
+             (0 0.875 0.025)
+             (0 0.925 0.025)
+             (0 0.975 0.025)
+        );
+    }
+
+    patchProbes2
+    {
+        type            patchProbes;
+        functionObjectLibs ("libsampling.so");
+        enabled         true;
+        
+        writeControl    timeStep;
+        outputInterval  1;
+        fields          (U);
+
+        patchName       "inlet";
+
+        probeLocations
+        (
+             (0 0.025 0.025)
+             (0 0.025 0.075)
+             (0 0.025 0.125)
+             (0 0.025 0.175)
+             (0 0.025 0.225)
+             (0 0.025 0.275)
+             (0 0.025 0.325)
+             (0 0.025 0.375)
+             (0 0.025 0.425)
+             (0 0.025 0.475)
+             (0 0.025 0.525)
+             (0 0.025 0.575)
+             (0 0.025 0.625)
+             (0 0.025 0.675)
+             (0 0.025 0.725)
+             (0 0.025 0.775)
+             (0 0.025 0.825)
+             (0 0.025 0.875)
+             (0 0.025 0.925)
+             (0 0.025 0.975)
+        );
+    }
+
+    patchProbes3
+    {
+        type            patchProbes;
+        functionObjectLibs ("libsampling.so");
+        enabled         true;
+        
+        writeControl    timeStep;
+        outputInterval  1;
+        fields          (U);
+
+        patchName       "inlet";
+
+        probeLocations
+        (
+             (0 1.025 1.025)
+             (0 1.075 1.025)
+             (0 1.125 1.025)
+             (0 1.175 1.025)
+             (0 1.225 1.025)
+             (0 1.275 1.025)
+             (0 1.325 1.025)
+             (0 1.375 1.025)
+             (0 1.425 1.025)
+             (0 1.475 1.025)
+             (0 1.525 1.025)
+             (0 1.575 1.025)
+             (0 1.625 1.025)
+             (0 1.675 1.025)
+             (0 1.725 1.025)
+             (0 1.775 1.025)
+             (0 1.825 1.025)
+             (0 1.875 1.025)
+             (0 1.925 1.025)
+             (0 1.975 1.025)
+        );
+    }
+
+    patchProbes4
+    {
+        type            patchProbes;
+        functionObjectLibs ("libsampling.so");
+        enabled         true;
+        
+        writeControl    timeStep;
+        outputInterval  1;
+        fields          (U);
+
+        patchName       "inlet";
+
+        probeLocations
+        (
+             (0 1.025 1.025)
+             (0 1.025 1.075)
+             (0 1.025 1.125)
+             (0 1.025 1.175)
+             (0 1.025 1.225)
+             (0 1.025 1.275)
+             (0 1.025 1.325)
+             (0 1.025 1.375)
+             (0 1.025 1.425)
+             (0 1.025 1.475)
+             (0 1.025 1.525)
+             (0 1.025 1.575)
+             (0 1.025 1.625)
+             (0 1.025 1.675)
+             (0 1.025 1.725)
+             (0 1.025 1.775)
+             (0 1.025 1.825)
+             (0 1.025 1.875)
+             (0 1.025 1.925)
+             (0 1.025 1.975)
+        );
+    }
+}
+
+// ************************************************************************* //

@@ -14,8 +14,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-libs            ("libturbulentInflow.so");
-
 application     pisoFoam;
 
 startFrom       startTime;
@@ -87,18 +85,11 @@ functions
         writeControl    timeStep;
         timeInterval    1;
 
-        log         yes;
-        patches     (building);
+        log             yes;
+        patches         (building);
         rho             rhoInf;
-        rhoInf          1;
+        rhoInf          1.225;
         CofR            (55 55 0);
-
-        binData
-        {
-            nBin        20;
-            direction   (0 0 1);
-            cumulative  yes;
-        }
     }
 
     forceCoeffs1
@@ -113,21 +104,14 @@ functions
 
         patches         (building);
         rho             rhoInf;
-        rhoInf          1;
-        liftDir         (0 0 1);
+        rhoInf          1.225;
+        liftDir         (0 1 0);
         dragDir         (1 0 0);
         CofR            (55 55 0);
-        pitchAxis       (0 0 1);
+        pitchAxis       (0 1 0);
         magUInf         10;
-        lRef            10;
-        Aref            10;
-
-        binData
-        {
-            nBin        20;
-            direction   (0 0 1);
-            cumulative  yes;
-        }
+        lRef            50;
+        Aref            500;
     }
 }
 

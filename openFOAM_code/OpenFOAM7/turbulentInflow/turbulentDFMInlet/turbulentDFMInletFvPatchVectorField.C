@@ -1270,6 +1270,9 @@ void Foam::turbulentDFMInletFvPatchVectorField::write(Ostream& os) const
     fvPatchVectorField::write(os);
     writeEntry(os, "value", *this);
 
+    writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
+    writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
+
     writeEntry(os, "uFluctTemporal", uFluctTemporal_);
 
     writeEntry(os, "U", U_);
@@ -1279,9 +1282,6 @@ void Foam::turbulentDFMInletFvPatchVectorField::write(Ostream& os) const
     writeEntryIfDifferent<scalar>(os, "gridFactor", 1.0, gridFactor_);
     writeEntryIfDifferent<label>(os, "filterFactor", 2, nfK_);
     writeEntryIfDifferent<word>(os, "filterType", "exponential", filterType_);
-
-    writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
-    writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
 
     if (nOutputFace_ > 0)
     {

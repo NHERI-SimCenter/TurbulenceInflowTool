@@ -377,8 +377,10 @@ void Foam::turbulentSEMInletFvPatchVectorField::initialisePatch()
     // Local patch bounds (this processor)
     patchBounds_ = boundBox(patch.localPoints(), false);
 
-    patchSpanY_ = patchBounds_.span().y();
-    patchSpanZ_ = patchBounds_.span().z();
+    boundBox globalBounds = boundBox(patch.localPoints(), true);
+
+    patchSpanY_ = globalBounds.span().y();
+    patchSpanZ_ = globalBounds.span().z();
 
     patchBounds_.inflate(0.1);
 
@@ -761,26 +763,162 @@ void Foam::turbulentSEMInletFvPatchVectorField::calcOverlappingProcEddies
     // Per processor indices into all segments to send
     List<DynamicList<label>> dynSendMap(Pstream::nProcs());
 
-    forAll(eddies_, i)
+    if (!periodicInY_ && !periodicInZ_)
     {
-        // Collect overlapping eddies
-        const eddy& e = eddies_[i];
-
-        // Eddy bounds
-        point x = e.position(patchNormal_);
-        boundBox ebb = e.bounds();
-        ebb.min() += x;
-        ebb.max() += x;
-
-        forAll(patchBBs, procI)
+        forAll(eddies_, i)
         {
-            // Not including intersection with local patch
-            if (procI != Pstream::myProcNo())
+            // Collect overlapping eddies
+            const eddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            boundBox ebb = e.bounds();
+            ebb.min() += x;
+            ebb.max() += x;
+
+            forAll(patchBBs, procI)
             {
-                if (ebb.overlaps(patchBBs[procI]))
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
                 {
-                    dynSendMap[procI].append(i);
-                }
+                    if (ebb.overlaps(patchBBs[procI]))
+                    {
+                        dynSendMap[procI].append(i);
+                    }
+                }      
+            }
+        }
+    }
+    else if (periodicInY_ && !periodicInZ_)
+    {
+        forAll(eddies_, i)
+        {
+            // Collect overlapping eddies
+            const eddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            List<boundBox> lebb(3, e.bounds());
+
+            lebb[0].min() += x;
+            lebb[0].max() += x;
+
+            lebb[1].min() += x+vector(0, patchSpanY_, 0);
+            lebb[1].max() += x+vector(0, patchSpanY_, 0);
+
+            lebb[2].min() += x-vector(0, patchSpanY_, 0);
+            lebb[2].max() += x-vector(0, patchSpanY_, 0);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lebb, indi)
+                    {
+                        if (lebb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
+            }
+        }
+    }
+    else if (!periodicInY_ && periodicInZ_)
+    {
+        forAll(eddies_, i)
+        {
+            // Collect overlapping eddies
+            const eddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            List<boundBox> lebb(3, e.bounds());
+
+            lebb[0].min() += x;
+            lebb[0].max() += x;
+
+            lebb[1].min() += x+vector(0, 0, patchSpanZ_);
+            lebb[1].max() += x+vector(0, 0, patchSpanZ_);
+
+            lebb[2].min() += x-vector(0, 0, patchSpanZ_);
+            lebb[2].max() += x-vector(0, 0, patchSpanZ_);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lebb, indi)
+                    {
+                        if (lebb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
+            }
+        }
+    }
+    else
+    {
+        forAll(eddies_, i)
+        {
+            // Collect overlapping eddies
+            const eddy& e = eddies_[i];
+
+            // Vorton bounds
+            point x = e.position(patchNormal_);
+
+            List<boundBox> lebb(9, e.bounds());
+
+            lebb[0].min() += x;
+            lebb[0].max() += x;
+
+            lebb[1].min() += x+vector(0, patchSpanY_, 0);
+            lebb[1].max() += x+vector(0, patchSpanY_, 0);
+
+            lebb[2].min() += x-vector(0, patchSpanY_, 0);
+            lebb[2].max() += x-vector(0, patchSpanY_, 0);
+
+            lebb[3].min() += x+vector(0, 0, patchSpanZ_);
+            lebb[3].max() += x+vector(0, 0, patchSpanZ_);
+
+            lebb[4].min() += x-vector(0, 0, patchSpanZ_);
+            lebb[4].max() += x-vector(0, 0, patchSpanZ_);
+
+            lebb[5].min() += x+vector(0, patchSpanY_, patchSpanZ_);
+            lebb[5].max() += x+vector(0, patchSpanY_, patchSpanZ_);
+
+            lebb[6].min() += x-vector(0, patchSpanY_, patchSpanZ_);
+            lebb[6].max() += x-vector(0, patchSpanY_, patchSpanZ_);
+
+            lebb[7].min() += x+vector(0, patchSpanY_,-patchSpanZ_);
+            lebb[7].max() += x+vector(0, patchSpanY_,-patchSpanZ_);
+
+            lebb[8].min() += x-vector(0, patchSpanY_,-patchSpanZ_);
+            lebb[8].max() += x-vector(0, patchSpanY_,-patchSpanZ_);
+
+            forAll(patchBBs, procI)
+            {
+                // Not including intersection with local patch
+                if (procI != Pstream::myProcNo())
+                {
+                    forAll(lebb, indi)
+                    {
+                        if (lebb[indi].overlaps(patchBBs[procI]))
+                        {
+                            dynSendMap[procI].append(i);
+                            break;
+                        }
+                    }
+                }      
             }
         }
     }
@@ -1330,15 +1468,15 @@ void Foam::turbulentSEMInletFvPatchVectorField::write(Ostream& os) const
     fvPatchField<vector>::write(os);
     writeEntry(os, "value", *this);
 
+    writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
+    writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
+
     writeEntry(os, "U", U_);
     writeEntry(os, "R", R_);
     writeEntry(os, "L", L_);
 
     writeEntryIfDifferent<scalar>(os, "density", 1.0, density_);
     writeEntryIfDifferent<scalar>(os, "perturb", 1e-5, perturb_);
-
-    writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
-    writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
 
     writeEntryIfDifferent<label>(os, "nEddy", 0, nEddyGlobal_);
     writeEntryIfDifferent<label>(os, "nEddyLocal", 0, nEddyLocal_);

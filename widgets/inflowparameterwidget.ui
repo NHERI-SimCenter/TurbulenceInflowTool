@@ -879,6 +879,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
             </property>
@@ -889,6 +892,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
             </property>
@@ -898,6 +904,9 @@
            <widget class="QDoubleSpinBox" name="alpha3">
             <property name="decimals">
              <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
             </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
@@ -1011,6 +1020,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
             </property>
@@ -1020,6 +1032,9 @@
            <widget class="QDoubleSpinBox" name="alpha12">
             <property name="decimals">
              <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
             </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
@@ -1031,6 +1046,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
             </property>
@@ -1040,6 +1058,9 @@
            <widget class="QDoubleSpinBox" name="alpha21">
             <property name="decimals">
              <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
             </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
@@ -1051,6 +1072,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
             </property>
@@ -1060,6 +1084,9 @@
            <widget class="QDoubleSpinBox" name="alpha23">
             <property name="decimals">
              <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
             </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
@@ -1071,6 +1098,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
             </property>
@@ -1081,6 +1111,9 @@
             <property name="decimals">
              <number>3</number>
             </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
             <property name="singleStep">
              <double>0.010000000000000</double>
             </property>
@@ -1090,6 +1123,9 @@
            <widget class="QDoubleSpinBox" name="alpha33">
             <property name="decimals">
              <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
             </property>
             <property name="singleStep">
              <double>0.010000000000000</double>

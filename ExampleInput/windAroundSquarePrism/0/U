@@ -43,8 +43,11 @@ boundaryField
     {
         type            noSlip;
     }
-
-    #includeEtc "caseDicts/setConstraintTypes"
+    
+    frontAndBack
+    {
+        type            symmetry;
+    }
 }
 
 // ************************************************************************* //
