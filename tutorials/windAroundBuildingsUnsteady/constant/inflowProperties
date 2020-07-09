@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \    /   O peration     | Website:  https://openfoam.org
+    \  /    A nd           | Version:  6
+     \/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      inflowProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+Naxis       ( 0 0 0 );
+offset      ( 0 0 0 );
+
+// mean velocity
+
+UDict
+{
+    referenceValue          1;
+    profile                 exponential;
+    refDistance             50;
+    alpha                   0.05;
+}
+
+// Reynolds stress
+
+RDict
+{
+    referenceValue          (0.5 0  0  0.4  0  0.3);
+    profile                 exponential;
+    refDistance             50;
+    alpha                   (-0.2 -0.2 -0.2);
+}
+
+// integral length scale
+
+LDict
+{
+    referenceValue          (15  12  9);
+    profile                 exponential;
+    refDistance             50;
+    alpha                   (0.1 0.1 0.1);
+}
+
+/*
+
+LDict
+{
+    referenceValue          (15  12  9);
+    profile                 exponential;
+    refDistance             50;
+    alpha                   (0.1 0.1 0.1);
+}
+
+LDict
+{
+    referenceValue          (15 15 15 12 12 12 9 9 9);
+    profile                 exponential;
+    refDistance             50;
+    alpha                   (0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1);
+}
+
+*/
+
+
+// ************************************************************************* //

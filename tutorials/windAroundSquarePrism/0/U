@@ -24,7 +24,9 @@ boundaryField
 {
     inlet
     {
-        type            fixedValue;
+        type            turbulentATSMInlet;
+        vortonType      "typeL";
+        periodicInY     true;
         value           uniform $Uinlet;
     }
 
@@ -43,11 +45,8 @@ boundaryField
     {
         type            noSlip;
     }
-    
-    frontAndBack
-    {
-        type            symmetry;
-    }
+
+    #includeEtc "caseDicts/setConstraintTypes"
 }
 
 // ************************************************************************* //

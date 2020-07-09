@@ -10,11 +10,14 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
+    location    "system";
     object      controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     pisoFoam;
+libs            ("libturbulentInflow.so");
+
+application     TInFFoam;
 
 startFrom       startTime;
 
@@ -22,15 +25,15 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         1000;
+endTime         20;
 
-deltaT          0.02;
+deltaT          0.2;
 
 writeControl    timeStep;
 
-writeInterval   50;
+writeInterval   10;
 
-purgeWrite      40;
+purgeWrite      10;
 
 writeFormat     ascii;
 
@@ -46,13 +49,6 @@ runTimeModifiable true;
 
 functions
 {
-    Lambda2
-    {
-        type            Lambda2;
-        libs            ("libfieldFunctionObjects.so");;
-        writeControl    writeTime;
-    }
-
     fieldAverage1
     {
         type            fieldAverage;
@@ -67,51 +63,7 @@ functions
                 prime2Mean  on;
                 base        time;
             }
-
-            p
-            {
-                mean        on;
-                prime2Mean  on;
-                base        time;
-            }
         );
-    }
-
-    forces1
-    {
-        type        forces;
-        libs        ("libforces.so");
-
-        writeControl    timeStep;
-        timeInterval    1;
-
-        log             yes;
-        patches         (building);
-        rho             rhoInf;
-        rhoInf          1.225;
-        CofR            (55 55 0);
-    }
-
-    forceCoeffs1
-    {
-        type            forceCoeffs;
-        libs            ("libforces.so");
-
-        writeControl    timeStep;
-        timeInterval    1;
-
-        log             yes;
-
-        patches         (building);
-        rho             rhoInf;
-        rhoInf          1.225;
-        liftDir         (0 1 0);
-        dragDir         (1 0 0);
-        CofR            (55 55 0);
-        pitchAxis       (0 1 0);
-        magUInf         10;
-        lRef            50;
-        Aref            500;
     }
 }
 

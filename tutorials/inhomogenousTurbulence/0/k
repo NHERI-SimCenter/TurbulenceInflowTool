@@ -9,37 +9,22 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volVectorField;
-    object      U;
+    class       volScalarField;
+    location    "0";
+    object      k;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 -1 0 0 0 0];
+dimensions      [0 2 -2 0 0 0 0];
 
-internalField   uniform (10 0 0);
+internalField   uniform 0;
 
 boundaryField
 {
     inlet
     {
-        type            digitalFilter;
-
+        type            fixedValue;
         value           $internalField;
-
-        // filter function shape
-        // valid options are exponential and gaussian
-        // default to exponential
-        filterShape     exponential;
-
-        // virtual grid spacing to mesh size ratio
-        // should be no smaller than 1
-        // default to one
-        gridFactor      1;
-
-        // filter width to length scale ratio 
-        // should be a positive even bumber no smaller than 8
-        // default to 8
-        filterFactor    8;
     }
 
     outlet
@@ -47,27 +32,20 @@ boundaryField
         type            zeroGradient;
     }
 
-    cylinder
+    bottomWall
     {
         type            fixedValue;
-        value           uniform (0 0 0);
+        value           uniform 0;
     }
 
-    top
-    {
-        type            slip;
-    }
-
-    bottom
+    topWall
     {
         type            fixedValue;
-        value           uniform (0 0 0);
+        value           uniform 0;
     }
 
-    side
-    {
-        type            slip;
-    }
+    #includeEtc "caseDicts/setConstraintTypes"
 }
+
 
 // ************************************************************************* //

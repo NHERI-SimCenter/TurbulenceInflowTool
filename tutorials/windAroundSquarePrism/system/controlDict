@@ -14,6 +14,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+libs            ("libturbulentInlet.so");
+
 application     pisoFoam;
 
 startFrom       startTime;
@@ -22,7 +24,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         1000;
+endTime         1;
 
 deltaT          0.02;
 
@@ -30,7 +32,7 @@ writeControl    timeStep;
 
 writeInterval   50;
 
-purgeWrite      40;
+purgeWrite      10;
 
 writeFormat     ascii;
 
@@ -43,6 +45,8 @@ timeFormat      general;
 timePrecision   6;
 
 runTimeModifiable true;
+
+/*
 
 functions
 {
@@ -85,8 +89,8 @@ functions
         writeControl    timeStep;
         timeInterval    1;
 
-        log             yes;
-        patches         (building);
+        log         yes;
+        patches     (building);
         rho             rhoInf;
         rhoInf          1.225;
         CofR            (55 55 0);

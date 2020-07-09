@@ -10,44 +10,44 @@ FoamFile
     version     2.0;
     format      ascii;
     class       volVectorField;
+    location    "0";
     object      U;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-Uinlet          (10 0 0);
-
 dimensions      [0 1 -1 0 0 0 0];
 
-internalField   uniform (0 0 0);
+internalField   uniform (0.1335 0 0);
 
 boundaryField
 {
+
     inlet
     {
-        type            fixedValue;
-        value           uniform $Uinlet;
+        type            turbulentATSMInlet;
+        periodicInZ     true;
+        vortonType      "typeL";
+        density         1;
+        value           $internalField;
     }
 
     outlet
     {
-        type            pressureInletOutletVelocity;
-        value           uniform (0 0 0);
+        type            zeroGradient;
     }
 
-    building
+    bottomWall
     {
         type            noSlip;
     }
 
-    ground
+    topWall
     {
         type            noSlip;
     }
-    
-    frontAndBack
-    {
-        type            symmetry;
-    }
+
+    #includeEtc "caseDicts/setConstraintTypes"
 }
+
 
 // ************************************************************************* //

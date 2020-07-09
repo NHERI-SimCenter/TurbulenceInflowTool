@@ -143,7 +143,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
             out << "}" << endl;
             out << endl;
 
-            out << "// Reynolds stress tensor (symmTensorField)" << endl;
+            out << "// Reynolds stress" << endl;
             out << endl;
             out << "RDict" << endl;
             out << "{" << endl;
@@ -161,7 +161,7 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
             if ( int(theParameters.value("profile")) > 0 ) {
                 out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << endl;
                 out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << endl;
-                out << "    alpha                     ("
+                out << "    alpha                   ("
                     << theParameters.value("alpha0") << "  "
                     << theParameters.value("alpha1") << "  "
                     << theParameters.value("alpha2")
@@ -171,38 +171,60 @@ void ExportWidget::exportInflowParameterFile(QString fileName)
             out << "}" << endl;
             out << endl;
             
-            out << "// length scale tensor (tensorField)" << endl;
+            out << "// integral length scale" << endl;
             out << endl;
             out << "LDict" << endl;
             out << "{" << endl;
-            out << "    referenceValue          ("
-                << theParameters.value("L11") << "  "
-                << theParameters.value("L12") << "  "
-                << theParameters.value("L13") << "  "
-                << theParameters.value("L21") << "  "
-                << theParameters.value("L22") << "  "
-                << theParameters.value("L23") << "  "
-                << theParameters.value("L31") << "  "
-                << theParameters.value("L32") << "  "
-                << theParameters.value("L33")
-                << ");" << endl;
-
-            out << "    profile                 " << profile << ";" << endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << endl;
-                out << "    referenceDist           " << theParameters.value("refDistL") << ";" << endl;
-                out << "    alpha                     ("
-                    << theParameters.value("alpha11") << "  "
-                    << theParameters.value("alpha12") << "  "
-                    << theParameters.value("alpha13") << "  "
-                    << theParameters.value("alpha21") << "  "
-                    << theParameters.value("alpha22") << "  "
-                    << theParameters.value("alpha23") << "  "
-                    << theParameters.value("alpha31") << "  "
-                    << theParameters.value("alpha32") << "  "
-                    << theParameters.value("alpha33")
+            
+            if ( int(theParameters.value("FilterMethod")) < 2) {
+                out << "    referenceValue          ("
+                    << theParameters.value("L11") << "  "
+                    << theParameters.value("L12") << "  "
+                    << theParameters.value("L13") << "  "
+                    << theParameters.value("L21") << "  "
+                    << theParameters.value("L22") << "  "
+                    << theParameters.value("L23") << "  "
+                    << theParameters.value("L31") << "  "
+                    << theParameters.value("L32") << "  "
+                    << theParameters.value("L33")
                     << ");" << endl;
+
+                out << "    profile                 " << profile << ";" << endl;
+
+                if ( int(theParameters.value("profile")) > 0 ) {
+                    out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << endl;
+                    out << "    referenceDist           " << theParameters.value("refDistL") << ";" << endl;
+                    out << "    alpha                   ("
+                        << theParameters.value("alpha11") << "  "
+                        << theParameters.value("alpha12") << "  "
+                        << theParameters.value("alpha13") << "  "
+                        << theParameters.value("alpha21") << "  "
+                        << theParameters.value("alpha22") << "  "
+                        << theParameters.value("alpha23") << "  "
+                        << theParameters.value("alpha31") << "  "
+                        << theParameters.value("alpha32") << "  "
+                        << theParameters.value("alpha33")
+                        << ");" << endl;
+                }
+            }
+            else {
+                out << "    referenceValue          ("
+                    << theParameters.value("L11") << "  "
+                    << theParameters.value("L22") << "  "
+                    << theParameters.value("L33")
+                    << ");" << endl;
+
+                out << "    profile                 " << profile << ";" << endl;
+
+                if ( int(theParameters.value("profile")) > 0 ) {
+                    out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << endl;
+                    out << "    referenceDist           " << theParameters.value("refDistL") << ";" << endl;
+                    out << "    alpha                   ("
+                        << theParameters.value("alpha11") << "  "
+                        << theParameters.value("alpha22") << "  "
+                        << theParameters.value("alpha33")
+                        << ");" << endl;
+                }
             }
 
             out << "}" << endl;
