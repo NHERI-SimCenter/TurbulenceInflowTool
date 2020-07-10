@@ -118,7 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
     versionText = "Turbulence Inflow Tool - Version " + QString(APP_VERSION);
     citeText = "Jiawei Wan, Peter Mackenzie-Helnwein, and Frank McKenna. (2019, October 22). NHERI-SimCenter/TurbulenceInflowTool: Versions 1.0.2 (Version v1.0.2). Zenodo. http://doi.org/10.5281/zenodo.3462805";
 
-    manualURL = "https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulenceInflowTool/";
+    manualURL = "https://nheri-simcenter.github.io/TinF-Documentation/";
     feedbackURL = "https://docs.google.com/forms/d/e/1FAIpQLSfh20kBxDmvmHgz9uFwhkospGLCeazZzL770A2GuYZ2KgBZBA/viewform";
     featureRequestURL = "https://docs.google.com/forms/d/e/1FAIpQLScTLkSwDjPNzH8wx8KxkyhoIT7AI9KZ16Wg9TuW1GOhSYFOag/viewform";
     copyrightText = QString("\
