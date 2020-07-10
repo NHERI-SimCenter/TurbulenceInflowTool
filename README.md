@@ -14,7 +14,8 @@ The generic workflow involved is as follows.
 3. Run OpenFOAM using the updated model definition.
 The tool also provides a Save to file and Open from file functionality that will allow you to define and share complex sets of settings and parameters for the supported turbulence inflow models and, such, efficiently and reliably apply the same parameters to several different models.
 
-Technical detail is available from the TInF manual available through: [https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulenceInflowTool/](https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/TurbulenceInflowTool/)
+Technical detail is available from the TInF manual available through: [https://nheri-simcenter.github.io/TinF-Documentation/](https://nheri-simcenter.github.io/TinF-Documentation/)
+
 
 # references
 
