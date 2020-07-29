@@ -73,10 +73,9 @@ Foam::eddy::eddy
     const vector ey = Lund2.y()/R.yy();
     const vector ez = Lund2.z()/R.zz();
 
-    tensor E = tensor(ex, ey, ez);
+    const tensor E = tensor(ex, ey, ez);
 
-    sigma_ = 2.0*(inv(E)&L.T());
-    sigma_ = sigma_.T();
+    sigma_ = 2.0*(inv(E)&L);
 }
 
 Foam::eddy::eddy

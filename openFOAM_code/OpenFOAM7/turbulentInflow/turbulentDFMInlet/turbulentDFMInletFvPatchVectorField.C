@@ -282,11 +282,9 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
         const vector ey = Lund2.y()/R_[label].yy();
         const vector ez = Lund2.z()/R_[label].zz();
 
-        tensor E = tensor(ex, ey, ez);
+        const tensor E = tensor(ex, ey, ez);
 
-        const tensor L = inv(E)&L_[label].T();
-
-        L_[label] = L.T();
+        L_[label] = inv(E)&L_[label].T();
     }
 }
 
@@ -371,8 +369,8 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseFilterCoeff()
 
     forAll(L, label)
     {
-        ny_[label] = vector(ceil(L[label].yx()/delta_), ceil(L[label].yy()/delta_), ceil(L[label].yz()/delta_));
-        nz_[label] = vector(ceil(L[label].zx()/delta_), ceil(L[label].zy()/delta_), ceil(L[label].zz()/delta_));
+        ny_[label] = vector(ceil(L[label].xy()/delta_), ceil(L[label].yy()/delta_), ceil(L[label].zy()/delta_));
+        nz_[label] = vector(ceil(L[label].xz()/delta_), ceil(L[label].yz()/delta_), ceil(L[label].zz()/delta_));
     }
 
     const labelVector nyMax = gMax(ny_);
@@ -769,7 +767,8 @@ void Foam::turbulentDFMInletFvPatchVectorField::temporalCorr()
 
     forAll(uFluctTemporal_, faceI)
     {
-        vector T = L_[faceI].x()/U_[faceI];
+        const vector L = vector(L_[faceI].xx(),L_[faceI].yx(),L_[faceI].zx());
+        const vector T = L/U_[faceI];
 
         for (label ii = 0; ii <= 2; ii++)
         {
