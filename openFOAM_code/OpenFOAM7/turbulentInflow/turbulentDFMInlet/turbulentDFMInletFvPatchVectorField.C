@@ -284,7 +284,7 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
 
         const tensor E = tensor(ex, ey, ez);
 
-        L_[label] = inv(E)&L_[label].T();
+        L_[label] = inv(E)&L_[label];
     }
 }
 
