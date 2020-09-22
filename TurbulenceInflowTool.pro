@@ -52,7 +52,7 @@ SOURCES += \
         customizeditemmodel.cpp \
         main.cpp \
         mainwindow.cpp \
-        utilWindows/dialogabout.cpp \
+        # utilWindows/dialogabout.cpp \
         utilWindows/helpwindow.cpp \
         widgets/exportwidget.cpp \
         widgets/filewidget.cpp \
@@ -61,7 +61,7 @@ SOURCES += \
 HEADERS += \
         customizeditemmodel.h \
         mainwindow.h \
-        utilWindows/dialogabout.h \
+        # utilWindows/dialogabout.h \
         utilWindows/helpwindow.h \
         widgets/exportwidget.h \
         widgets/filewidget.h \
@@ -69,7 +69,7 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui \
-        utilWindows/dialogabout.ui \
+        # utilWindows/dialogabout.ui \
         utilWindows/helpwindow.ui \
         widgets/exportwidget.ui \
         widgets/filewidget.ui \

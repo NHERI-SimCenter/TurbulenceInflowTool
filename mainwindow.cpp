@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "utilWindows/dialogabout.h"
+#include "Utils/dialogabout.h"
 #include "utilWindows/helpwindow.h"
 #include <QGuiApplication>
 #include <QScreen>
@@ -191,7 +191,9 @@ void MainWindow::on_action_Quit_triggered()
 
 void MainWindow::on_action_About_triggered()
 {
-    DialogAbout *dlg = new DialogAbout(versionText);
+    DialogAbout *dlg = new DialogAbout(this);
+    dlg->setTitle(versionText);
+    dlg->setTextSource(tr(":/docs/help/About/CWEabout.html"));
 
     //
     // adjust size of application window to the available display
