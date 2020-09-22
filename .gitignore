@@ -28,3 +28,5 @@ docs/help/theory\.xref
 ExampleInput/building/0/U_
 
 *.o
+
+*.swp
