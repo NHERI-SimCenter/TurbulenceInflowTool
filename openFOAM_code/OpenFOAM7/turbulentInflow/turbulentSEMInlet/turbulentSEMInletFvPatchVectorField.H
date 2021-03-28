@@ -89,7 +89,7 @@ class turbulentSEMInletFvPatchVectorField
             //- Reynolds stress tensor
             symmTensorField R_;
 
-            //- Length scale
+            //- Length scales
             tensorField L_;
 
             //- Inlet velocity
@@ -232,6 +232,9 @@ class turbulentSEMInletFvPatchVectorField
 
         //- Initialise info for patch point search
         void initialisePatch();
+        
+        //- Initialise and check turbulence parameters
+        void initialiseParameters();
 
         //- Initialise the eddy box
         void initialiseEddyBox();

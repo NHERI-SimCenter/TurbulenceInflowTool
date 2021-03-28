@@ -801,6 +801,69 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::calcOverlappingProcEddies
 }
 
 
+void Foam::turbulentDFSEMInletFvPatchVectorField::initialiseParameters()
+{   
+    const vectorField Cf(patch().Cf());
+    
+    forAll(U_, label)
+    {
+        bool isPositiveDefinite(true);
+        tensor Lund(tensor::zero);
+        
+        if (U_[label] < 0)
+        {
+            Pout << "error: the patch-normal velocity magnitude at the point " << Cf[label]
+                 << " is no larger than 0, please modify the input parameters for U" << endl;
+        }
+        
+        if (L_[label] < 0)
+        {
+            Pout << "error: the integral length scale at the point " << Cf[label]
+                 << " is no larger than 0, please modify the input parameters for L" << endl;
+        }
+        
+        if (R_[label].component(symmTensor::XX) < 0)
+        {
+            isPositiveDefinite = false;
+        }
+        else
+        {
+            Lund.component(tensor::XX) = sqrt(R_[label].component(symmTensor::XX));
+            Lund.component(tensor::YX) = R_[label].component(symmTensor::XY)/Lund.component(tensor::XX);
+            Lund.component(tensor::ZX) = R_[label].component(symmTensor::XZ)/Lund.component(tensor::XX);
+            
+            const scalar sqrLundYY = R_[label].component(symmTensor::YY)-sqr(Lund.component(tensor::YX));
+            
+            if (sqrLundYY < 0)
+            {
+                isPositiveDefinite = false;
+            }
+            else
+            {
+                Lund.component(tensor::YY) = sqrt(sqrLundYY);
+                Lund.component(tensor::ZY) = (R_[label].component(symmTensor::YZ)-Lund.component(tensor::YX)*Lund.component(tensor::ZX))/Lund.component(tensor::YY);
+                
+                const scalar sqrLundZZ = R_[label].component(symmTensor::ZZ)-sqr(Lund.component(tensor::ZX))-sqr(Lund.component(tensor::ZY));
+                
+                if (sqrLundZZ < 0)
+                {
+                    isPositiveDefinite = false;
+                }
+                else
+                {
+                    Lund.component(tensor::ZZ) = sqrt(sqrLundZZ);
+                }
+            }
+        }
+        
+        if (!isPositiveDefinite)
+        {
+            Pout << "error: the Reynolds stress tensor at the point " << Cf[label]
+                 << " is not positive definite, please modify the input parameters for R" << endl;
+        }
+    }
+}
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::turbulentDFSEMInletFvPatchVectorField::
@@ -848,7 +911,7 @@ turbulentDFSEMInletFvPatchVectorField
     nCellPerEddy_(5),
     patchNormal_(Zero),
     v0_(Zero),
-    rndGen_(Pstream::myProcNo()),
+    rndGen_((Pstream::myProcNo()+1)*time(NULL)),
     sigmax_(size(), Zero),
     maxSigmaX_(Zero),
     curTimeIndex_(-1),
@@ -1161,6 +1224,7 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::updateCoeffs()
     if (curTimeIndex_ == -1)
     {
         initialisePatch();
+        initialiseParameters();
         initialiseEddyBox();
         initialiseEddies();
     }

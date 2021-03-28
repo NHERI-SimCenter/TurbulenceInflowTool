@@ -99,7 +99,7 @@ Foam::vorton::vorton
 
     vector L = inv(E)&L0;
 
-    if (type == "typeR")
+    if (type == "typeR" || L.x() < 0.0)
     {
         L.x() = (L.y()*L.z()*sqrt(R.x()))/(L.y()*sqrt(R.z())+L.z()*sqrt(R.y()));
     }
