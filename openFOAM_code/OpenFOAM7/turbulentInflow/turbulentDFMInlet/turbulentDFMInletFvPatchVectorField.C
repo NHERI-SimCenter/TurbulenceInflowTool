@@ -266,25 +266,73 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialisePatch()
 }
 
 void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
-{
-    Lund_.replace(tensor::XX, sqrt(R_.component(symmTensor::XX)));
-    Lund_.replace(tensor::YX, R_.component(symmTensor::XY)/Lund_.component(tensor::XX));
-    Lund_.replace(tensor::ZX, R_.component(symmTensor::XZ)/Lund_.component(tensor::XX));
-    Lund_.replace(tensor::YY, sqrt(R_.component(symmTensor::YY)-sqr(Lund_.component(tensor::YX))));
-    Lund_.replace(tensor::ZY, (R_.component(symmTensor::YZ) - Lund_.component(tensor::YX)*Lund_.component(tensor::ZX) )/Lund_.component(tensor::YY));
-    Lund_.replace(tensor::ZZ, sqrt(R_.component(symmTensor::ZZ) - sqr(Lund_.component(tensor::ZX))-sqr(Lund_.component(tensor::ZY))));
-
-    forAll(Lund_, label)
+{   
+    const vectorField Cf(patch().Cf());
+    
+    forAll(U_, label)
     {
-        const tensor Lund2 = cmptMultiply(Lund_[label], Lund_[label]);
+        if (U_[label] < 0)
+        {
+            Pout << "error: the patch-normal velocity magnitude at the point " << Cf[label]
+                 << " is no larger than 0, please modify the input parameters for U" << endl;
+        }
+        
+        if (R_[label].component(symmTensor::XX) < 0)
+        {
+            Pout << "error: the Reynolds stress component R_XX at the point " << Cf[label] 
+                 << " is no larger than 0, please modify the input parameters for R" << endl;
+        }
+        else
+        {
+            Lund_[label].component(tensor::XX) = sqrt(R_[label].component(symmTensor::XX));
+            Lund_[label].component(tensor::YX) = R_[label].component(symmTensor::XY)/Lund_[label].component(tensor::XX);
+            Lund_[label].component(tensor::ZX) = R_[label].component(symmTensor::XZ)/Lund_[label].component(tensor::XX);
+            
+            const scalar sqrLundYY = R_[label].component(symmTensor::YY)-sqr(Lund_[label].component(tensor::YX));
+            
+            if (sqrLundYY < 0)
+            {
+                Pout << "error: the Reynolds stress component R_YY at the point " << Cf[label]
+                     << " is no larger than the square of Lund_YX,"
+                     << " Please modify the input parameters for R" << endl;
+            }
+            else
+            {
+                Lund_[label].component(tensor::YY) = sqrt(sqrLundYY);
+                Lund_[label].component(tensor::ZY) = (R_[label].component(symmTensor::YZ)-Lund_[label].component(tensor::YX)*Lund_[label].component(tensor::ZX))/Lund_[label].component(tensor::YY);
+                
+                const scalar sqrLundZZ = R_[label].component(symmTensor::ZZ)-sqr(Lund_[label].component(tensor::ZX))-sqr(Lund_[label].component(tensor::ZY));
+                
+                if (sqrLundZZ < 0)
+                {
+                    Pout << "error: the Reynolds stress component R_ZZ at the point " << Cf[label]
+                         << " is no larger than sum of the squares of Lund_ZX and Lund_ZY,"
+                         << " Please modify the input parameters for R" << endl;
+                }
+                else
+                {
+                    Lund_[label].component(tensor::ZZ) = sqrt(sqrLundZZ);
+                    
+                    const tensor sqrLund = cmptMultiply(Lund_[label], Lund_[label]);
+                    const vector ex = sqrLund.x()/R_[label].xx();
+                    const vector ey = sqrLund.y()/R_[label].yy();
+                    const vector ez = sqrLund.z()/R_[label].zz();
 
-        const vector ex = Lund2.x()/R_[label].xx();
-        const vector ey = Lund2.y()/R_[label].yy();
-        const vector ez = Lund2.z()/R_[label].zz();
+                    const tensor E = tensor(ex, ey, ez);
 
-        const tensor E = tensor(ex, ey, ez);
-
-        L_[label] = inv(E)&L_[label];
+                    L0_[label] = inv(E)&L_[label];
+        
+                    forAll(L0_[label], subLabel)
+                    {
+                        if (L0_[label][subLabel] < 0)
+                        {
+                            Pout << "error: the " << subLabel+1 << "-th component of the converted length scales at the point " << Cf[label] 
+                                 << " is no larger than 0, please modify the input parameters for L" << endl;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -296,7 +344,7 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseVirtualGrid()
     origin_ = patchBounds.min();
 
     delta_ = Foam::sqrt(gMin(patch().magSf()))/gridFactor_;
-
+    
     scalar maxSpan = patchBounds.span().component(vector::Y);
 
     if (maxSpan < patchBounds.span().component(vector::Z))
@@ -362,7 +410,7 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseVirtualGrid()
 void Foam::turbulentDFMInletFvPatchVectorField::initialiseFilterCoeff()
 {
     // Gather the length scale field from each processors
-    tensorField L(gatherProc(L_));
+    tensorField L(gatherProc(L0_));
 
     ny_.setSize(L.size());
     nz_.setSize(L.size());
@@ -521,6 +569,8 @@ Foam::turbulentDFMInletFvPatchVectorField::getRandomField(label totalSize)
 
 void Foam::turbulentDFMInletFvPatchVectorField::spatialCorr()
 {
+    Info<< "Generating spatial correlation" << endl;
+    
     scalarField virtualRandomFieldx = getRandomField(rndSize_.component(0));
     scalarField virtualRandomFieldy = getRandomField(rndSize_.component(1));
     scalarField virtualRandomFieldz = getRandomField(rndSize_.component(2));
@@ -759,15 +809,19 @@ void Foam::turbulentDFMInletFvPatchVectorField::spatialCorr()
     {
         uFluctFiltered_ = SubField<vector>(virtualFilteredField, patchSize_[Pstream::myProcNo()], start);
     }
+    
+    Info<< "Spatial correlation generated" << endl;
 }
 
 void Foam::turbulentDFMInletFvPatchVectorField::temporalCorr()
 {
+    Info<< "Generating temporal correlation" << endl;
+    
     scalar dt = db().time().deltaT().value();
 
     forAll(uFluctTemporal_, faceI)
     {
-        const vector L = vector(L_[faceI].xx(),L_[faceI].yx(),L_[faceI].zx());
+        const vector L = vector(L0_[faceI].xx(),L0_[faceI].yx(),L0_[faceI].zx());
         const vector T = L/U_[faceI];
 
         for (label ii = 0; ii <= 2; ii++)
@@ -778,6 +832,8 @@ void Foam::turbulentDFMInletFvPatchVectorField::temporalCorr()
     }
 
     uFluctTemporalOld_ = uFluctTemporal_;
+    
+    Info<< "Temporal correlation generated" << endl;
 }
 
 
@@ -875,7 +931,6 @@ Foam::turbulentDFMInletFvPatchVectorField::patchMapper() const
     return *mapperPtr_;
 }
 
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::turbulentDFMInletFvPatchVectorField::
@@ -907,6 +962,7 @@ turbulentDFMInletFvPatchVectorField
     U_(p.size(), 0.0),
     R_(p.size(), pTraits<symmTensor>::zero),
     L_(p.size(), pTraits<tensor>::zero),
+    L0_(p.size(), pTraits<tensor>::zero),
     Lund_(p.size(), pTraits<tensor>::zero),
 
     isInitialized_(false),
@@ -969,6 +1025,7 @@ turbulentDFMInletFvPatchVectorField
     U_(interpolateOrRead<scalar>("U", dict, interpolateU_)),
     R_(interpolateOrRead<symmTensor>("R", dict, interpolateR_)),
     L_(interpolateOrRead<tensor>("L", dict, interpolateL_)),
+    L0_(p.size(), pTraits<tensor>::zero),
     Lund_(p.size(), pTraits<tensor>::zero),
 
     isInitialized_(false),
@@ -1038,6 +1095,7 @@ turbulentDFMInletFvPatchVectorField
     U_(mapper(ptf.U_)),
     R_(mapper(ptf.R_)),
     L_(mapper(ptf.L_)),
+    L0_(mapper(ptf.L0_)),
     Lund_(mapper(ptf.Lund_)),
 
     isInitialized_(ptf.isInitialized_),
@@ -1098,6 +1156,7 @@ turbulentDFMInletFvPatchVectorField
     U_(ptf.U_),
     R_(ptf.R_),
     L_(ptf.L_),
+    L0_(ptf.L0_),
     Lund_(ptf.Lund_),
 
     isInitialized_(ptf.isInitialized_),
@@ -1159,6 +1218,7 @@ turbulentDFMInletFvPatchVectorField
     U_(ptf.U_),
     R_(ptf.R_),
     L_(ptf.L_),
+    L0_(ptf.L0_),
     Lund_(ptf.Lund_),
 
     isInitialized_(ptf.isInitialized_),
@@ -1209,6 +1269,8 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialise()
         spatialCorr();
         uFluctTemporalOld_ = uFluctFiltered_;
     }
+    
+    Info<< "initialization complete" << endl;
 }
 
 

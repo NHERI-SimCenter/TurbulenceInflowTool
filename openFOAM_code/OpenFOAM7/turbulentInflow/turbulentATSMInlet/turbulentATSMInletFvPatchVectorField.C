@@ -995,6 +995,110 @@ void Foam::turbulentATSMInletFvPatchVectorField::calcOverlappingProcVortons
 }
 
 
+void Foam::turbulentATSMInletFvPatchVectorField::initialiseParameters()
+{   
+    const vectorField Cf(patch().Cf());
+    
+    forAll(U_, label)
+    {
+        bool isPositiveDefinite(true);
+        tensor Lund(tensor::zero);
+        
+        if (U_[label] < 0)
+        {
+            Pout << "error: the patch-normal velocity magnitude at the point " << Cf[label]
+                 << " is no larger than 0, please modify the input parameters for U" << endl;
+        }
+        
+        if (R_[label].component(symmTensor::XX) < 0)
+        {
+            isPositiveDefinite = false;
+        }
+        else
+        {
+            Lund.component(tensor::XX) = sqrt(R_[label].component(symmTensor::XX));
+            Lund.component(tensor::YX) = R_[label].component(symmTensor::XY)/Lund.component(tensor::XX);
+            Lund.component(tensor::ZX) = R_[label].component(symmTensor::XZ)/Lund.component(tensor::XX);
+            
+            const scalar sqrLundYY = R_[label].component(symmTensor::YY)-sqr(Lund.component(tensor::YX));
+            
+            if (sqrLundYY < 0)
+            {
+                isPositiveDefinite = false;
+            }
+            else
+            {
+                Lund.component(tensor::YY) = sqrt(sqrLundYY);
+                Lund.component(tensor::ZY) = (R_[label].component(symmTensor::YZ)-Lund.component(tensor::YX)*Lund.component(tensor::ZX))/Lund.component(tensor::YY);
+                
+                const scalar sqrLundZZ = R_[label].component(symmTensor::ZZ)-sqr(Lund.component(tensor::ZX))-sqr(Lund.component(tensor::ZY));
+                
+                if (sqrLundZZ < 0)
+                {
+                    isPositiveDefinite = false;
+                }
+                else
+                {
+                    Lund.component(tensor::ZZ) = sqrt(sqrLundZZ);
+                    
+                    // Principal stresses - eigenvalues returned in ascending order
+                    vector Rp;
+
+                    if (R_[label].component(symmTensor::XY)==0&&R_[label].component(symmTensor::XZ)==0&&R_[label].component(symmTensor::YZ)==0)
+                    {
+                        Rp = vector(R_[label].component(symmTensor::XX),R_[label].component(symmTensor::YY),R_[label].component(symmTensor::ZZ));
+                    }
+                    else
+                    {
+                        Rp = eigenValues(R_[label]);
+                    }
+
+                    // Eddy rotation from principal-to-global axes
+                    // - given by the 3 eigenvectors of the Reynold stress tensor as rows in
+                    //   the result tensor (transposed transformation tensor)
+                    // - returned in ascending eigenvalue order
+                    tensor Rpg = eigenVectors(R_[label], Rp);
+
+                    if (debug)
+                    {
+                        Pout<< "Rpg & R & Rpg.T(): " << (Rpg & R_[label] & Rpg.T()) << endl;
+                    }
+
+                    const tensor sqrRpg = cmptMultiply(Rpg.T(), Rpg.T());
+
+                    const vector ex = cmptMultiply(sqrRpg.x(), Rp)/R_[label].xx();
+                    const vector ey = cmptMultiply(sqrRpg.y(), Rp)/R_[label].yy();
+                    const vector ez = cmptMultiply(sqrRpg.z(), Rp)/R_[label].zz();
+
+                    const tensor E = tensor(ex, ey, ez);
+
+                    vector L0 = inv(E)&L_[label];
+
+                    if (vortonType_ == "typeR" || L0.x() < 0.0)
+                    {
+                        L0.x() = (L0.y()*L0.z()*sqrt(Rp.x()))/(L0.y()*sqrt(Rp.z())+L0.z()*sqrt(Rp.y()));
+                    }
+                    
+                    forAll(L0, subLabel)
+                    {
+                        if (L0[subLabel] < 0)
+                        {
+                            Pout << "error: the " << subLabel+1 << "-th component of the converted length scales at the point " << Cf[label] 
+                                 << " is no larger than 0, please modify the input parameters for L" << endl;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (!isPositiveDefinite)
+        {
+            Pout << "error: the Reynolds stress tensor at the point " << Cf[label]
+                 << " is not positive definite, please modify the input parameters for R" << endl;
+        }
+    }
+}
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::turbulentATSMInletFvPatchVectorField::
@@ -1042,7 +1146,7 @@ turbulentATSMInletFvPatchVectorField
 
     patchNormal_(Zero),
     v0_(Zero),
-    rndGen_(Pstream::myProcNo()),
+    rndGen_((Pstream::myProcNo()+1)*time(NULL)),
     maxSigmaX_(Zero),
     curTimeIndex_(-1),
     patchBounds_(boundBox::invertedBox),
@@ -1366,6 +1470,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::updateCoeffs()
     if (curTimeIndex_ == -1)
     {
         initialisePatch();
+        initialiseParameters();
         initialiseVortonBox();
         initialiseVortons();
         initialiseOutput();

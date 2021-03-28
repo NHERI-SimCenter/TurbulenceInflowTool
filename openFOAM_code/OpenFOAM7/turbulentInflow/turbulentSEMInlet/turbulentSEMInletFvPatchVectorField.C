@@ -1004,6 +1004,79 @@ void Foam::turbulentSEMInletFvPatchVectorField::calcOverlappingProcEddies
 }
 
 
+void Foam::turbulentSEMInletFvPatchVectorField::initialiseParameters()
+{   
+    const vectorField Cf(patch().Cf());
+    
+    forAll(U_, label)
+    {
+        tensor Lund(tensor::zero);
+        
+        if (U_[label] < 0)
+        {
+            Pout << "error: the patch-normal velocity magnitude at the point " << Cf[label]
+                 << " is no larger than 0, please modify the input parameters for U" << endl;
+        }
+        
+        if (R_[label].component(symmTensor::XX) < 0)
+        {
+            Pout << "error: the Reynolds stress component R_XX at the point " << Cf[label] 
+                 << " is no larger than 0, please modify the input parameters for R" << endl;
+        }
+        else
+        {
+            Lund.component(tensor::XX) = sqrt(R_[label].component(symmTensor::XX));
+            Lund.component(tensor::YX) = R_[label].component(symmTensor::XY)/Lund.component(tensor::XX);
+            Lund.component(tensor::ZX) = R_[label].component(symmTensor::XZ)/Lund.component(tensor::XX);
+            
+            const scalar sqrLundYY = R_[label].component(symmTensor::YY)-sqr(Lund.component(tensor::YX));
+            
+            if (sqrLundYY < 0)
+            {
+                Pout << "error: the Reynolds stress component R_YY at the point " << Cf[label]
+                     << " is no larger than the square of Lund_YX,"
+                     << " Please modify the input parameters for R" << endl;
+            }
+            else
+            {
+                Lund.component(tensor::YY) = sqrt(sqrLundYY);
+                Lund.component(tensor::ZY) = (R_[label].component(symmTensor::YZ)-Lund.component(tensor::YX)*Lund.component(tensor::ZX))/Lund.component(tensor::YY);
+                
+                const scalar sqrLundZZ = R_[label].component(symmTensor::ZZ)-sqr(Lund.component(tensor::ZX))-sqr(Lund.component(tensor::ZY));
+                
+                if (sqrLundZZ < 0)
+                {
+                    Pout << "error: the Reynolds stress component R_ZZ at the point " << Cf[label]
+                         << " is no larger than sum of the squares of Lund_ZX and Lund_ZY,"
+                         << " Please modify the input parameters for R" << endl;
+                }
+                else
+                {
+                    Lund.component(tensor::ZZ) = sqrt(sqrLundZZ);
+                    
+                    const tensor sqrLund = cmptMultiply(Lund, Lund);
+                    const vector ex = sqrLund.x()/R_[label].xx();
+                    const vector ey = sqrLund.y()/R_[label].yy();
+                    const vector ez = sqrLund.z()/R_[label].zz();
+
+                    const tensor E = tensor(ex, ey, ez);
+
+                    const tensor L0 = inv(E)&L_[label];
+        
+                    forAll(L0, subLabel)
+                    {
+                        if (L0[subLabel] < 0)
+                        {
+                            Pout << "error: the " << subLabel+1 << "-th component of the converted length scales at the point " << Cf[label] 
+                                 << " is no larger than 0, please modify the input parameters for L" << endl;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::turbulentSEMInletFvPatchVectorField::
@@ -1051,7 +1124,7 @@ turbulentSEMInletFvPatchVectorField
 
     patchNormal_(Zero),
     v0_(Zero),
-    rndGen_(Pstream::myProcNo()),
+    rndGen_((Pstream::myProcNo()+1)*time(NULL)),
     maxSigmaX_(Zero),
     curTimeIndex_(-1),
     patchBounds_(boundBox::invertedBox),
@@ -1375,6 +1448,7 @@ void Foam::turbulentSEMInletFvPatchVectorField::updateCoeffs()
     if (curTimeIndex_ == -1)
     {
         initialisePatch();
+        initialiseParameters();
         initialiseEddyBox();
         initialiseEddies();
         initialiseOutput();

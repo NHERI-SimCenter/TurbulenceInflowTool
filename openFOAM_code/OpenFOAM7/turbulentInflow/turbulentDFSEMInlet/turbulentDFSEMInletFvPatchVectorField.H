@@ -190,6 +190,9 @@ class turbulentDFSEMInletFvPatchVectorField
 
         //- Initialise info for patch point search
         void initialisePatch();
+        
+        //- Initialise and check turbulence parameters
+        void initialiseParameters();
 
         //- Initialise the eddy box
         void initialiseEddyBox();

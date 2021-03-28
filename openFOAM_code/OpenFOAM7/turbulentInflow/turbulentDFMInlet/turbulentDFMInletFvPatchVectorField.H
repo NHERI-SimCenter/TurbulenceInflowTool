@@ -126,8 +126,11 @@ class turbulentDFMInletFvPatchVectorField
             //- turbulent intensity tensor
             symmTensorField R_;
 
-            //- Length scale for u component in x direction
+            //- Length scales
             tensorField L_;
+            
+            //- Converted length scales
+            tensorField L0_;
 
             //- Lund coefficients
             tensorField Lund_;
@@ -261,7 +264,7 @@ class turbulentDFMInletFvPatchVectorField
         //- Initialise virtual grid points
         void initialisePatch();
 
-        //- Initialise turbulence parameters
+        //- Initialise and check turbulence parameters
         void initialiseParameters();
 
         //- Initialise virtual grid points
