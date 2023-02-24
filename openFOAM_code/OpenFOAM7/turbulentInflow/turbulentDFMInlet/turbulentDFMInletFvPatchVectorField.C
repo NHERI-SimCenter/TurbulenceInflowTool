@@ -321,14 +321,22 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
                     const tensor E = tensor(ex, ey, ez);
 
                     L0_[label] = inv(E)&L_[label];
-        
+
+                    bool negativeFlag = false;
+
                     forAll(L0_[label], subLabel)
                     {
                         if (L0_[label][subLabel] < 0)
                         {
+                            negativeFlag = true;
                             Pout << "error: the " << subLabel+1 << "-th component of the converted length scales at the point " << Cf[label] 
                                  << " is no larger than 0, please modify the input parameters for L" << endl;
                         }
+                    }
+
+                    if (negativeFlag == true)
+                    {
+                        L0_[label] = L_[label];
                     }
                 }
             }
