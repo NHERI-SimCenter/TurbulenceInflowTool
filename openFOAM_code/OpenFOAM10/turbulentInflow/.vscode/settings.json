@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "turbulentKineticEnergyFvPatchScalarFieldTemplates.C": "cpp",
+        "turbulentKineticEnergyFvPatchScalarField.C": "cpp",
+        "turbulentMeanInletFvPatchVectorField.C": "cpp",
+        "turbulentMeanInletFvPatchVectorFieldTemplates.C": "cpp",
+        "turbulentSEMInletFvPatchVectorField.C": "cpp",
+        "turbulentSEMInletFvPatchVectorFieldTemplates.C": "cpp",
+        "turbulentDFMInletFvPatchVectorField.C": "cpp",
+        "turbulentDFMInletFvPatchVectorFieldTemplates.C": "cpp",
+        "turbulentDFSEMInletFvPatchVectorFieldTemplates.C": "cpp",
+        "turbulentATSMInletFvPatchVectorFieldTemplates.C": "cpp",
+        "turbulentDFSEMInletFvPatchVectorField.C": "cpp",
+        "turbulentATSMInletFvPatchVectorField.C": "cpp"
+    }
+}

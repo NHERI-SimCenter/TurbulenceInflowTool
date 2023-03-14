@@ -1,0 +1,19 @@
+SOURCE += turbulentKineticEnergy/turbulentKineticEnergyFvPatchScalarField.C
+
+SOURCE += turbulentMeanInlet/turbulentMeanInletFvPatchVectorField.C
+
+SOURCE += turbulentDFMInlet/turbulentDFMInletFvPatchVectorField.C
+
+SOURCE += turbulentSEMInlet/eddy/eddy.C
+SOURCE += turbulentSEMInlet/eddy/eddyIO.C
+SOURCE += turbulentSEMInlet/turbulentSEMInletFvPatchVectorField.C
+
+SOURCE += turbulentATSMInlet/vorton/vorton.C
+SOURCE += turbulentATSMInlet/vorton/vortonIO.C
+SOURCE += turbulentATSMInlet/turbulentATSMInletFvPatchVectorField.C
+
+SOURCE += turbulentDFSEMInlet/eddy/dfeddy.C
+SOURCE += turbulentDFSEMInlet/eddy/dfeddyIO.C
+SOURCE += turbulentDFSEMInlet/turbulentDFSEMInletFvPatchVectorField.C
+
+LIB = $(FOAM_USER_LIBBIN)/libturbulentInflow
