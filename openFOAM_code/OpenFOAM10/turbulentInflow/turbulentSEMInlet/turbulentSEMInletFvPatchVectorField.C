@@ -337,12 +337,13 @@ void Foam::turbulentSEMInletFvPatchVectorField::initialisePatch()
         const face& f = patch[faceI];
 
         tris.clear();
+
         // f.triangles(points, tris); //Original code 
         // triangles(points, f, tris); //Think a better replacement 
 
         // Triangulate the face polygon
         
-        List<point> polygonPoints (f.size());
+        pointField polygonPoints(f.size());
 
         forAll(f, pi)
         {
@@ -360,7 +361,7 @@ void Foam::turbulentSEMInletFvPatchVectorField::initialisePatch()
         {
             triToFace.append(faceI);
             triFaces.append(tris[i]);
-            triMagSf.append(tris[i].mag(points));
+            triMagSf.append(tris[i].mag(const_cast<pointField&>(polygonPoints)));
         }
     }
 

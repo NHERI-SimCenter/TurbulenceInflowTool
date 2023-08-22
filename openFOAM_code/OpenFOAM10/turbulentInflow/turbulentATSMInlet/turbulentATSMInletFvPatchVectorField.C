@@ -343,7 +343,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialisePatch()
 
         // Triangulate the face polygon
         
-        List<point> polygonPoints (f.size());
+        pointField polygonPoints (f.size());
 
         forAll(f, pi)
         {
@@ -361,7 +361,7 @@ void Foam::turbulentATSMInletFvPatchVectorField::initialisePatch()
         {
             triToFace.append(faceI);
             triFaces.append(tris[i]);
-            triMagSf.append(tris[i].mag(points));
+            triMagSf.append(tris[i].mag(const_cast<pointField&>(polygonPoints)));
         }
     }
 
