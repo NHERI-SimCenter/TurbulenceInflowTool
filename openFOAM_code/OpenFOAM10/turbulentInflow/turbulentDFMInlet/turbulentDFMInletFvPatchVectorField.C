@@ -833,7 +833,9 @@ void Foam::turbulentDFMInletFvPatchVectorField::temporalCorr()
     forAll(uFluctTemporal_, faceI)
     {
         const vector L = vector(L0_[faceI].xx(),L0_[faceI].yx(),L0_[faceI].zx());
-        const vector T = L/U_[faceI];
+        //const vector T = L/U_[faceI]; //Original
+        
+	const vector T = L/0.80; // Change made by Lup Wai for the SimCenter paper. 
 
         for (label ii = 0; ii <= 2; ii++)
         {

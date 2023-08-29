@@ -39,7 +39,7 @@ Foam::turbulentDFMInletFvPatchVectorField::interpolateOrRead
     bool& interpolateField
 ) const
 {
-    const word calculateName("calculate"+fieldName);
+    const word calculateName("calculate" + fieldName);
     const bool calculateFlag(dict.lookupOrDefault<bool>(calculateName, false));
 
     if (dict.found(fieldName))
@@ -135,7 +135,7 @@ Foam::turbulentDFMInletFvPatchVectorField::calculateBoundaryData
     const dictionary& dict
 ) const
 {
-    word subDictName(fieldName+"Dict");
+    word subDictName(fieldName + "Dict");
     Field<Type> value(this->patch().size(), pTraits<Type>::zero);
 
     const vectorField nf(patch().nf());
@@ -165,7 +165,7 @@ Foam::turbulentDFMInletFvPatchVectorField::calculateBoundaryData
         e3 = vector(0,0,1);
     }
 
-    //Crate a temporary coordinate with origin at (x=0, y=0, z=0). 
+    //Create temporary coordinate with origin at (x=0, y=0, z=0). 
     coordinateSystem tempCoord
     (
         "tempCoord",
