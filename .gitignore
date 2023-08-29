@@ -30,3 +30,7 @@ ExampleInput/building/0/U_
 *.o
 
 *.swp
+
+#Remove .vscode
+.vscode
+
