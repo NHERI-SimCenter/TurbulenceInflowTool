@@ -30,3 +30,7 @@ ExampleInput/building/0/U_
 *.o
 
 *.swp
+
+openFOAM_code/OpenFOAM10/turbulentInflow/Make/linux64*
+openFOAM_code/OpenFOAM6/turbulentInflow/Make/linux64*
+openFOAM_code/OpenFOAM7/turbulentInflow/Make/linux64*
