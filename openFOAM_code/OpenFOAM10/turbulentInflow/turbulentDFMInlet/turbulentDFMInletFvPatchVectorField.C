@@ -337,7 +337,7 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
                         }
                     }
 
-                    if (negativeFlag == true)
+                    if (negativeFlag)
                     {
                         L0_[label] = L_[label];
                     }
@@ -832,10 +832,16 @@ void Foam::turbulentDFMInletFvPatchVectorField::temporalCorr()
 
     forAll(uFluctTemporal_, faceI)
     {
-        const vector L = vector(L0_[faceI].xx(),L0_[faceI].yx(),L0_[faceI].zx());
-        //const vector T = L/U_[faceI]; //Original
-        
-	const vector T = L/0.80; // Change made by Lup Wai for the SimCenter paper. 
+        const vector L = vector(L0_[faceI].xx(), L0_[faceI].yx(), L0_[faceI].zx());
+        vector T = L/U_[faceI]; //Original
+       
+	//The original implementation of DFM works only with constant legth scale
+        // So if the legth scale profile is constant and we want to keep time scale cost as well, 
+        // set constMeanU to true with predefined Uref value	
+	if(constMeanU_)
+	{
+	   T = L/Uref_; // Option to make integral time-scale constant over inlet plane. 
+	}
 
         for (label ii = 0; ii <= 2; ii++)
         {
@@ -977,6 +983,8 @@ turbulentDFMInletFvPatchVectorField
     L_(p.size(), pTraits<tensor>::zero),
     L0_(p.size(), pTraits<tensor>::zero),
     Lund_(p.size(), pTraits<tensor>::zero),
+    Uref_(0.0),
+    constMeanU_(false),
 
     isInitialized_(false),
     isCleanRestart_(false),
@@ -1040,6 +1048,8 @@ turbulentDFMInletFvPatchVectorField
     L_(interpolateOrRead<tensor>("L", dict, interpolateL_)),
     L0_(p.size(), pTraits<tensor>::zero),
     Lund_(p.size(), pTraits<tensor>::zero),
+    Uref_(dict.lookupOrDefault<scalar>("Uref", 10.0)),
+    constMeanU_(dict.lookupOrDefault<bool>("constMeanU", false)),
 
     isInitialized_(false),
     isCleanRestart_(dict.lookupOrDefault<bool>("cleanRestart", false)),
@@ -1110,6 +1120,8 @@ turbulentDFMInletFvPatchVectorField
     L_(mapper(ptf.L_)),
     L0_(mapper(ptf.L0_)),
     Lund_(mapper(ptf.Lund_)),
+    Uref_(ptf.Uref_),
+    constMeanU_(ptf.constMeanU_),
 
     isInitialized_(ptf.isInitialized_),
     isCleanRestart_(ptf.isCleanRestart_),
@@ -1233,6 +1245,8 @@ turbulentDFMInletFvPatchVectorField
     L_(ptf.L_),
     L0_(ptf.L0_),
     Lund_(ptf.Lund_),
+    Uref_(ptf.Uref_),
+    constMeanU_(ptf.constMeanU_),
 
     isInitialized_(ptf.isInitialized_),
     isCleanRestart_(ptf.isCleanRestart_),
@@ -1346,12 +1360,14 @@ void Foam::turbulentDFMInletFvPatchVectorField::write(Ostream& os) const
 
     writeEntryIfDifferent<bool>(os, "periodicInY", false, periodicInY_);
     writeEntryIfDifferent<bool>(os, "periodicInZ", false, periodicInZ_);
+    writeEntryIfDifferent<bool>(os, "constMeanU", false, constMeanU_);
 
     writeEntry(os, "uFluctTemporal", uFluctTemporal_);
 
     writeEntry(os, "U", U_);
     writeEntry(os, "R", R_);
     writeEntry(os, "L", L_);
+    writeEntry(os, "Uref", Uref_);
 
     writeEntryIfDifferent<scalar>(os, "gridFactor", 1.0, gridFactor_);
     writeEntryIfDifferent<label>(os, "filterFactor", 2, nfK_);

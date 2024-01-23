@@ -135,6 +135,11 @@ class turbulentDFMInletFvPatchVectorField
             //- Lund coefficients
             tensorField Lund_;
 
+	    //- Reference velocity used to calculate time scale. 
+	    scalar Uref_;
+	    
+	    //- Flag for constant mean velocity to calculate time scale. 
+	    bool constMeanU_;
 
         // Virtual grid points infomation
 
