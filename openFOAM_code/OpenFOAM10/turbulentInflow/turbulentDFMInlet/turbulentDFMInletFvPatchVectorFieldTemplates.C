@@ -55,6 +55,7 @@ Foam::turbulentDFMInletFvPatchVectorField::interpolateOrRead
         );
 
         interpolateField = false;
+	
         return tFld;
     }
     else

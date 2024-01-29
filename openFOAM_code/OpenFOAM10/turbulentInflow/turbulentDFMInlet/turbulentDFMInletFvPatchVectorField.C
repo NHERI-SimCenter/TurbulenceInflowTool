@@ -323,7 +323,11 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
 
                     const tensor E = tensor(ex, ey, ez);
 
+		    //Scale the lenght scale profile since the velocity field is scaled by Lund coefficient matrix 
                     L0_[label] = inv(E)&L_[label];
+                    
+		    //No scaling to avoid negative length scale
+		    //L0_[label] = L_[label];
 
                     bool negativeFlag = false;
 
@@ -332,7 +336,7 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
                         if (L0_[label][subLabel] < 0)
                         {
                             negativeFlag = true;
-                            Pout << "error: the " << subLabel+1 << "-th component of the converted length scales at the point " << Cf[label] 
+                            Pout << "error: the " << subLabel + 1 << "-th component of the converted length scales at the point " << Cf[label] 
                                  << " is no larger than 0, please modify the input parameters for L" << endl;
                         }
                     }
@@ -832,16 +836,30 @@ void Foam::turbulentDFMInletFvPatchVectorField::temporalCorr()
 
     forAll(uFluctTemporal_, faceI)
     {
-        const vector L = vector(L0_[faceI].xx(), L0_[faceI].yx(), L0_[faceI].zx());
+        
+	 //Uses the scaled length scale profile
+	//const vector L = vector(L0_[faceI].xx(), L0_[faceI].yx(), L0_[faceI].zx());
+	
+	//Uses the unscaled length scale profiles
+	const vector L = vector(L_[faceI].xx(), L_[faceI].yx(), L_[faceI].zx());
         vector T = L/U_[faceI]; //Original
        
 	//The original implementation of DFM works only with constant legth scale
         // So if the legth scale profile is constant and we want to keep time scale cost as well, 
-        // set constMeanU to true with predefined Uref value	
+        // set constMeanU to true with predefined constant wind speed, Uref	
 	if(constMeanU_)
 	{
 	   T = L/Uref_; // Option to make integral time-scale constant over inlet plane. 
 	}
+	
+	//Info << "faceID: " << faceI << nl;
+	//Info << "uFluctTemporalOld_[faceI]: " << uFluctTemporalOld_[faceI] << nl;
+	//Info << "T.component: " << T << nl;
+	//Info << "L.component: " << L_[faceI] << nl;
+	//Info << "L0.component: " << L0_[faceI] << nl;
+	//Info << "R.component: " << R_[faceI] << nl;
+	//Info << "U.component: " << U_[faceI] << nl;
+	//Info << "Point: " << patch().Cf()[faceI] << nl;
 
         for (label ii = 0; ii <= 2; ii++)
         {
