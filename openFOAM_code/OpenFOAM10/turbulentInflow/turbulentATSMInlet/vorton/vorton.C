@@ -284,7 +284,7 @@ Foam::vectorField Foam::vorton::uDash(const pointField& xp, const vector& n) con
         uDash[label].z() = c*(gamma().x()/sqr(sigma().y())-gamma().y()/sqr(sigma().x()))*x.x()*x.y();
     }
 
-    return (Rpg().T()&uDash);
+    return (Rpg().T()&uDash)();
 }
 
 // ************************************************************************* //

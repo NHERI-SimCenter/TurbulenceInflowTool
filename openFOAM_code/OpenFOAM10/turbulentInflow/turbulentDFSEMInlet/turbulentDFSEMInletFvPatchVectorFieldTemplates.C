@@ -175,7 +175,7 @@ Foam::turbulentDFSEMInletFvPatchVectorField::calculateBoundaryData
     );
 
     const polyPatch& polyPatch = this->patch().patch();
-    const pointField localPoints = tempCoord.localPosition(polyPatch.points());
+    const pointField localPoints = tempCoord.localPosition(polyPatch.points())();
 
     boundBox patchBounds(localPoints);
 
@@ -327,7 +327,7 @@ Foam::turbulentDFSEMInletFvPatchVectorField::calculateBoundaryData<Foam::symmTen
     );
 
     const polyPatch& polyPatch = this->patch().patch();
-    const pointField localPoints = tempCoord.localPosition(polyPatch.points());
+    const pointField localPoints = tempCoord.localPosition(polyPatch.points())();
 
     boundBox patchBounds(localPoints);
 
