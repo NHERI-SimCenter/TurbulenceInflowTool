@@ -337,9 +337,11 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
                         if (L0_[label][subLabel] < 0)
                         {
                             negativeFlag = true;
+                            /*
                             Pout << "error: the " << subLabel + 1 << "-th component of the converted length scales at the point " << Cf[label] 
                                  << " is no larger than 0, please modify the input parameters for L" << endl;
-                            break;
+                            */
+                           break;
                         }
                     }
 
