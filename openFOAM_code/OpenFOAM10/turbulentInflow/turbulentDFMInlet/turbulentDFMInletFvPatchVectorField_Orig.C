@@ -311,7 +311,6 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
                     Pout << "error: the Reynolds stress component R_ZZ at the point " << Cf[label]
                          << " is no larger than sum of the squares of Lund_ZX and Lund_ZY,"
                          << " Please modify the input parameters for R" << endl;
-                        
                 }
                 else
                 {
@@ -324,11 +323,11 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
 
                     const tensor E = tensor(ex, ey, ez);
 
-		            //Scale the lenght scale profile since the velocity field is scaled by Lund coefficient matrix 
+		    //Scale the lenght scale profile since the velocity field is scaled by Lund coefficient matrix 
                     L0_[label] = inv(E)&L_[label];
                     
-                    //No scaling to avoid negative length scale
-                    //L0_[label] = L_[label];
+		    //No scaling to avoid negative length scale
+		    //L0_[label] = L_[label];
 
                     bool negativeFlag = false;
 
@@ -339,7 +338,6 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
                             negativeFlag = true;
                             Pout << "error: the " << subLabel + 1 << "-th component of the converted length scales at the point " << Cf[label] 
                                  << " is no larger than 0, please modify the input parameters for L" << endl;
-                            break;
                         }
                     }
 
