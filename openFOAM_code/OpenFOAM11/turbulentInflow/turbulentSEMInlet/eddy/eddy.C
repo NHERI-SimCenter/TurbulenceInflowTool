@@ -219,7 +219,7 @@ Foam::vectorField Foam::eddy::uDash(const pointField& xp, const vector& n) const
              << "does not exist (ERROR)" << endl;
     }
 
-    return (Lund()&uDash)();
+    return (Lund()&uDash);
 }
 
 // ************************************************************************* //

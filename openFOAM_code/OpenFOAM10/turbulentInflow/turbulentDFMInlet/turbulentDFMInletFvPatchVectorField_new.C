@@ -274,84 +274,47 @@ void Foam::turbulentDFMInletFvPatchVectorField::initialiseParameters()
     
     forAll(U_, label)
     {
-        if (U_[label] < 0)
-        {
-            Pout << "error: the patch-normal velocity magnitude at the point " << Cf[label]
-                 << " is no larger than 0, please modify the input parameters for U" << endl;
-        }
+       /* Lund_[label].component(tensor::XX) = sqrt(R_[label].component(symmTensor::XX));
+        Lund_[label].component(tensor::YX) = R_[label].component(symmTensor::XY)/Lund_[label].component(tensor::XX);
+        Lund_[label].component(tensor::ZX) = R_[label].component(symmTensor::XZ)/Lund_[label].component(tensor::XX);
         
-        if (R_[label].component(symmTensor::XX) < 0)
-        {
-            Pout << "error: the Reynolds stress component R_XX at the point " << Cf[label] 
-                 << " is no larger than 0, please modify the input parameters for R" << endl;
-        }
-        else
-        {
-            Lund_[label].component(tensor::XX) = sqrt(R_[label].component(symmTensor::XX));
-            Lund_[label].component(tensor::YX) = R_[label].component(symmTensor::XY)/Lund_[label].component(tensor::XX);
-            Lund_[label].component(tensor::ZX) = R_[label].component(symmTensor::XZ)/Lund_[label].component(tensor::XX);
-            
-            const scalar sqrLundYY = R_[label].component(symmTensor::YY)-sqr(Lund_[label].component(tensor::YX));
-            
-            if (sqrLundYY < 0)
-            {
-                Pout << "error: the Reynolds stress component R_YY at the point " << Cf[label]
-                     << " is no larger than the square of Lund_YX,"
-                     << " Please modify the input parameters for R" << endl;
-            }
-            else
-            {
-                Lund_[label].component(tensor::YY) = sqrt(sqrLundYY);
-                Lund_[label].component(tensor::ZY) = (R_[label].component(symmTensor::YZ)-Lund_[label].component(tensor::YX)*Lund_[label].component(tensor::ZX))/Lund_[label].component(tensor::YY);
+        const scalar sqrLundYY = R_[label].component(symmTensor::YY)-sqr(Lund_[label].component(tensor::YX));
+	    Lund_[label].component(tensor::YY) = sqrt(sqrLundYY);
+	    Lund_[label].component(tensor::ZY) = (R_[label].component(symmTensor::YZ)-Lund_[label].component(tensor::YX)*Lund_[label].component(tensor::ZX))/Lund_[label].component(tensor::YY);
                 
-                const scalar sqrLundZZ = R_[label].component(symmTensor::ZZ)-sqr(Lund_[label].component(tensor::ZX))-sqr(Lund_[label].component(tensor::ZY));
+	    const scalar sqrLundZZ = R_[label].component(symmTensor::ZZ)-sqr(Lund_[label].component(tensor::ZX))-sqr(Lund_[label].component(tensor::ZY));  
+		Lund_[label].component(tensor::ZZ) = sqrt(sqrLundZZ);
+                    
+		const tensor sqrLund = cmptMultiply(Lund_[label], Lund_[label]);
+		const vector ex = sqrLund.x()/R_[label].xx();
+		const vector ey = sqrLund.y()/R_[label].yy();
+		const vector ez = sqrLund.z()/R_[label].zz();
+		const tensor E = tensor(ex, ey, ez);
+	*/
+        
+	//Scale the length scale profile since the velocity field is scaled by Lund coefficient matrix 
+        //L0_[label] = inv(E)&L_[label];
                 
-                if (sqrLundZZ < 0)
-                {
-                    Pout << "error: the Reynolds stress component R_ZZ at the point " << Cf[label]
-                         << " is no larger than sum of the squares of Lund_ZX and Lund_ZY,"
-                         << " Please modify the input parameters for R" << endl;
-                        
-                }
-                else
-                {
-                    Lund_[label].component(tensor::ZZ) = sqrt(sqrLundZZ);
-                    
-                    const tensor sqrLund = cmptMultiply(Lund_[label], Lund_[label]);
-                    const vector ex = sqrLund.x()/R_[label].xx();
-                    const vector ey = sqrLund.y()/R_[label].yy();
-                    const vector ez = sqrLund.z()/R_[label].zz();
+        //No scaling to avoid negative length scale
+        L0_[label] = L_[label];
 
-                    const tensor E = tensor(ex, ey, ez);
+        // bool negativeFlag = false;
 
-		            //Scale the lenght scale profile since the velocity field is scaled by Lund coefficient matrix 
-                    L0_[label] = inv(E)&L_[label];
-                    
-                    //No scaling to avoid negative length scale
-                    //L0_[label] = L_[label];
+        // forAll(L0_[label], subLabel)
+        // {
+        //     if (L0_[label][subLabel] < 0)
+        //     {
+        //         negativeFlag = true;
+        //         Pout << "error: the " << subLabel + 1 << "-th component of the converted length scales at the point " << Cf[label] 
+        //                 << " is no larger than 0, please modify the input parameters for L" << endl;
+        //     }
+        // }
 
-                    bool negativeFlag = false;
-
-                    forAll(L0_[label], subLabel)
-                    {
-                        if (L0_[label][subLabel] < 0)
-                        {
-                            negativeFlag = true;
-                            /*
-                            Pout << "error: the " << subLabel + 1 << "-th component of the converted length scales at the point " << Cf[label] 
-                                 << " is no larger than 0, please modify the input parameters for L" << endl;
-                            */
-                           break;
-                        }
-                    }
-
-                    if (negativeFlag)
-                    {
-                        L0_[label] = L_[label];
-                    }
-                }
-            }
-        }
+        // if (negativeFlag)
+        // {
+        //     L0_[label] = L_[label];
+        // }
+                
     }
 }
 

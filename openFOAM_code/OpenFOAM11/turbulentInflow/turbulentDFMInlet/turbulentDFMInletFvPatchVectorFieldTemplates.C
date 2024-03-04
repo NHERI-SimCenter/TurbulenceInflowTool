@@ -32,14 +32,14 @@ License
 
 template<class Type>
 Foam::tmp<Foam::Field<Type>>
-Foam::turbulentKineticEnergyFvPatchScalarField::interpolateOrRead
+Foam::turbulentDFMInletFvPatchVectorField::interpolateOrRead
 (
     const word& fieldName,
     const dictionary& dict,
     bool& interpolateField
 ) const
 {
-    const word calculateName("calculate"+fieldName);
+    const word calculateName("calculate" + fieldName);
     const bool calculateFlag(dict.lookupOrDefault<bool>(calculateName, false));
 
     if (dict.found(fieldName))
@@ -55,6 +55,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::interpolateOrRead
         );
 
         interpolateField = false;
+	
         return tFld;
     }
     else
@@ -88,7 +89,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::interpolateOrRead
 
 template<class Type>
 Foam::tmp<Foam::Field<Type>>
-Foam::turbulentKineticEnergyFvPatchScalarField::interpolateBoundaryData
+Foam::turbulentDFMInletFvPatchVectorField::interpolateBoundaryData
 (
     const word& fieldName
 ) const
@@ -120,7 +121,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::interpolateBoundaryData
 
     Field<Type> vals(isPtr());
 
-    Info<< "Turbulent KineticEnergy patch " << patchName
+    Info<< "Turbulent DFM patch " << patchName
         << ": interpolating field " << fieldName
         << " from " << valsFile << endl;
 
@@ -129,13 +130,13 @@ Foam::turbulentKineticEnergyFvPatchScalarField::interpolateBoundaryData
 
 template<class Type>
 Foam::tmp<Foam::Field<Type>>
-Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData
+Foam::turbulentDFMInletFvPatchVectorField::calculateBoundaryData
 (
     const word& fieldName,
     const dictionary& dict
 ) const
 {
-    word subDictName(fieldName+"Dict");
+    word subDictName(fieldName + "Dict");
     Field<Type> value(this->patch().size(), pTraits<Type>::zero);
 
     const vectorField nf(patch().nf());
@@ -165,27 +166,29 @@ Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData
         e3 = vector(0,0,1);
     }
 
-    //Crate a temporary coordinate with origin at (x=0, y=0, z=0). 
+    //Create temporary coordinate with origin at (x=0, y=0, z=0). 
     coordinateSystem tempCoord
     (
         "tempCoord",
         vector::zero,
         e3,
         e1
+
     );
 
     const polyPatch& polyPatch = this->patch().patch();
-    const pointField localPoints = tempCoord.localPosition(polyPatch.points())();
+    const pointField localPoints = tempCoord.localPosition(polyPatch.points());
 
     boundBox patchBounds(localPoints);
 
     const vector offset(dict.lookupOrDefault<vector>("offset", vector::zero));
     const vector origin = patchBounds.min() + offset;
 
+    //This is needed b/c the origin of the coordSystem can not be changed
     coordinateSystem patchCoord
     (
         "patchCoord",
-        tempCoord.globalPosition(origin), //transformed origin
+        tempCoord.globalPosition(origin), //origin of the transformed point
         e3,
         e1
     );
@@ -271,7 +274,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData
 
     tmp<Field<Type>> tFld(new Field<Type>(value));
 
-    Info<< "Turbulent KineticEnergy patch " << this->patch().name()
+    Info<< "Turbulent DFM patch " << this->patch().name()
         << ": calculating field " << fieldName
         << " from " << dict.name() << endl;
 
@@ -280,7 +283,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData
 
 template<>
 Foam::tmp<Foam::symmTensorField>
-Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData<Foam::symmTensor>
+Foam::turbulentDFMInletFvPatchVectorField::calculateBoundaryData<Foam::symmTensor>
 (
     const word& fieldName,
     const dictionary& dict
@@ -327,7 +330,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData<Foam::symm
     );
 
     const polyPatch& polyPatch = this->patch().patch();
-    const pointField localPoints = tempCoord.localPosition(polyPatch.points())();
+    const pointField localPoints = tempCoord.localPosition(polyPatch.points());
 
     boundBox patchBounds(localPoints);
 
@@ -474,11 +477,28 @@ Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData<Foam::symm
 
     tmp<symmTensorField> tFld(new symmTensorField(value));
 
-    Info<< "Turbulent KineticEnergy patch " << this->patch().name()
+    Info<< "Turbulent DFM patch " << this->patch().name()
         << ": calculating field " << fieldName
         << " from " << dict.name() << endl;
 
     return tFld;
+}
+
+template<class Type>
+Foam::Field<Type>
+Foam::turbulentDFMInletFvPatchVectorField::gatherProc
+(
+    const Field<Type>& valsProc
+) const
+{
+    List<Field<Type>> vals;
+    vals.setSize(Pstream::nProcs());
+    vals[Pstream::myProcNo()] = valsProc;
+
+    Pstream::gatherList(vals);
+    Pstream::scatterList(vals);
+
+    return ListListOps::combine<Field<Type>>(vals, accessOp<Field<Type>>());
 }
 
 

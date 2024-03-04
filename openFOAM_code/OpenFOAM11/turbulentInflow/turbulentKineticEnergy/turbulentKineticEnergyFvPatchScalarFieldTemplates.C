@@ -175,7 +175,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData
     );
 
     const polyPatch& polyPatch = this->patch().patch();
-    const pointField localPoints = tempCoord.localPosition(polyPatch.points())();
+    const pointField localPoints = tempCoord.localPosition(polyPatch.points());
 
     boundBox patchBounds(localPoints);
 
@@ -327,7 +327,7 @@ Foam::turbulentKineticEnergyFvPatchScalarField::calculateBoundaryData<Foam::symm
     );
 
     const polyPatch& polyPatch = this->patch().patch();
-    const pointField localPoints = tempCoord.localPosition(polyPatch.points())();
+    const pointField localPoints = tempCoord.localPosition(polyPatch.points());
 
     boundBox patchBounds(localPoints);
 

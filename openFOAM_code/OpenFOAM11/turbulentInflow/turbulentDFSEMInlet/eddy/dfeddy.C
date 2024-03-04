@@ -303,7 +303,7 @@ Foam::vectorField Foam::dfeddy::uDash(const pointField& xp, const vector& n) con
     }
 
     // Convert into global system (eq. 10)
-    return (c1_*(Rpg_ & uDash))();
+    return c1_*(Rpg_ & uDash);
 }
 
 // ************************************************************************* //
